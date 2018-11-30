@@ -1,41 +1,52 @@
 <template>
-  <div>
-    <div style="float:right">
-      <h4>Stop Time</h4>
+  <div :class="$style.root">
+
+    <div>
+      <h4>Stops</h4>
       <ul>
-        <li v-for="stopTime in stopTimes" :key="stopTime.stop_sequence">
-          <button>{{stopTime.arrival_time}} - {{stopTime.departure_time}}</button>
+        <li v-for="stop in stops" :key="stop.stop_id">
+          <button @click="selectedStop = stop" :style="{'background-color': selectedStop === stop ? 'red' : 'transparent'}">{{stop.stop_name}}
+          </button>
         </li>
       </ul>
-      <h4>realtimeTransitFeed</h4>
-      <p>{{realtimeTransitFeed}}</p>
     </div>
-    <h4>Stops</h4>
-    <ul>
-      <li v-for="stop in stops" :key="stop.stop_id">
-        <button @click="selectedStopId = stop.stop_id">{{stop.stop_name}}</button>
-      </li>
-    </ul>
-    <h4>Routes</h4>
-    <ul>
-      <li v-for="route in routes" :key="route.route_id">
-        <button @click="selectedRouteId = route.route_id">{{route.route_short_name}}- {{route.route_long_name}}</button>
-      </li>
-    </ul>
-    <h4>Trips</h4>
-    <ul>
-      <li v-for="trip in trips" :key="trip.trip_id">
-        <button @click="selectedTripId = trip.trip_id">{{trip.trip_headsign}}</button>
-      </li>
-    </ul>
+
+    <div>
+      <h4>Routes</h4>
+      <ul>
+        <li v-for="route in routes" :key="route.route_id">
+          <button @click="selectedRoute = route" :style="{'background-color': selectedRoute === route ? 'red' : 'transparent'}">
+            {{route.route_short_name}} - {{route.route_long_name}}
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Stop Time In The Future By Stop</h4>
+      <ul>
+        <li v-for="stopTime in activeStopTimes" :key="stopTime.stop_id + stopTime.trip_id">
+          <button @click="selectedStopTime = stopTime" :style="{'background-color': selectedStopTime === stopTime ? 'red' : 'transparent'}">
+            {{stopTime.arrival_time}} - {{stopTime.departure_time}}
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Vehicle Position</h4>
+      <p>{{vehiclePosition}}</p>
+      <div ref="map" :class="$style.map"></div>
+    </div>
+
   </div>
 </template>
 
 <script>
-const subscriptionKey = "a67afd3d4e9e4494a2cae4b310556b35";
+const aucklandTransportApiKey = "a67afd3d4e9e4494a2cae4b310556b35";
 const myLocation = {
-  latitude: -36.7961008,
-  longitude: 174.647264
+  lat: -36.8492847,
+  lng: 174.7583554
 };
 
 export default {
@@ -43,36 +54,96 @@ export default {
   data() {
     return {
       stops: [],
-      selectedStopId: "",
       routes: [],
-      selectedRouteId: "",
       trips: [],
-      selectedTripId: "",
       stopTimes: [],
-      realtimeTransitFeed: []
+      vehiclePosition: null,
+      timeoutHandle: 0,
+      selectedStop: null,
+      selectedRoute: null,
+      selectedStopTime: null,
+      map: null,
+      marker: null
     };
+  },
+  computed: {
+    activeStopTimes() {
+      const now = new Date();
+      const midnight = new Date(now).setHours(0, 0, 0, 0);
+      const secondsSinceMidnight = (now - midnight) / 1000;
+      return this.stopTimes
+        .filter(
+          stopTime =>
+            stopTime.arrival_time_seconds > secondsSinceMidnight &&
+            this.trips.some(trip => trip.trip_id === stopTime.trip_id)
+        )
+        .sort((a, b) => a.arrival_time_seconds - b.arrival_time_seconds);
+    }
   },
   async created() {
     this.stops = await this.getStops(myLocation);
   },
+  mounted() {
+    this.map = new window.google.maps.Map(this.$refs.map, {
+      center: myLocation,
+      zoom: 12
+    });
+    this.marker = new window.google.maps.Marker({
+      map: this.map
+    });
+  },
   watch: {
-    async selectedStopId() {
-      this.routes = await this.getRoutesByStop(this.selectedStopId);
-    },
-    async selectedRouteId() {
-      this.trips = await this.getTripsByRoute(this.selectedRouteId);
-    },
-    async selectedTripId() {
-      this.stopTimes = await this.getStopTimesByTrip(this.selectedTripId);
-      this.realtimeTransitFeed = await this.getRealtimeTransitFeed(
-        this.selectedTripId
+    selectedStop() {
+      this.getStopTimesByStop(this.selectedStop.stop_id).then(
+        stopTimes => (this.stopTimes = stopTimes)
       );
+      this.getRoutesByStop(this.selectedStop.stop_id).then(
+        routes => (this.routes = routes)
+      );
+    },
+    async selectedRoute() {
+      this.trips = await this.getTripsByRoute(this.selectedRoute.route_id);
+    },
+    async selectedStopTime() {
+      this.updateVehiclePosition();
+    },
+    vehiclePosition() {
+      if (this.vehiclePosition) {
+        this.marker.setPosition(this.vehiclePosition);
+        if (!this.marker.getMap()) {
+          this.marker.setMap(this.map);
+        }
+      } else {
+        this.marker.setMap(null);
+      }
     }
   },
   methods: {
+    async updateVehiclePosition() {
+      const vehiclePositions = await this.getVehiclePositions(
+        this.selectedStopTime.trip_id
+      );
+
+      if (vehiclePositions.entity && vehiclePositions.entity[0]) {
+        const position = vehiclePositions.entity[0].vehicle.position;
+        console.log(position);
+        this.vehiclePosition = {
+          lat: position.latitude,
+          lng: position.longitude
+        };
+        this.timeoutHandle = window.setTimeout(
+          this.updateVehiclePosition,
+          5000
+        );
+      } else {
+        window.clearTimeout(this.timeoutHandle);
+        this.timeoutHandle = 0;
+        this.vehiclePosition = null;
+      }
+    },
     callApi(request) {
       return fetch(request, {
-        headers: { "Ocp-Apim-Subscription-Key": subscriptionKey }
+        headers: { "Ocp-Apim-Subscription-Key": aucklandTransportApiKey }
       })
         .then(response => response.json())
         .then(json => json.response);
@@ -80,8 +151,8 @@ export default {
     getStops(location) {
       return this.callApi(
         `https://api.at.govt.nz/v2/gtfs/stops/geosearch?lat=${
-          location.latitude
-        }&lng=${location.longitude}&distance=300`
+          location.lat
+        }&lng=${location.lng}&distance=1000`
       );
     },
     getRoutesByStop(stopId) {
@@ -94,16 +165,35 @@ export default {
         `https://api.at.govt.nz/v2/gtfs/trips/routeid/${routeId}`
       );
     },
+    getStopTimesByStop(stopId) {
+      return this.callApi(
+        `https://api.at.govt.nz/v2/gtfs/stopTimes/stopId/${stopId}`
+      );
+    },
     getStopTimesByTrip(tripId) {
       return this.callApi(
         `https://api.at.govt.nz/v2/gtfs/stopTimes/tripId/${tripId}`
       );
     },
-    getRealtimeTransitFeed(tripId) {
+    getVehiclePositions(tripId) {
       return this.callApi(
-        `https://api.at.govt.nz/v2/public/realtime/?tripid=${tripId}`
+        `https://api.at.govt.nz/v2/public/realtime/vehiclelocations?tripid=${tripId}`
       );
     }
   }
 };
 </script>
+
+<style module>
+.root {
+  display: grid;
+  height: 100%;
+  grid-template:
+    ". . . . " auto
+    / 1fr 1fr 1fr 3fr;
+}
+
+.map {
+  height: 500px;
+}
+</style>
