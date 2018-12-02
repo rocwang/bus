@@ -43,11 +43,28 @@
 </template>
 
 <script>
+const googleMapsKey = "AIzaSyDj8dcF-SG59C1bzC0HwflFliQRQOlZ7TU";
 const aucklandTransportApiKey = "a67afd3d4e9e4494a2cae4b310556b35";
 const myLocation = {
   lat: -36.8492847,
   lng: 174.7583554
 };
+const googleMapsPromise = new Promise(resolve => {
+  if (window.google && window.google.maps) {
+    resolve(window.google.maps);
+    return;
+  }
+
+  window.googleMapsCallback = () => {
+    resolve(window.google.maps);
+  };
+
+  const script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&callback=googleMapsCallback`;
+  script.async = true;
+
+  document.body.appendChild(script);
+});
 
 export default {
   name: "HelloWorld",
@@ -83,12 +100,13 @@ export default {
   async created() {
     this.stops = await this.getStops(myLocation);
   },
-  mounted() {
-    this.map = new window.google.maps.Map(this.$refs.map, {
+  async mounted() {
+    const googleMaps = await googleMapsPromise;
+    this.map = new googleMaps.Map(this.$refs.map, {
       center: myLocation,
       zoom: 12
     });
-    this.marker = new window.google.maps.Marker({
+    this.marker = new googleMaps.Marker({
       map: this.map
     });
   },
