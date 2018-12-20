@@ -11,13 +11,13 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "GoogleMaps",
-      component: GoogleMaps
-    },
-    {
-      path: "/mapbox",
       name: "Mapbox",
       component: Mapbox
+    },
+    {
+      path: "/google-maps",
+      name: "GoogleMaps",
+      component: GoogleMaps
     }
   ]
 });

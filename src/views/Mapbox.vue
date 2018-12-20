@@ -2,20 +2,10 @@
   <div :class="$style.root">
 
     <div>
-      <h4>Stops</h4>
-      <ul>
-        <li v-for="stop in stops" :key="stop.stop_id">
-          <button @click="selectedStop = stop" :style="{'background-color': selectedStop === stop ? 'red' : 'transparent'}">{{stop.stop_name}}
-          </button>
-        </li>
-      </ul>
-    </div>
-
-    <div>
       <h4>Routes</h4>
       <ul>
         <li v-for="route in routes" :key="route.route_id">
-          <button @click="selectedRoute = route" :style="{'background-color': selectedRoute === route ? 'red' : 'transparent'}">
+          <button @click="activeRouteId = route.route_id" :style="{'background-color': activeRouteId === route.route_id ? 'red' : 'transparent'}">
             {{route.route_short_name}} - {{route.route_long_name}}
           </button>
         </li>
@@ -25,9 +15,9 @@
     <div>
       <h4>Stop Time In The Future By Stop</h4>
       <ul>
-        <li v-for="stopTime in activeStopTimes" :key="stopTime.stop_id + stopTime.trip_id">
-          <button @click="selectedStopTime = stopTime" :style="{'background-color': selectedStopTime === stopTime ? 'red' : 'transparent'}">
-            {{stopTime.arrival_time}} - {{stopTime.departure_time}}
+        <li v-for="stopTime in futureStopTimes" :key="stopTime.stop_id + stopTime.trip_id">
+          <button @click="activeStopTime = stopTime" :style="{'background-color': activeStopTime === stopTime ? 'red' : 'transparent'}">
+            {{stopTime.arrival_time}}
           </button>
         </li>
       </ul>
@@ -45,34 +35,26 @@
 <script>
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-
-const mapboxAccessToken =
-  "pk.eyJ1Ijoicm9jd2FuZyIsImEiOiJjanB1ZGRhMTMwZGhmNGVvMG8xNGFjOHR4In0.xRfby2W8QZkYYQq-zjoFPA";
-const aucklandTransportApiKey = "a67afd3d4e9e4494a2cae4b310556b35";
-const myLocation = {
-  lat: -36.8492847,
-  lng: 174.7583554
-};
+import config from "../config";
 
 export default {
   name: "Mapbox",
   data() {
     return {
-      stops: [],
       routes: [],
       trips: [],
       stopTimes: [],
       vehiclePosition: null,
       timeoutHandle: 0,
-      selectedStop: null,
-      selectedRoute: null,
-      selectedStopTime: null,
+      activeStopCode: 0,
+      activeRouteId: "",
+      activeStopTime: null,
       map: null,
-      marker: null
+      busMarker: new mapboxgl.Marker()
     };
   },
   computed: {
-    activeStopTimes() {
+    futureStopTimes() {
       const now = new Date();
       const midnight = new Date(now).setHours(0, 0, 0, 0);
       const secondsSinceMidnight = (now - midnight) / 1000;
@@ -83,61 +65,143 @@ export default {
             this.trips.some(trip => trip.trip_id === stopTime.trip_id)
         )
         .sort((a, b) => a.arrival_time_seconds - b.arrival_time_seconds);
+    },
+    activeTripId() {
+      return this.activeStopTime ? this.activeStopTime.trip_id : "";
     }
   },
-  async created() {
-    this.stops = await this.getStops(myLocation);
-  },
   async mounted() {
-    mapboxgl.accessToken = mapboxAccessToken;
+    mapboxgl.accessToken = config.mapboxAccessToken;
+
     this.map = new mapboxgl.Map({
       container: this.$refs.map,
       style: "mapbox://styles/mapbox/streets-v10",
-      center: myLocation,
-      zoom: 12
-    });
-    this.marker = new mapboxgl.Marker();
+      zoom: 15,
+      center: { lat: -36.848448, lng: 174.7600023 } // The location of Auckland
+    }).on("load", this.initMap);
+
+    this.getStops({ lat: -36.848448, lng: 174.7600023 });
+  },
+  beforeDestroy() {
+    this.map.remove();
   },
   watch: {
-    selectedStop() {
-      this.getStopTimesByStop(this.selectedStop.stop_id).then(
+    activeStopCode() {
+      this.getStopTimesByStop(this.activeStopCode).then(
         stopTimes => (this.stopTimes = stopTimes)
       );
-      this.getRoutesByStop(this.selectedStop.stop_id).then(
+      this.getRoutesByStop(this.activeStopCode).then(
         routes => (this.routes = routes)
       );
     },
-    async selectedRoute() {
-      this.trips = await this.getTripsByRoute(this.selectedRoute.route_id);
+    async activeRouteId() {
+      this.trips = await this.getTripsByRoute(this.activeRouteId);
     },
-    async selectedStopTime() {
+    async activeTripId() {
       this.updateVehiclePosition();
+      // Update the bus route shape layer
+      const shape = await this.getSharpeByTrip(this.activeTripId);
+      const coordinates = shape.map(shapePoint => [
+        shapePoint.shape_pt_lon,
+        shapePoint.shape_pt_lat
+      ]);
+
+      if (this.map.getLayer("route")) {
+        this.map.removeLayer("route");
+      }
+      if (this.map.getSource("route")) {
+        this.map.removeSource("route");
+      }
+
+      this.map.addSource("route", {
+        type: "geojson",
+        data: {
+          type: "Feature",
+          geometry: {
+            type: "LineString",
+            coordinates
+          }
+        }
+      });
+
+      this.map.addLayer(
+        {
+          id: "route",
+          type: "line",
+          source: "route",
+          layout: {
+            "line-join": "round",
+            "line-cap": "round"
+          },
+          paint: {
+            "line-color": "#888",
+            "line-width": 4
+          }
+        },
+        "stops"
+      );
     },
     vehiclePosition() {
       if (this.vehiclePosition) {
-        this.marker.setLngLat(this.vehiclePosition);
-        this.marker.addTo(this.map);
+        this.busMarker.setLngLat(this.vehiclePosition);
+        this.busMarker.addTo(this.map);
+        this.map.flyTo({ center: this.busMarker.getLngLat() });
       } else {
-        this.marker.remove();
+        this.busMarker.remove();
       }
     }
   },
   methods: {
+    initMap() {
+      const geoLocateControl = new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: false
+        },
+        trackUserLocation: true
+      });
+
+      this.map
+        .addControl(geoLocateControl)
+        .addLayer({
+          id: "stops",
+          type: "symbol",
+          source: {
+            type: "geojson",
+            data:
+              "https://opendata.arcgis.com/datasets/d5a4db7acb5a45a9a4f1bd08a3f0f0a6_0.geojson"
+          },
+          layout: {
+            "icon-image": "bus-15"
+          }
+        })
+        .on("click", "stops", e => {
+          // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+          this.map.flyTo({ center: e.features[0].geometry.coordinates });
+          this.activeStopCode = e.features[0].properties.STOPCODE;
+        })
+        .on("mouseenter", "stops", () => {
+          // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+          this.map.getCanvas().style.cursor = "pointer";
+        })
+        .on("mouseleave", "stops", () => {
+          // Change it back to a pointer when it leaves.
+          this.map.getCanvas().style.cursor = "";
+        });
+    },
     async updateVehiclePosition() {
       const vehiclePositions = await this.getVehiclePositions(
-        this.selectedStopTime.trip_id
+        this.activeTripId
       );
 
       if (vehiclePositions.entity && vehiclePositions.entity[0]) {
         const position = vehiclePositions.entity[0].vehicle.position;
-        console.log(position);
         this.vehiclePosition = {
           lat: position.latitude,
           lng: position.longitude
         };
         this.timeoutHandle = window.setTimeout(
           this.updateVehiclePosition,
-          5000
+          10000
         );
       } else {
         window.clearTimeout(this.timeoutHandle);
@@ -147,7 +211,7 @@ export default {
     },
     callApi(request) {
       return fetch(request, {
-        headers: { "Ocp-Apim-Subscription-Key": aucklandTransportApiKey }
+        headers: { "Ocp-Apim-Subscription-Key": config.aucklandTransportApiKey }
       })
         .then(response => response.json())
         .then(json => json.response);
@@ -183,6 +247,11 @@ export default {
       return this.callApi(
         `https://api.at.govt.nz/v2/public/realtime/vehiclelocations?tripid=${tripId}`
       );
+    },
+    getSharpeByTrip(tripId) {
+      return this.callApi(
+        `https://api.at.govt.nz/v2/gtfs/shapes/tripId/${tripId}`
+      );
     }
   }
 };
@@ -193,11 +262,11 @@ export default {
   display: grid;
   height: 100%;
   grid-template:
-    ". . . . " auto
-    / 1fr 1fr 1fr 3fr;
+    ". . ." auto
+    / 1fr 1fr 3fr;
 }
 
 .map {
-  height: 500px;
+  height: 800px;
 }
 </style>

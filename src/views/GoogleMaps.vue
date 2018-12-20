@@ -15,7 +15,7 @@
       <h4>Routes</h4>
       <ul>
         <li v-for="route in routes" :key="route.route_id">
-          <button @click="selectedRoute = route" :style="{'background-color': selectedRoute === route ? 'red' : 'transparent'}">
+          <button @click="activeRoute = route" :style="{'background-color': selectedRoute === route ? 'red' : 'transparent'}">
             {{route.route_short_name}} - {{route.route_long_name}}
           </button>
         </li>
@@ -26,7 +26,7 @@
       <h4>Stop Time In The Future By Stop</h4>
       <ul>
         <li v-for="stopTime in activeStopTimes" :key="stopTime.stop_id + stopTime.trip_id">
-          <button @click="selectedStopTime = stopTime" :style="{'background-color': selectedStopTime === stopTime ? 'red' : 'transparent'}">
+          <button @click="activeStopTime = stopTime" :style="{'background-color': selectedStopTime === stopTime ? 'red' : 'transparent'}">
             {{stopTime.arrival_time}} - {{stopTime.departure_time}}
           </button>
         </li>
@@ -77,14 +77,14 @@ export default {
       vehiclePosition: null,
       timeoutHandle: 0,
       selectedStop: null,
-      selectedRoute: null,
-      selectedStopTime: null,
+      activeRoute: null,
+      activeStopTime: null,
       map: null,
       marker: null
     };
   },
   computed: {
-    activeStopTimes() {
+    futureStopTimes() {
       const now = new Date();
       const midnight = new Date(now).setHours(0, 0, 0, 0);
       const secondsSinceMidnight = (now - midnight) / 1000;
@@ -119,10 +119,10 @@ export default {
         routes => (this.routes = routes)
       );
     },
-    async selectedRoute() {
-      this.trips = await this.getTripsByRoute(this.selectedRoute.route_id);
+    async activeRoute() {
+      this.trips = await this.getTripsByRoute(this.activeRoute.route_id);
     },
-    async selectedStopTime() {
+    async activeStopTime() {
       this.updateVehiclePosition();
     },
     vehiclePosition() {
@@ -139,7 +139,7 @@ export default {
   methods: {
     async updateVehiclePosition() {
       const vehiclePositions = await this.getVehiclePositions(
-        this.selectedStopTime.trip_id
+        this.activeStopTime.trip_id
       );
 
       if (vehiclePositions.entity && vehiclePositions.entity[0]) {
