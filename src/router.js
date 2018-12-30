@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import GoogleMaps from "./views/GoogleMaps.vue";
 import Mapbox from "./views/Mapbox.vue";
 
 Vue.use(Router);
@@ -13,11 +12,6 @@ export default new Router({
       path: "/",
       name: "Mapbox",
       component: Mapbox
-    },
-    {
-      path: "/google-maps",
-      name: "GoogleMaps",
-      component: GoogleMaps
     }
   ]
 });
