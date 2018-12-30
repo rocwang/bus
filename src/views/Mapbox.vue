@@ -1,41 +1,15 @@
 <template>
-  <div :class="$style.root">
-
-    <div>
-      <h4>Routes</h4>
-      <ul>
-        <li v-for="route in routes" :key="route.route_id">
-          <button @click="activeRouteId = route.route_id" :style="{'background-color': activeRouteId === route.route_id ? 'red' : 'transparent'}">
-            {{route.route_short_name}} - {{route.route_long_name}}
-          </button>
-        </li>
-      </ul>
-    </div>
-
-    <div>
-      <h4>Stop Time In The Future By Stop</h4>
-      <ul>
-        <li v-for="stopTime in futureStopTimes" :key="stopTime.stop_id + stopTime.trip_id">
-          <button @click="activeStopTime = stopTime" :style="{'background-color': activeStopTime === stopTime ? 'red' : 'transparent'}">
-            {{stopTime.arrival_time}}
-          </button>
-        </li>
-      </ul>
-    </div>
-
-    <div>
-      <h4>Vehicle Position</h4>
-      <p>{{vehiclePosition}}</p>
-      <div ref="map" :class="$style.map"></div>
-    </div>
-
-  </div>
+  <div :class="$style.root"></div>
 </template>
 
 <script>
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import config from "../config";
+import stopIcon from "../assets/stop.png";
+import * as at from "../api/at";
+
+mapboxgl.accessToken = config.mapboxAccessToken;
 
 export default {
   name: "Mapbox",
@@ -43,93 +17,88 @@ export default {
     return {
       routes: [],
       trips: [],
-      stopTimes: [],
-      vehiclePosition: null,
-      timeoutHandle: 0,
-      activeStopCode: 0,
-      activeRouteId: "",
-      activeStopTime: null,
-      map: null,
-      busMarker: new mapboxgl.Marker()
+      selectedStopCode: 0,
+      timeoutHandle: 0
     };
   },
-  computed: {
-    futureStopTimes() {
-      const now = new Date();
-      const midnight = new Date(now).setHours(0, 0, 0, 0);
-      const secondsSinceMidnight = (now - midnight) / 1000;
-      return this.stopTimes
-        .filter(
-          stopTime =>
-            stopTime.arrival_time_seconds > secondsSinceMidnight &&
-            this.trips.some(trip => trip.trip_id === stopTime.trip_id)
-        )
-        .sort((a, b) => a.arrival_time_seconds - b.arrival_time_seconds);
-    },
-    activeTripId() {
-      return this.activeStopTime ? this.activeStopTime.trip_id : "";
-    }
+  created() {
+    this.busMarkers = [];
   },
   async mounted() {
-    mapboxgl.accessToken = config.mapboxAccessToken;
+    this.map = await new Promise(resolve => {
+      const map = new mapboxgl.Map({
+        container: this.$el,
+        style: "mapbox://styles/mapbox/streets-v10",
+        bounds: [[174.223, -37.348], [175.314, -36.41]] // The bounds of Auckland
+      }).on("load", () => resolve(map));
+    });
 
-    this.map = new mapboxgl.Map({
-      container: this.$refs.map,
-      style: "mapbox://styles/mapbox/streets-v10",
-      zoom: 15,
-      center: { lat: -36.848448, lng: 174.7600023 } // The location of Auckland
-    }).on("load", this.initMap);
-
-    this.getStops({ lat: -36.848448, lng: 174.7600023 });
+    this.initMap();
   },
   beforeDestroy() {
     this.map.remove();
   },
   watch: {
-    activeStopCode() {
-      this.getStopTimesByStop(this.activeStopCode).then(
-        stopTimes => (this.stopTimes = stopTimes)
+    routes() {
+      const routePatterns = this.routes.map(route =>
+        route.route_id.substring(0, 5)
       );
-      this.getRoutesByStop(this.activeStopCode).then(
-        routes => (this.routes = routes)
+      this.map
+        .setFilter("routes", ["in", "ROUTEPATTERN", ...routePatterns])
+        .setLayoutProperty("routes", "visibility", "visible");
+    },
+    selectedStopCode() {
+      at.getRoutesByStop(this.selectedStopCode).then(
+        routes =>
+          (this.routes = routes.sort((a, b) =>
+            a.route_short_name.localeCompare(b.route_short_name)
+          ))
+      );
+      at.getStopInfoByStopCode(this.selectedStopCode).then(
+        trips => (this.trips = trips)
       );
     },
-    async activeRouteId() {
-      this.trips = await this.getTripsByRoute(this.activeRouteId);
-    },
-    async activeTripId() {
-      this.updateVehiclePosition();
-      // Update the bus route shape layer
-      const shape = await this.getSharpeByTrip(this.activeTripId);
-      const coordinates = shape.map(shapePoint => [
-        shapePoint.shape_pt_lon,
-        shapePoint.shape_pt_lat
-      ]);
-
-      if (this.map.getLayer("route")) {
-        this.map.removeLayer("route");
-      }
-      if (this.map.getSource("route")) {
-        this.map.removeSource("route");
-      }
-
-      this.map.addSource("route", {
+    async trips() {
+      this.updateVehiclePositions();
+    }
+  },
+  methods: {
+    async initMap() {
+      // Stop source
+      this.map.addSource("stops", {
         type: "geojson",
-        data: {
-          type: "Feature",
-          geometry: {
-            type: "LineString",
-            coordinates
-          }
-        }
+        data:
+          "https://opendata.arcgis.com/datasets/d5a4db7acb5a45a9a4f1bd08a3f0f0a6_0.geojson",
+        cluster: true,
+        clusterMaxZoom: 14, // Max zoom to cluster points on
+        clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
       });
 
+      // Route source
+      this.map.addSource("routes", {
+        type: "geojson",
+        data:
+          "https://opendata.arcgis.com/datasets/d5a4db7acb5a45a9a4f1bd08a3f0f0a6_2.geojson"
+      });
+
+      //  Geolocate control
+      this.map.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: false
+          },
+          trackUserLocation: true
+        })
+      );
+
+      // Route layer
       this.map.addLayer(
         {
-          id: "route",
+          id: "routes",
           type: "line",
-          source: "route",
+          source: "routes",
           layout: {
+            visibility: "none",
             "line-join": "round",
             "line-cap": "round"
           },
@@ -138,120 +107,160 @@ export default {
             "line-width": 4
           }
         },
-        "stops"
+        "road-label-small"
       );
-    },
-    vehiclePosition() {
-      if (this.vehiclePosition) {
-        this.busMarker.setLngLat(this.vehiclePosition);
-        this.busMarker.addTo(this.map);
-        this.map.flyTo({ center: this.busMarker.getLngLat() });
-      } else {
-        this.busMarker.remove();
-      }
-    }
-  },
-  methods: {
-    initMap() {
-      const geoLocateControl = new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: false
-        },
-        trackUserLocation: true
+
+      // Stop cluster layer
+      this.map.addLayer({
+        id: "stop-clusters",
+        type: "circle",
+        source: "stops",
+        filter: ["has", "point_count"],
+        paint: {
+          // Use step expressions (https://www.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
+          // with three steps to implement three types of circles:
+          //   * Blue, 20px circles when point count is less than 100
+          //   * Yellow, 30px circles when point count is between 100 and 750
+          //   * Pink, 40px circles when point count is greater than or equal to 750
+          "circle-color": [
+            "step",
+            ["get", "point_count"],
+            "#51bbd6",
+            100,
+            "#f1f075",
+            750,
+            "#f28cb1"
+          ],
+          "circle-radius": [
+            "step",
+            ["get", "point_count"],
+            20,
+            100,
+            30,
+            750,
+            40
+          ]
+        }
       });
 
+      // Stop count layer
+      this.map.addLayer({
+        id: "stop-count",
+        type: "symbol",
+        source: "stops",
+        filter: ["has", "point_count"],
+        layout: {
+          "text-field": "{point_count_abbreviated}",
+          "text-size": 12
+        }
+      });
+
+      // Stop icon
+      const image = await new Promise((resolve, reject) =>
+        this.map.loadImage(
+          stopIcon,
+          (error, image) => (error ? reject(error) : resolve(image))
+        )
+      );
+      this.map.addImage("stop", image);
+
+      // Stop Layer
+      this.map.addLayer({
+        id: "stops",
+        type: "symbol",
+        source: "stops",
+        filter: ["!", ["has", "point_count"]],
+        layout: {
+          "icon-image": "stop",
+          "icon-size": 0.5
+        }
+      });
+
+      // Event handling
       this.map
-        .addControl(geoLocateControl)
-        .addLayer({
-          id: "stops",
-          type: "symbol",
-          source: {
-            type: "geojson",
-            data:
-              "https://opendata.arcgis.com/datasets/d5a4db7acb5a45a9a4f1bd08a3f0f0a6_0.geojson"
-          },
-          layout: {
-            "icon-image": "bus-15"
+        .on("click", "stops", this.handleStopClick)
+        .on("mouseenter", "stops", this.handleStopMouseEnter)
+        .on("mouseleave", "stops", this.handleStopMouseLeave)
+        .on("click", "stop-clusters", this.handleStopClusterClick);
+    },
+    handleStopClick(e) {
+      // Center the map on the coordinates of the clicked stop
+      this.map.flyTo({ center: e.features[0].geometry.coordinates });
+      this.selectedStopCode = e.features[0].properties.STOPCODE;
+    },
+    handleStopMouseEnter() {
+      // Change the cursor to a pointer when the it enters a stop
+      this.map.getCanvas().style.cursor = "pointer";
+    },
+    handleStopMouseLeave() {
+      // Change it back to a pointer when it leaves.
+      this.map.getCanvas().style.cursor = "";
+    },
+    handleStopClusterClick(e) {
+      const features = this.map.queryRenderedFeatures(e.point, {
+        layers: ["stop-clusters"]
+      });
+      const clusterId = features[0].properties.cluster_id;
+      this.map
+        .getSource("stops")
+        .getClusterExpansionZoom(clusterId, (err, zoom) => {
+          if (err) {
+            throw err;
           }
-        })
-        .on("click", "stops", e => {
-          // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
-          this.map.flyTo({ center: e.features[0].geometry.coordinates });
-          this.activeStopCode = e.features[0].properties.STOPCODE;
-        })
-        .on("mouseenter", "stops", () => {
-          // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
-          this.map.getCanvas().style.cursor = "pointer";
-        })
-        .on("mouseleave", "stops", () => {
-          // Change it back to a pointer when it leaves.
-          this.map.getCanvas().style.cursor = "";
+
+          this.map.easeTo({
+            center: features[0].geometry.coordinates,
+            zoom
+          });
         });
     },
-    async updateVehiclePosition() {
-      const vehiclePositions = await this.getVehiclePositions(
-        this.activeTripId
+    async updateVehiclePositions() {
+      window.clearTimeout(this.timeoutHandle);
+      this.timeoutHandle = 0;
+
+      const vehiclePositions = await at.getVehiclePositions(
+        this.trips.map(t => t.trip_id).join(",")
       );
 
-      if (vehiclePositions.entity && vehiclePositions.entity[0]) {
-        const position = vehiclePositions.entity[0].vehicle.position;
-        this.vehiclePosition = {
-          lat: position.latitude,
-          lng: position.longitude
-        };
+      if (vehiclePositions.entity) {
+        vehiclePositions.entity
+          .map(e => ({
+            lat: e.vehicle.position.latitude,
+            lng: e.vehicle.position.longitude
+          }))
+          .forEach((position, index) => {
+            console.log(position);
+            if (this.busMarkers[index]) {
+              this.busMarkers[index].setLngLat(position);
+            } else {
+              this.busMarkers.push(
+                new mapboxgl.Marker().setLngLat(position).addTo(this.map)
+              );
+            }
+          });
+
+        if (vehiclePositions.entity.length < this.busMarkers.length) {
+          for (
+            let i = vehiclePositions.entity.length;
+            i < this.busMarkers.length;
+            i++
+          ) {
+            this.busMarkers[i].remove();
+          }
+          this.busMarkers = this.busMarkers.splice(
+            0,
+            vehiclePositions.entity.length
+          );
+        }
+
         this.timeoutHandle = window.setTimeout(
-          this.updateVehiclePosition,
+          this.updateVehiclePositions,
           10000
         );
       } else {
-        window.clearTimeout(this.timeoutHandle);
-        this.timeoutHandle = 0;
-        this.vehiclePosition = null;
+        this.busMarkers.forEach(marker => marker.remove());
+        this.busMarkers = [];
       }
-    },
-    callApi(request) {
-      return fetch(request, {
-        headers: { "Ocp-Apim-Subscription-Key": config.aucklandTransportApiKey }
-      })
-        .then(response => response.json())
-        .then(json => json.response);
-    },
-    getStops(location) {
-      return this.callApi(
-        `https://api.at.govt.nz/v2/gtfs/stops/geosearch?lat=${
-          location.lat
-        }&lng=${location.lng}&distance=1000`
-      );
-    },
-    getRoutesByStop(stopId) {
-      return this.callApi(
-        `https://api.at.govt.nz/v2/gtfs/routes/stopid/${stopId}`
-      );
-    },
-    getTripsByRoute(routeId) {
-      return this.callApi(
-        `https://api.at.govt.nz/v2/gtfs/trips/routeid/${routeId}`
-      );
-    },
-    getStopTimesByStop(stopId) {
-      return this.callApi(
-        `https://api.at.govt.nz/v2/gtfs/stopTimes/stopId/${stopId}`
-      );
-    },
-    getStopTimesByTrip(tripId) {
-      return this.callApi(
-        `https://api.at.govt.nz/v2/gtfs/stopTimes/tripId/${tripId}`
-      );
-    },
-    getVehiclePositions(tripId) {
-      return this.callApi(
-        `https://api.at.govt.nz/v2/public/realtime/vehiclelocations?tripid=${tripId}`
-      );
-    },
-    getSharpeByTrip(tripId) {
-      return this.callApi(
-        `https://api.at.govt.nz/v2/gtfs/shapes/tripId/${tripId}`
-      );
     }
   }
 };
@@ -259,14 +268,7 @@ export default {
 
 <style module>
 .root {
-  display: grid;
+  width: 100%;
   height: 100%;
-  grid-template:
-    ". . ." auto
-    / 1fr 1fr 3fr;
-}
-
-.map {
-  height: 800px;
 }
 </style>
