@@ -27,7 +27,7 @@ export default {
     const image = document.createElement("img");
     el.appendChild(image);
     image.src = bus;
-    image.style.width = "36px";
+    image.style.width = "25px";
     this.marker = new mapboxgl.Marker(el);
   },
   async created() {

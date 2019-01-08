@@ -8,10 +8,11 @@ export default {
       id: "stops",
       type: "symbol",
       source: "stops",
-      filter: ["!", ["has", "point_count"]],
+      // filter: ["!", ["has", "point_count"]],
       minzoom: 15,
       layout: {
         "icon-image": "stop",
+        "icon-allow-overlap": true,
         "icon-size": 0.5
       }
     });

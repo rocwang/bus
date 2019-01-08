@@ -6,9 +6,9 @@
 
     <ControlGeolocate/>
 
-    <LayerRoutes :routes="routes"/>
-    <LayerStopClusters/>
-    <LayerStopCount/>
+    <LayerRoute v-for="(r, i) in routes" :route="r" :index="i" :key="r.route_id"/>
+    <!--<LayerStopClusters/>-->
+    <!--<LayerStopCount/>-->
     <LayerStops @click="handleStopClick"/>
 
     <MarkerBus v-for="v in vehicles" :vehicle="v" :key="v.vehicle.id"/>
@@ -23,11 +23,12 @@ import ControlGeolocate from "../components/ControlGeolocate";
 import SourceRoutes from "../components/SourceRoutes";
 import SourceStops from "../components/SourceStops";
 import LayerStops from "../components/LayerStops";
-import LayerStopClusters from "../components/LayerStopClusters";
-import LayerStopCount from "../components/LayerStopCount";
-import LayerRoutes from "../components/LayerRoutes";
+// import LayerStopClusters from "../components/LayerStopClusters";
+// import LayerStopCount from "../components/LayerStopCount";
+import LayerRoute from "../components/LayerRoute";
 import MarkerBus from "../components/MarkerBus";
 import ImageStop from "../components/ImageStop";
+import { uniqBy } from "lodash";
 import { from, interval } from "rxjs";
 import {
   switchMap,
@@ -43,10 +44,10 @@ export default {
   name: "Mapbox",
   components: {
     ControlGeolocate,
-    LayerRoutes,
+    LayerRoute,
     LayerStops,
-    LayerStopClusters,
-    LayerStopCount,
+    // LayerStopClusters,
+    // LayerStopCount,
     SourceRoutes,
     SourceStops,
     MarkerBus,
@@ -112,7 +113,9 @@ export default {
               : latestResponse
         ),
         pluck("entity"),
-        map(entities => entities.map(e => e.vehicle)),
+        map(entities =>
+          uniqBy(entities.map(e => e.vehicle), v => v.vehicle.id)
+        ),
         startWith([])
       )
     };
