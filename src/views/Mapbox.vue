@@ -18,7 +18,6 @@
 <script>
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import config from "../config";
 import * as at from "../api/at";
 import ControlGeolocate from "../components/ControlGeolocate";
 import SourceRoutes from "../components/SourceRoutes";
@@ -39,8 +38,6 @@ import {
   scan,
   share
 } from "rxjs/operators";
-
-mapboxgl.accessToken = config.mapboxAccessToken;
 
 export default {
   name: "Mapbox",
@@ -63,7 +60,9 @@ export default {
       mapPromise: this.mapPromise
     };
   },
+  inject: ["config"],
   async mounted() {
+    mapboxgl.accessToken = this.config.mapboxAccessToken;
     const map = new mapboxgl.Map({
       container: this.$el,
       style: "mapbox://styles/mapbox/streets-v10",
@@ -98,8 +97,13 @@ export default {
       trips: trips$,
       vehicles: trips$.pipe(
         filter(trips => trips.length),
-        switchMap(() => interval(10000).pipe(startWith(-1))),
-        map(() => this.trips.map(t => t.trip_id).join(",")),
+        map(trips => trips.map(t => t.trip_id).join(",")),
+        switchMap(tripIds =>
+          interval(10000).pipe(
+            startWith(-1),
+            map(() => tripIds)
+          )
+        ),
         switchMap(tripIds => from(at.getVehiclePositions(tripIds))),
         scan(
           (latestResponse, response) =>

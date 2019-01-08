@@ -1,8 +1,6 @@
-import config from "../config";
-
 export default {
   name: "LayerStopCount",
-  inject: ["mapPromise"],
+  inject: ["mapPromise", "config"],
   async created() {
     this.map = await this.mapPromise;
 
@@ -11,12 +9,13 @@ export default {
       type: "symbol",
       source: "stops",
       filter: ["has", "point_count"],
+      minzoom: 15,
       layout: {
         "text-field": "{point_count_abbreviated}",
         "text-size": 12
       },
       paint: {
-        "text-color": config.colors.oceanBlue
+        "text-color": this.config.colors.oceanBlue
       }
     });
   },

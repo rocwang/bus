@@ -11,7 +11,7 @@ export default {
     });
   },
   destroyed() {
-    this.map.removeSource("routes");
+    // this.map.removeSource("routes");
   },
   render() {
     return null;

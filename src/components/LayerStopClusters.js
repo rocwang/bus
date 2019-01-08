@@ -1,8 +1,6 @@
-import config from "../config";
-
 export default {
   name: "LayerStopClusters",
-  inject: ["mapPromise"],
+  inject: ["mapPromise", "config"],
   async created() {
     this.map = await this.mapPromise;
 
@@ -11,8 +9,9 @@ export default {
       type: "circle",
       source: "stops",
       filter: ["has", "point_count"],
+      minzoom: 15,
       paint: {
-        "circle-color": config.colors.yellow,
+        "circle-color": this.config.colors.yellow,
         "circle-radius": 20
       }
     });

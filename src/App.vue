@@ -4,6 +4,17 @@
   </div>
 </template>
 
+<script>
+import config from "./config";
+
+export default {
+  name: "App",
+  provide: {
+    config
+  }
+};
+</script>
+
 <style module>
 html,
 body,

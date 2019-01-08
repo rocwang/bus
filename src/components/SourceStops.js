@@ -14,7 +14,7 @@ export default {
     });
   },
   destroyed() {
-    this.map.removeSource("stops");
+    // this.map.removeSource("stops");
   },
   render() {
     return null;
