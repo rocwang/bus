@@ -1,4 +1,5 @@
 import mapboxgl from "mapbox-gl";
+import bus from "../assets/bus.svg";
 
 export default {
   name: "MarkerBus",
@@ -15,13 +16,23 @@ export default {
         lat: this.vehicle.position.latitude,
         lng: this.vehicle.position.longitude
       };
+    },
+    bearing() {
+      // "bearing" can be undefined.
+      return this.vehicle.position.bearing || "90";
     }
+  },
+  beforeCreate() {
+    const el = document.createElement("div");
+    const image = document.createElement("img");
+    el.appendChild(image);
+    image.src = bus;
+    image.style.width = "36px";
+    this.marker = new mapboxgl.Marker(el);
   },
   async created() {
     this.map = await this.mapPromise;
-    this.marker = new mapboxgl.Marker()
-      .setLngLat(this.position)
-      .addTo(this.map);
+    this.marker.addTo(this.map);
   },
   destroyed() {
     this.marker.remove();
@@ -31,9 +42,23 @@ export default {
   },
   watch: {
     position: {
-      immediate: false,
+      immediate: true,
       handler(position) {
         this.marker.setLngLat(position);
+      }
+    },
+    bearing: {
+      immediate: true,
+      handler(bearing) {
+        let transforms = [];
+        transforms.push(`rotate(${bearing}deg)`);
+        if (bearing > 180) {
+          transforms.push("scaleX(-1)");
+        }
+
+        this.marker
+          .getElement()
+          .querySelector("img").style.transform = transforms.join(" ");
       }
     }
   }
