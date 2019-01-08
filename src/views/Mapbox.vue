@@ -11,7 +11,7 @@
     <LayerStopCount/>
     <LayerStops @click="handleStopClick"/>
 
-    <MarkerBus v-for="vehicle in vehicles" :vehicle="vehicle" :key="vehicle.vehicle.vehicle.id"/>
+    <MarkerBus v-for="v in vehicles" :vehicle="v" :key="v.vehicle.id"/>
   </div>
 </template>
 
@@ -36,6 +36,7 @@ import {
   startWith,
   filter,
   pluck,
+  scan,
   share
 } from "rxjs/operators";
 
@@ -79,10 +80,7 @@ export default {
   },
   subscriptions() {
     const trips$ = this.stopCode$.pipe(
-      switchMap(stopCode => {
-        console.log(stopCode);
-        return from(at.getStopInfoByStopCode(stopCode));
-      }),
+      switchMap(stopCode => from(at.getStopInfoByStopCode(stopCode))),
       startWith([]),
       share()
     );
@@ -103,8 +101,14 @@ export default {
         switchMap(() => interval(10000).pipe(startWith(-1))),
         map(() => this.trips.map(t => t.trip_id).join(",")),
         switchMap(tripIds => from(at.getVehiclePositions(tripIds))),
+        scan(
+          (latestResponse, response) =>
+            response.header.timestamp >= latestResponse.header.timestamp
+              ? response
+              : latestResponse
+        ),
         pluck("entity"),
-        // todo: scan for timestamp
+        map(entities => entities.map(e => e.vehicle)),
         startWith([])
       )
     };

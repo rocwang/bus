@@ -12,8 +12,8 @@ export default {
   computed: {
     position() {
       return {
-        lat: this.vehicle.vehicle.position.latitude,
-        lng: this.vehicle.vehicle.position.longitude
+        lat: this.vehicle.position.latitude,
+        lng: this.vehicle.position.longitude
       };
     }
   },
