@@ -9,7 +9,7 @@ export default {
       type: "symbol",
       source: "stops",
       filter: ["!", ["has", "point_count"]],
-      minzoom: 14,
+      minzoom: 15,
       layout: {
         "icon-image": "stop",
         "icon-size": 0.5
