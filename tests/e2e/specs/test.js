@@ -7,5 +7,6 @@ describe("My First Test", () => {
       "noscript",
       "We're sorry but bus doesn't work properly without JavaScript enabled. Please enable it to continue."
     );
+    cy.screenshot();
   });
 });

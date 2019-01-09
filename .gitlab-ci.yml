@@ -39,7 +39,7 @@ unit test:
     - npm run test:unit
 
 e2e test:
-  image: cypress/browsers:chrome69
+  image: cypress/base:10
   stage: test
   cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -50,8 +50,6 @@ e2e test:
   tags:
     - docker
   script:
-    - $(npm bin)/cypress verify
-    - npm run test:e2e -- --headless --browser chrome
     - npm run test:e2e -- --headless --record --key ${CYPRESS_RECORD_KEY}
   artifacts:
     expire_in: 1 week
