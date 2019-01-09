@@ -59,13 +59,12 @@ e2e test:
       - tests/e2e/videos/
 
 deploy:
-  image: alpine
+  image: instrumentisto/rsync-ssh
   stage: deploy
   tags:
     - docker
   before_script: []
   script:
-    - apk add --no-cache rsync openssh
     - mkdir -p ~/.ssh
     - echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/id_dsa
     - chmod 600 ~/.ssh/id_dsa
