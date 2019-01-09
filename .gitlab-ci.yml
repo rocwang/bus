@@ -1,17 +1,15 @@
-# Defines cache globally so that all jobs inherit it. Nodejs modules are installed in node_modules/ and are cached per-branch:
-# https://gitlab.com/help/ci/caching/index.md#caching-nodejs-dependencies
-# However, node_modules will be automatically removed by `npm ci`
+# Cache .npm instead of node_modules because the later one will be automatically removed by `npm ci`
 # https://docs.npmjs.com/cli/ci.html
+# https://docs.npmjs.com/cli/cache
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - .npm/
+    - ~/.npm/
+    - ~/.cache/
 
 before_script:
-  # - npm install --progress=false
-  - npm config set cache $CI_PROJECT_DIR/.npm
+  # - npm config set cache $CI_PROJECT_DIR/.npm
   - npm ci --prefer-offline
-  - $(npm bin)/cypress verify
 
 build:
   image: node:11
@@ -30,9 +28,10 @@ unit test:
     - npm run test:unit
 
 e2e test:
-  image: node:11
+  image: cypress/base:10
   stage: test
   script:
+    - $(npm bin)/cypress verify
     - npm run test:e2e -- --headless --record --key ${CYPRESS_RECORD_KEY}
 
 deploy:
