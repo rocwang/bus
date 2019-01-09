@@ -1,3 +1,10 @@
+# Defines cache globally so that all jobs inherit it. Nodejs modules are installed in node_modules/ and are cached per-branch:
+# https://docs.gitlab.com/ee/ci/caching/#caching-nodejs-dependencies
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
 build:
   image: node:11
   stage: build
