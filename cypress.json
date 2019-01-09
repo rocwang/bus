@@ -1,4 +1,4 @@
 {
   "pluginsFile": "tests/e2e/plugins/index.js",
-  "projectId": "x57xhg"
+  "video": false
 }
