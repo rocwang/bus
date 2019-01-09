@@ -1,11 +1,6 @@
 # Cache .npm instead of node_modules because the later one will be automatically removed by `npm ci`
 # https://docs.npmjs.com/cli/ci.html
 # https://docs.npmjs.com/cli/cache
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - ${CI_PROJECT_DIR}/.npm/
-    - ${CI_PROJECT_DIR}/.cypress/
 
 before_script:
   - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
@@ -15,6 +10,11 @@ before_script:
 build:
   image: node:11
   stage: build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - ${CI_PROJECT_DIR}/.npm/
+      - ${CI_PROJECT_DIR}/.cypress/
   tags:
     - docker
   script:
@@ -27,6 +27,12 @@ build:
 unit test:
   image: node:11
   stage: test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - ${CI_PROJECT_DIR}/.npm/
+      - ${CI_PROJECT_DIR}/.cypress/
+    policy: pull
   tags:
     - docker
   script:
@@ -35,6 +41,12 @@ unit test:
 e2e test:
   image: cypress/browsers:chrome69
   stage: test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - ${CI_PROJECT_DIR}/.npm/
+      - ${CI_PROJECT_DIR}/.cypress/
+    policy: pull
   tags:
     - docker
   script:
