@@ -51,7 +51,8 @@ e2e test:
     - docker
   script:
     - $(npm bin)/cypress verify
-    - npm run test:e2e -- --headless --browser chrome --record --key ${CYPRESS_RECORD_KEY}
+    - npm run test:e2e -- --headless --browser chrome
+    - npm run test:e2e -- --headless --record --key ${CYPRESS_RECORD_KEY}
   artifacts:
     expire_in: 1 week
     when: always
