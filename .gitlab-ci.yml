@@ -16,12 +16,12 @@ build:
     paths:
       - dist
 
-#unit test:
-#  image: node:6
-#  stage: test
-#  script:
-#    - npm install --progress=false
-#    - npm run unit
+unit test:
+  image: node:11
+  stage: test
+  script:
+    - npm install --progress=false
+    - npm run test:unit
 
 deploy:
   image: alpine
