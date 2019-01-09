@@ -1,15 +1,22 @@
 # Defines cache globally so that all jobs inherit it. Nodejs modules are installed in node_modules/ and are cached per-branch:
 # https://gitlab.com/help/ci/caching/index.md#caching-nodejs-dependencies
+# However, node_modules will be automatically removed by `npm ci`
+# https://docs.npmjs.com/cli/ci.html
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - node_modules/
+    - .npm/
+
+before_script:
+  # - npm install --progress=false
+  - npm config set cache $CI_PROJECT_DIR/.npm
+  - npm ci --prefer-offline
+  - $(npm bin)/cypress verify
 
 build:
   image: node:11
   stage: build
   script:
-    - npm install --progress=false
     - npm run build
   artifacts:
     expire_in: 1 week
@@ -20,15 +27,13 @@ unit test:
   image: node:11
   stage: test
   script:
-    - npm install --progress=false
     - npm run test:unit
 
 e2e test:
   image: node:11
   stage: test
   script:
-    - npm install --progress=false
-    - npm run test:e2e -- --headless
+    - npm run test:e2e -- --headless --record --key ${CYPRESS_RECORD_KEY}
 
 deploy:
   image: alpine
@@ -36,7 +41,7 @@ deploy:
   script:
     - apk add --no-cache rsync openssh
     - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" >> ~/.ssh/id_dsa
+    - echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/id_dsa
     - chmod 600 ~/.ssh/id_dsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - rsync -rav --delete dist/ root@51.15.199.149:/var/www/bus/
