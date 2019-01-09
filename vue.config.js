@@ -5,9 +5,12 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     host: "localhost",
-    https: {
-      key: fs.readFileSync(os.homedir() + "/.localhost_ssl/server.key"),
-      cert: fs.readFileSync(os.homedir() + "/.localhost_ssl/server.crt")
-    }
+    https:
+      process.env.NODE_ENV === "development"
+        ? {
+            key: fs.readFileSync(os.homedir() + "/.localhost_ssl/server.key"),
+            cert: fs.readFileSync(os.homedir() + "/.localhost_ssl/server.crt")
+          }
+        : false
   }
 };
