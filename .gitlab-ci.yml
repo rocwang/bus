@@ -29,11 +29,11 @@ unit test:
     - npm run test:unit
 
 e2e test:
-  image: cypress/base:10
+  image: cypress/browsers:chrome69
   stage: test
   script:
     - $(npm bin)/cypress verify
-    - npm run test:e2e -- --headless --record --key ${CYPRESS_RECORD_KEY}
+    - npm run test:e2e -- --headless --browser chrome --record --key ${CYPRESS_RECORD_KEY}
 
 deploy:
   image: alpine
