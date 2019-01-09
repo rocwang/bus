@@ -7,12 +7,15 @@ cache:
     - ${CI_PROJECT_DIR}/.npm/
     - ${CI_PROJECT_DIR}/.cypress/
 
+before_script:
+  - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
+  - npm config set cache ${CI_PROJECT_DIR}/.npm
+  - npm ci --prefer-offline
+
 build:
   image: node:11
   stage: build
   script:
-    - npm config set cache ${CI_PROJECT_DIR}/.npm
-    - npm ci --prefer-offline
     - npm run build
   artifacts:
     expire_in: 1 week
@@ -23,23 +26,19 @@ unit test:
   image: node:11
   stage: test
   script:
-    - npm config set cache ${CI_PROJECT_DIR}/.npm
-    - npm ci --prefer-offline
     - npm run test:unit
 
 e2e test:
   image: cypress/base:10
   stage: test
   script:
-    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
-    - npm config set cache ${CI_PROJECT_DIR}/.npm
-    - npm ci --prefer-offline
     - $(npm bin)/cypress verify
     - npm run test:e2e -- --headless --record --key ${CYPRESS_RECORD_KEY}
 
 deploy:
   image: alpine
   stage: deploy
+  before_script: []
   script:
     - apk add --no-cache rsync openssh
     - mkdir -p ~/.ssh
