@@ -50,7 +50,7 @@ e2e test:
   tags:
     - docker
   script:
-    - npm run test:e2e -- --headless
+    - npm run test:e2e -- --headless --browser chrome
 
 deploy:
   image: instrumentisto/rsync-ssh
