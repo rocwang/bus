@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import "./reset.css";
 import VueRx from "vue-rx";
+import "pwacompat";
 
 Vue.config.productionTip = false;
 Vue.use(VueRx);
