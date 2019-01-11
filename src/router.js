@@ -10,8 +10,12 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "Mapbox",
+      name: "Home",
       component: Mapbox
+    },
+    {
+      path: "*",
+      redirect: { name: "Home" }
     }
   ]
 });
