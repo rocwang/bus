@@ -7,11 +7,6 @@ describe("App", () => {
     cy.title().should("eq", "Bus");
     cy.get("div#app").should("exist");
     cy.get('head meta[charset="utf-8"]').should("exist");
-    cy.get('head meta[http-equiv="X-UA-Compatible"]').should(
-      "have.attr",
-      "content",
-      "IE=edge"
-    );
     cy.get('head meta[name="viewport"]').should(
       "have.attr",
       "content",
