@@ -1,9 +1,11 @@
 # Busbus
 
-## Features
+## Todo
 
-* Show near bus stops by user's current location 
-* Favorite stops (CRUD operation)
+- [ ] Stop panel
+- [ ] Route panel
+- [ ] Favourites
+- [ ] Service worker
 
 ## Project setup
 * Install dependencies
@@ -17,10 +19,6 @@
 * Compiles and minifies for production
   ```
   npm run build
-  ```
-* Run your tests
-  ```
-  npm run test
   ```
 * Lints and fixes files
   ```
