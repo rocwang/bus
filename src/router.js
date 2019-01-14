@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Mapbox from "./views/Mapbox.vue";
+import Home from "./views/Home";
+import Stop from "./views/Stop";
 
 Vue.use(Router);
 
@@ -11,7 +12,13 @@ export default new Router({
     {
       path: "/",
       name: "Home",
-      component: Mapbox
+      component: Home
+    },
+    {
+      path: "/stop/:stopCode",
+      name: "Stop",
+      component: Stop,
+      props: true
     },
     {
       path: "*",

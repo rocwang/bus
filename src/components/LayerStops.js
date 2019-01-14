@@ -33,7 +33,7 @@ export default {
     handleStopClick(e) {
       // Center the map on the coordinates of the clicked stop
       this.map.easeTo({ center: e.features[0].geometry.coordinates });
-      this.$emit("click", e.features[0].properties.STOPCODE);
+      this.$emit("click", e.features[0].properties.STOPCODE.toString());
     },
     handleStopMouseEnter() {
       // Change the cursor to a pointer when the it enters a stop

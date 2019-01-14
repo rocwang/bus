@@ -1,6 +1,6 @@
 export default {
   name: "LayerStopCount",
-  inject: ["mapPromise", "config"],
+  inject: ["mapPromise", "colors"],
   async created() {
     this.map = await this.mapPromise;
 
@@ -15,7 +15,7 @@ export default {
         "text-size": 12
       },
       paint: {
-        "text-color": this.config.colors.oceanBlue
+        "text-color": this.colors.oceanBlue
       }
     });
   },

@@ -1,6 +1,6 @@
 export default {
   name: "LayerRoute",
-  inject: ["mapPromise", "config"],
+  inject: ["mapPromise", "colors"],
   props: {
     route: {
       type: Object,
@@ -12,13 +12,13 @@ export default {
     }
   },
   computed: {
-    colors() {
+    lineColors() {
       return [
-        this.config.colors.green,
-        this.config.colors.blue,
-        this.config.colors.yellow,
-        this.config.colors.red,
-        this.config.colors.orange
+        this.colors.green,
+        this.colors.blue,
+        this.colors.yellow,
+        this.colors.red,
+        this.colors.orange
       ];
     }
   },
@@ -52,7 +52,7 @@ export default {
           paint: {
             // "line-translate": [index * 4, index * 4],
             // "line-dasharray": [2, 2],
-            "line-color": this.colors[index % this.colors.length],
+            "line-color": this.lineColors[index % this.lineColors.length],
             "line-width": 4
           }
         },

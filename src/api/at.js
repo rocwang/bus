@@ -49,3 +49,15 @@ export function getSharpeByTrip(tripId) {
 export function getStopInfoByStopCode(stopCode) {
   return callApi(`gtfs/stops/stopinfo/${stopCode}`);
 }
+
+export default {
+  getStops,
+  getStopByStopCode,
+  getRoutesByStop,
+  getTripsByRoute,
+  getStopTimesByStop,
+  getStopTimesByTrip,
+  getVehiclePositions,
+  getSharpeByTrip,
+  getStopInfoByStopCode
+};
