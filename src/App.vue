@@ -111,7 +111,7 @@ export default {
 @value colorGrayC: #ccc;
 @value colorWhite: #FFF;
 
-.root {
+:root {
   --c-ocean-blue: colorOceanBlue;
   --c-green: colorGreen;
   --c-blue: colorBlue;
