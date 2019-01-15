@@ -12,16 +12,8 @@ describe("App", () => {
       "content",
       "width=device-width,initial-scale=1"
     );
-    cy.get('head link[rel="manifest"]').should(
-      "have.attr",
-      "href",
-      "/manifest.webmanifest"
-    );
-    cy.get('head link[rel="icon"]').should(
-      "have.attr",
-      "href",
-      "/icons/icon-192.png"
-    );
+    cy.get('head link[rel="manifest"]').should("have.attr", "href");
+    cy.get('head link[rel="icon"]').should("have.attr", "href", "/favicon.png");
   });
 
   it("has the noscript tag saying requiring Javascript", () => {
