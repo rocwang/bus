@@ -98,57 +98,11 @@ export default {
 </script>
 
 <style module>
-@value colorOceanBlue: #001120;
-@value colorGreen: #8fc240;
-@value colorBlue: #00a3da;
-@value colorYellow: #ffdb1b;
-@value colorRed: #da2f2d;
-@value colorOrange: #ea8c2e;
-
-@value colorGray: #333;
-@value colorGrayA: #666;
-@value colorGrayB: #999;
-@value colorGrayC: #ccc;
-@value colorWhite: #FFF;
-
-html,
-body {
-  width: 100%;
-  height: 100%;
-}
-
-.noscript {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  background-color: colorOceanBlue;
-  color: colorWhite;
-  font-size: 1.6rem;
-  padding: 15px;
-  width: 100%;
-  height: 100%;
-}
+@value colorOceanBlue, colorGreen, colorBlue, colorYellow, colorRed, colorOrange, colorGray, colorGrayA, colorGrayB, colorGrayC, colorWhite from "./assets/global.module.css";
 
 .root {
-  --c-ocean-blue: colorOceanBlue;
-  --c-green: colorGreen;
-  --c-blue: colorBlue;
-  --c-yellow: colorYellow;
-  --c-red: colorRed;
-  --c-orange: colorOrange;
-
-  --c-white: colorWhite;
-  --c-gray: colorGray;
-  --c-gray-a: colorGrayA;
-  --c-gray-b: colorGrayB;
-  --c-gray-c: colorGrayC;
-
-  --z-panel: 10;
-  font-variant-numeric: tabular-nums;
   position: relative;
   overflow: hidden;
-  width: 100%;
   height: 100%;
 }
 </style>
