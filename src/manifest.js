@@ -5,7 +5,7 @@ module.exports = {
   short_name: "Bus",
   icons: [
     {
-      src: path.resolve("./src/", "./assets/icon.png"),
+      src: path.join(__dirname, "assets/icon.png"),
       sizes: [192, 512],
       destination: "img"
     }
