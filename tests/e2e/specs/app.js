@@ -13,13 +13,10 @@ describe("App", () => {
       "width=device-width,initial-scale=1"
     );
     cy.get('head link[rel="manifest"]').should("have.attr", "href");
-    cy.get('head link[rel="icon"]').should("have.attr", "href", "/favicon.png");
+    cy.get('head link[rel="icon"]').should("have.attr", "href");
   });
 
   it("has the noscript tag saying requiring Javascript", () => {
-    cy.get("noscript").should(
-      "have.text",
-      "<strong>We're sorry but bus doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>"
-    );
+    cy.get("noscript").should("exist");
   });
 });
