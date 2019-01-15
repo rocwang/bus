@@ -111,7 +111,26 @@ export default {
 @value colorGrayC: #ccc;
 @value colorWhite: #FFF;
 
-:root {
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+.noscript {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  background-color: colorOceanBlue;
+  color: colorWhite;
+  font-size: 1.6rem;
+  padding: 15px;
+  width: 100%;
+  height: 100%;
+}
+
+.root {
   --c-ocean-blue: colorOceanBlue;
   --c-green: colorGreen;
   --c-blue: colorBlue;
@@ -129,11 +148,6 @@ export default {
   font-variant-numeric: tabular-nums;
   position: relative;
   overflow: hidden;
-}
-
-html,
-body,
-.root {
   width: 100%;
   height: 100%;
 }
