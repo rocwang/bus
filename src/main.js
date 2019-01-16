@@ -7,6 +7,7 @@ import router from "./router";
 import store from "./store";
 import VueRx from "vue-rx";
 import "pwacompat";
+import "./registerServiceWorker";
 
 Vue.config.productionTip = false;
 Vue.use(VueRx);

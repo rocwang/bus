@@ -17,6 +17,9 @@ module.exports = {
       args[0].title = manifest.name;
       return args;
     });
+
+    // Disable the manifest generation from  @vue/cli-plugin-pwa, just use the workbox part
+    config.plugins.delete("pwa");
   },
   productionSourceMap: false,
   devServer: {
