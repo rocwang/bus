@@ -36,6 +36,7 @@
     "babel-jest": "^23.6.0",
     "eslint": "^5.12.0",
     "eslint-plugin-vue": "^5.1.0",
+    "favicons-webpack-plugin": "0.0.9",
     "lint-staged": "^8.1.0",
     "vue-template-compiler": "^2.5.22",
     "webpack-pwa-manifest": "^4.0.0"

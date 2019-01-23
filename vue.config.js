@@ -1,6 +1,7 @@
 const os = require("os");
 const fs = require("fs");
 const WebpackPwaManifest = require("webpack-pwa-manifest");
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const manifest = require("./src/manifest");
 
 module.exports = {
@@ -9,6 +10,18 @@ module.exports = {
       new WebpackPwaManifest({
         ...manifest,
         filename: "manifest.[hash:8].webmanifest"
+      }),
+      new FaviconsWebpackPlugin({
+        logo: "./src/assets/icon.png",
+        prefix: "img/[hash:8]-",
+        persistentCache: false,
+        icons: {
+          android: false,
+          appleIcon: false,
+          appleStartup: false,
+          favicons: true,
+          firefox: false
+        }
       })
     ]
   },
