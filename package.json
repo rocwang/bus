@@ -20,13 +20,13 @@
     "vue": "^2.5.22",
     "vue-router": "^3.0.2",
     "vue-rx": "^6.1.0",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "workbox-webpack-plugin": "^3.6.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.3.0",
     "@vue/cli-plugin-e2e-cypress": "^3.3.0",
     "@vue/cli-plugin-eslint": "^3.3.0",
-    "@vue/cli-plugin-pwa": "^3.3.0",
     "@vue/cli-plugin-unit-jest": "^3.3.0",
     "@vue/cli-service": "^3.3.0",
     "@vue/eslint-config-prettier": "^4.0.1",
