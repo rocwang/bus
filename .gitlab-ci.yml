@@ -89,6 +89,8 @@ lighthouse:
     - $(npm bin)/lighthouse https://bus-staging.kiwiberry.nz/
       --output json html
       --output-path ./lighthouse/audit
+      --emulated-form-factor=mobile
+      --throttling-method=provided
       --chrome-flags="--headless --no-sandbox"
     - node ./lighthouse-ci.js ./lighthouse/audit.report.json
   artifacts:
