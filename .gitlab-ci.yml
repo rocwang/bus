@@ -94,7 +94,8 @@ lighthouse:
   artifacts:
     expire_in: 1 week
     paths:
-      -  report.html
+      -  lighthouse
+    when: always
 
 deploy:
   image: instrumentisto/rsync-ssh
