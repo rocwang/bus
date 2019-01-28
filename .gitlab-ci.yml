@@ -86,7 +86,7 @@ lighthouse:
     - docker
   script:
     - mkdir lighthouse
-    - ./node_modules/.bin/lighthouse https://bus-staging.kiwiberry.nz/
+    - $(npm bin)/lighthouse https://bus-staging.kiwiberry.nz/
       --output json html
       --output-path ./lighthouse/audit
       --chrome-flags="--headless --no-sandbox"
