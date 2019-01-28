@@ -1,31 +1,39 @@
 const os = require("os");
 const fs = require("fs");
-const WebpackPwaManifest = require("webpack-pwa-manifest");
-const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const manifest = require("./src/manifest");
 const workboxWebpackPlugin = require("workbox-webpack-plugin");
 const packageJson = require("./package");
+const WebappWebpackPlugin = require("webapp-webpack-plugin");
 
 module.exports = {
   configureWebpack: {
     plugins: [
-      // generate web app manifest
-      new WebpackPwaManifest({
-        ...manifest,
-        filename: "manifest.[hash:8].webmanifest"
-      }),
-      // generate favicons
-      new FaviconsWebpackPlugin({
+      new WebappWebpackPlugin({
         logo: "./src/assets/icon.png",
-        prefix: "img/[hash:8]-",
-        persistentCache: false,
-        icons: {
-          android: false,
-          appleIcon: false,
-          appleStartup: false,
-          favicons: true,
-          firefox: false
-        }
+        prefix: "favicons-[hash:8]",
+        inject: htmlPlugin => {
+          console.log(htmlPlugin);
+          return true;
+        },
+        favicons: Object.assign(
+          {
+            appName: manifest.name,
+            appShortName: manifest.short_name,
+            appDescription: manifest.description,
+            background: manifest.background_color,
+            icons: {
+              android: true,
+              appleIcon: false,
+              appleStartup: false,
+              coast: false,
+              favicons: true,
+              firefox: false,
+              windows: false,
+              yandex: false
+            }
+          },
+          manifest
+        )
       })
     ]
   },
@@ -43,7 +51,7 @@ module.exports = {
     ) {
       config.plugin("workbox").use(workboxWebpackPlugin.GenerateSW, [
         {
-          exclude: [/\.map$/, /^iconstats/],
+          exclude: [/\.map$/, /manifest\.json$/, /^iconstats/],
           cacheId: packageJson.name
         }
       ]);
