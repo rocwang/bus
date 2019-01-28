@@ -2,6 +2,13 @@
 # https://docs.npmjs.com/cli/ci.html
 # https://docs.npmjs.com/cli/cache
 
+stages:
+  - build
+  - test
+  - staging
+  - lighthouse
+  - deploy
+
 before_script:
   - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
   - npm config set cache ${CI_PROJECT_DIR}/.npm
@@ -51,6 +58,43 @@ e2e test:
     - docker
   script:
     - npm run test:e2e -- --headless --browser chrome
+
+staging:
+  image: instrumentisto/rsync-ssh
+  stage: staging
+  tags:
+    - docker
+  before_script: []
+  script:
+    - mkdir -p ~/.ssh
+    - echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/id_dsa
+    - chmod 600 ~/.ssh/id_dsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - 'echo -e "User-agent: *\nDisallow: /\n" > dist/robots.txt'
+    - rsync -rav --delete dist/ root@51.15.199.149:/var/www/bus-staging/
+
+lighthouse:
+  image: cypress/browsers:chrome69
+  stage: lighthouse
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - ${CI_PROJECT_DIR}/.npm/
+      - ${CI_PROJECT_DIR}/.cypress/
+    policy: pull
+  tags:
+    - docker
+  script:
+    - mkdir lighthouse
+    - ./node_module/.bin/lighthouse https://bus-staging.kiwiberry.nz/
+      --output json html
+      --output-path ./lighthouse/audit
+      --chrome-flags="--headless"
+    - node ./lighthouse-ci.js ./lighthouse/audit.report.json
+  artifacts:
+    expire_in: 1 week
+    paths:
+      -  report.html
 
 deploy:
   image: instrumentisto/rsync-ssh
