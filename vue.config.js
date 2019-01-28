@@ -41,6 +41,9 @@ module.exports = {
     // set the HTML title tag
     config.plugin("html").tap(args => {
       args[0].title = manifest.name;
+      args[0].meta = {
+        description: packageJson.description
+      };
       return args;
     });
 
