@@ -1,7 +1,6 @@
 const os = require("os");
 const fs = require("fs");
 const manifest = require("./src/manifest");
-const workboxWebpackPlugin = require("workbox-webpack-plugin");
 const packageJson = require("./package");
 const WebappWebpackPlugin = require("webapp-webpack-plugin");
 
@@ -43,17 +42,16 @@ module.exports = {
       return args;
     });
 
-    // generate /service-worker.js in production mode
+    // disable the manifest generation from  @vue/cli-plugin-pwa, just use the workbox part
+    config.plugins.delete("pwa");
+
+    // disable workbox in legacy build, so we only get 1 precache manifest
     if (
       process.env.NODE_ENV === "production" &&
-      process.env.VUE_CLI_MODERN_BUILD
+      process.env.VUE_CLI_MODERN_MODE &&
+      !process.env.VUE_CLI_MODERN_BUILD
     ) {
-      config.plugin("workbox").use(workboxWebpackPlugin.GenerateSW, [
-        {
-          exclude: [/\.map$/, /manifest\.json$/, /^iconstats/],
-          cacheId: packageJson.name
-        }
-      ]);
+      config.plugins.delete("workbox");
     }
   },
   productionSourceMap: false,
@@ -66,5 +64,10 @@ module.exports = {
             cert: fs.readFileSync(os.homedir() + "/.localhost_ssl/server.crt")
           }
         : false
+  },
+  pwa: {
+    workboxOptions: {
+      exclude: [/\.map$/, /manifest\.json$/, /^iconstats/]
+    }
   }
 };
