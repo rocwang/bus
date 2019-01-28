@@ -11,10 +11,6 @@ module.exports = {
       new WebappWebpackPlugin({
         logo: "./src/assets/icon.png",
         prefix: "favicons-[hash:8]",
-        inject: htmlPlugin => {
-          console.log(htmlPlugin);
-          return true;
-        },
         favicons: Object.assign(
           {
             appName: manifest.name,
