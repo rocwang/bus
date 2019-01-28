@@ -89,7 +89,7 @@ lighthouse:
     - ./node_modules/.bin/lighthouse https://bus-staging.kiwiberry.nz/
       --output json html
       --output-path ./lighthouse/audit
-      --chrome-flags="--headless"
+      --chrome-flags="--headless --no-sandbox"
     - node ./lighthouse-ci.js ./lighthouse/audit.report.json
   artifacts:
     expire_in: 1 week
