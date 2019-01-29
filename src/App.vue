@@ -1,7 +1,11 @@
 <template>
   <div id="app" :class="$style.root">
-    <Mapbox :routes="routes" :vehicles="vehicles" @stopClick="handleStopClick"/>
-    <router-view/>
+    <Mapbox
+      :routes="routes"
+      :vehicles="vehicles"
+      @stopClick="handleStopClick"
+    />
+    <router-view />
   </div>
 </template>
 
@@ -71,11 +75,10 @@ export default {
           )
         ),
         switchMap(tripIds => from(at.getVehiclePositions(tripIds))),
-        scan(
-          (latestResponse, response) =>
-            response.header.timestamp >= latestResponse.header.timestamp
-              ? response
-              : latestResponse
+        scan((latestResponse, response) =>
+          response.header.timestamp >= latestResponse.header.timestamp
+            ? response
+            : latestResponse
         ),
         pluck("entity"),
         map(entities =>

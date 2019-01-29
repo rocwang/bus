@@ -1,5 +1,5 @@
 <template>
-   <div>Route Panel</div>
+  <div>Route Panel</div>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <PanelStop :stopCode="stopCode" :routeGroups="routeGroups"/>
+  <PanelStop :stopCode="stopCode" :routeGroups="routeGroups" />
 </template>
 
 <script>

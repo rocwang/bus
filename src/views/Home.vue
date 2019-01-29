@@ -1,5 +1,5 @@
 <template>
-  <PanelFavourites/>
+  <PanelFavourites />
 </template>
 
 <script>

@@ -1,17 +1,22 @@
 <template>
   <div :class="$style.root">
-    <SourceStops/>
-    <SourceRoutes/>
-    <ImageStop/>
+    <SourceStops />
+    <SourceRoutes />
+    <ImageStop />
 
-    <ControlGeolocate/>
+    <ControlGeolocate />
 
-    <LayerRoute v-for="(r, i) in routes" :route="r" :index="i" :key="r.route_id"/>
+    <LayerRoute
+      v-for="(r, i) in routes"
+      :route="r"
+      :index="i"
+      :key="r.route_id"
+    />
     <!--<LayerStopClusters/>-->
     <!--<LayerStopCount/>-->
-    <LayerStops @click="$emit('stopClick', $event)"/>
+    <LayerStops @click="$emit('stopClick', $event)" />
 
-    <MarkerBus v-for="v in vehicles" :vehicle="v" :key="v.vehicle.id"/>
+    <MarkerBus v-for="v in vehicles" :vehicle="v" :key="v.vehicle.id" />
   </div>
 </template>
 

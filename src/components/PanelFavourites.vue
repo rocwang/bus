@@ -1,14 +1,16 @@
 <template>
   <Panel :isCollapsed="isCollapsed">
-    <RoundIconStarFull slot="icon"/>
-    <template slot="title">Favourites</template>
+    <RoundIconStarFull slot="icon" />
+    <template slot="title"
+      >Favourites</template
+    >
     <template slot="buttons">
       <Buttonizer modifier="icon">
         <button aria-label="edit">
-          <IconEdit/>
+          <IconEdit />
         </button>
         <button @click="handleArrowClick" aria-label="toggle the panel">
-          <IconArrow :direction="isCollapsed ? 'up' : 'down'"/>
+          <IconArrow :direction="isCollapsed ? 'up' : 'down'" />
         </button>
       </Buttonizer>
     </template>

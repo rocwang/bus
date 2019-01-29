@@ -7,9 +7,8 @@ export default {
     this.map = await this.mapPromise;
 
     const image = await new Promise((resolve, reject) =>
-      this.map.loadImage(
-        stopIcon,
-        (error, image) => (error ? reject(error) : resolve(image))
+      this.map.loadImage(stopIcon, (error, image) =>
+        error ? reject(error) : resolve(image)
       )
     );
     this.map.addImage("stop", image);

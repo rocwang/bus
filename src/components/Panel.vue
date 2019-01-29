@@ -1,31 +1,29 @@
 <template>
-  <div :class="[$style.root, {[$style.collapsed]: isCollapsed}]">
-
+  <div :class="[$style.root, { [$style.collapsed]: isCollapsed }]">
     <div :class="$style.head">
       <div :class="$style.icon">
-        <slot name="icon"/>
+        <slot name="icon" />
       </div>
 
       <h1 :class="$style.title">
         <small :class="$style.prefix">
-          <slot name="prefix"/>
+          <slot name="prefix" />
         </small>
-        <slot name="title"/>
+        <slot name="title" />
       </h1>
 
       <div :class="$style.buttons">
-        <slot name="buttons"/>
+        <slot name="buttons" />
       </div>
 
       <p :class="$style.subtitle">
-        <slot name="subtitle"/>
+        <slot name="subtitle" />
       </p>
     </div>
 
     <div :class="$style.body">
-      <slot name="body"/>
+      <slot name="body" />
     </div>
-
   </div>
 </template>
 
