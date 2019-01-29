@@ -4,7 +4,7 @@
     <template slot="prefix">Stop</template>
     <template slot="title">{{stopCode}}</template>
     <template slot="buttons">
-      <Buttonizer modifier="icon">
+      <Buttonizer modifier="icon" aria-label="home">
         <button @click="$router.push({name: 'Home'})">
           <IconCross/>
         </button>

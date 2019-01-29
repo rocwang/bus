@@ -4,10 +4,10 @@
     <template slot="title">Favourites</template>
     <template slot="buttons">
       <Buttonizer modifier="icon">
-        <button>
+        <button aria-label="edit">
           <IconEdit/>
         </button>
-        <button @click="handleArrowClick">
+        <button @click="handleArrowClick" aria-label="toggle the panel">
           <IconArrow :direction="isCollapsed ? 'up' : 'down'"/>
         </button>
       </Buttonizer>
