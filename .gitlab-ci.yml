@@ -70,7 +70,6 @@ staging:
     - echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/id_dsa
     - chmod 600 ~/.ssh/id_dsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - 'echo -e "User-agent: *\nDisallow: /\n" > dist/robots.txt'
     - rsync -rav --delete dist/ root@51.15.199.149:/var/www/bus-staging/
 
 lighthouse:
@@ -92,6 +91,7 @@ lighthouse:
       --emulated-form-factor=mobile
       --throttling-method=provided
       --chrome-flags="--headless --no-sandbox"
+      --extra-headers "{\"Authorization\":\"Basic bWlsYTptaWxh\"}"
     - node ./lighthouse-ci.js ./lighthouse/audit.report.json
   artifacts:
     expire_in: 1 week
