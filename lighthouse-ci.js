@@ -5,7 +5,7 @@ const scoreThreshold = {
   accessibility: 80,
   "best-practices": 80,
   seo: 80,
-  pwa: 80
+  pwa: 0
 };
 
 // load report file path from command argument
