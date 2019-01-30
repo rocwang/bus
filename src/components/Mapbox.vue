@@ -88,6 +88,6 @@ export default {
 <style module>
 .root {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 82px);
 }
 </style>
