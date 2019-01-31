@@ -12,7 +12,7 @@
 <script>
 import config from "./config";
 import Mapbox from "./components/Mapbox";
-import { uniqBy } from "lodash";
+import uniqBy from "lodash/uniqBy";
 import at from "./api/at";
 import { from, interval } from "rxjs";
 import {
