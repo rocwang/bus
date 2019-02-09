@@ -27,6 +27,12 @@
   to = "/index.html"
   status = 200
 
+# Redirect default Netlify subdomain to primary domain
+[[redirects]]
+  from = "https://busbus.netlify.com/*"
+  to = "https://bus.kiwiberry.nz/:splat"
+  status = 301
+
 # Long-term cache by default.
 [[headers]]
   for = "/*"
