@@ -70,7 +70,8 @@ lighthouse:
   tags:
     - docker
   script:
-    - '$(npm bin)/netlify deploy --dir=dist --message="${CI_COMMIT_SHORT_SHA} on ${CI_COMMIT_REF_NAME}: ${CI_COMMIT_TITLE}"
+    - '$(npm bin)/netlify deploy --dir=dist
+      --message="#${CI_COMMIT_SHORT_SHA} on ${CI_COMMIT_REF_NAME}: ${CI_COMMIT_TITLE}"
       | tee netlify-deploy.log'
     - mkdir lighthouse
     - $(npm bin)/lighthouse $(grep "Live Draft URL" netlify-deploy.log | grep -o 'https://.*\.netlify\.com')
