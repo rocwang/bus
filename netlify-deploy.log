@@ -1,0 +1,9 @@
+[32mDeploy path: [39m/Users/roc/Projects/bus/dist
+Deploying to draft URL...
+
+[32mLogs: [39m          https://app.netlify.com/sites/busbus/deploys/5c5e93abd08a21d04b1b8c84
+[32mLive Draft URL: [39mhttps://5c5e93abd08a21d04b1b8c84--busbus.netlify.com
+
+If everything looks good on your draft URL, take it live with the --prod flag.
+netlify deploy --prod
+

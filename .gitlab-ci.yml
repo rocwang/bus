@@ -6,7 +6,6 @@ stages:
   - build
   - test
   - staging
-  - lighthouse
   - deploy
 
 before_script:
@@ -59,22 +58,9 @@ e2e test:
   script:
     - npm run test:e2e -- --headless --browser chrome
 
-staging:
-  image: instrumentisto/rsync-ssh
-  stage: staging
-  tags:
-    - docker
-  before_script: []
-  script:
-    - mkdir -p ~/.ssh
-    - echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/id_dsa
-    - chmod 600 ~/.ssh/id_dsa
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - rsync -rav --delete dist/ root@51.15.199.149:/var/www/bus-staging/
-
 lighthouse:
   image: cypress/browsers:chrome69
-  stage: lighthouse
+  stage: staging
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -84,8 +70,9 @@ lighthouse:
   tags:
     - docker
   script:
+    - $(npm bin)/netlify deploy --dir=dist | tee netlify-deploy.log
     - mkdir lighthouse
-    - $(npm bin)/lighthouse https://bus-staging.kiwiberry.nz/
+    - $(npm bin)/lighthouse $(grep "Live Draft URL" netlify-deploy.log | grep -o 'https://.*\.netlify\.com')
       --output json html
       --output-path ./lighthouse/audit
       --emulated-form-factor=mobile
@@ -100,14 +87,9 @@ lighthouse:
     when: always
 
 deploy:
-  image: instrumentisto/rsync-ssh
+  image: node:11
   stage: deploy
   tags:
     - docker
-  before_script: []
   script:
-    - mkdir -p ~/.ssh
-    - echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/id_dsa
-    - chmod 600 ~/.ssh/id_dsa
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - rsync -rav --delete dist/ root@51.15.199.149:/var/www/bus/
+    - $(npm bin)/netlify deploy --dir=dist --prod
