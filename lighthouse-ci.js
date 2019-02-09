@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const scoreThreshold = {
-  performance: 50,
+  performance: 20,
   accessibility: 80,
   "best-practices": 80,
   seo: 80,
