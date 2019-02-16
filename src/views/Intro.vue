@@ -82,7 +82,6 @@ export default {
   position: relative;
   overflow: hidden;
   height: 60%;
-  border: 1px solid red;
 }
 
 .actions {

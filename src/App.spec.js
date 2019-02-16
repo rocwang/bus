@@ -1,27 +1,23 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils";
-import App from "./App.vue";
+import App from "./App";
 import config from "./config";
 import Vuex from "vuex";
+import VueRouter from "vue-router";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+localVue.use(VueRouter);
 
 describe("App.vue", () => {
-  const store = {
-    state: {
-      route: []
-    },
-    getters: {
-      routeGroups: jest.fn()
-    },
-    actions: {
-      getRoutesByStop: jest.fn()
-    }
-  };
   const wrapper = shallowMount(App, {
-    stubs: ["router-view"],
-    store,
-    localVue
+    stubs: ["Mapbox"],
+    store: new Vuex.Store({
+      state: {
+        routes: []
+      }
+    }),
+    localVue,
+    router: new VueRouter()
   });
 
   it("renders a div as the app container", () => {

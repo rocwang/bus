@@ -19,13 +19,13 @@ export default {
     color: {
       type: String,
       default() {
-        return this.colors.oceanBlue;
+        return this.colors ? this.colors.oceanBlue : "#001120";
       }
     },
     bg: {
       type: String,
       default() {
-        return this.colors.yellow;
+        return this.colors ? this.colors.yellow : "#ffdb1b";
       }
     }
   }

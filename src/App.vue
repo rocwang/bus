@@ -103,7 +103,10 @@ export default {
 </script>
 
 <style module>
-@value colorOceanBlue, colorGreen, colorBlue, colorYellow, colorRed, colorOrange, colorGray, colorGrayA, colorGrayB, colorGrayC, colorWhite from "./assets/global.module.css";
+@value colorOceanBlue, colorGreen, colorBlue from "./assets/global.module.css";
+@value colorYellow, colorRed, colorOrange from "./assets/global.module.css";
+@value colorGray, colorGrayA, colorGrayB from "./assets/global.module.css";
+@value colorGrayC, colorWhite, colorBlack from "./assets/global.module.css";
 
 .root {
   position: relative;

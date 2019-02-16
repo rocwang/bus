@@ -26,7 +26,7 @@ export default {
     bg: {
       type: String,
       default() {
-        return this.colors.yellow;
+        return this.colors ? this.colors.yellow : "#ffdb1b";
       }
     }
   }

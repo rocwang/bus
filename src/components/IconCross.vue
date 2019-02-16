@@ -19,7 +19,7 @@ export default {
     color: {
       type: String,
       default() {
-        return this.colors.yellow;
+        return this.colors ? this.colors.yellow : "#ffdb1b";
       }
     }
   }
