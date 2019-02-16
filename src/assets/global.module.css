@@ -5,6 +5,7 @@
 @value colorRed: #da2f2d;
 @value colorOrange: #ea8c2e;
 
+@value colorBlack: #000;
 @value colorGray: #333;
 @value colorGrayA: #666;
 @value colorGrayB: #999;
@@ -24,6 +25,7 @@
   --c-gray-a: colorGrayA;
   --c-gray-b: colorGrayB;
   --c-gray-c: colorGrayC;
+  --c-black: colorBlack;
 
   --z-panel: 10;
 

@@ -6,7 +6,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    routes: []
+    routes: [],
+    triggerGeolocate: false
   },
   getters: {
     routeGroups(state) {
@@ -23,6 +24,9 @@ export default new Vuex.Store({
   mutations: {
     setRoutes(state, routes) {
       state.routes = routes;
+    },
+    setTriggerGeolocate(state, triggerGeolocate) {
+      state.triggerGeolocate = triggerGeolocate;
     }
   },
   actions: {

@@ -1,10 +1,12 @@
 <template>
   <Panel :isCollapsed="isCollapsed">
-    <RoundIconStarFull slot="icon" />
-    <template slot="title"
-      >Favourites</template
-    >
-    <template slot="buttons">
+    <template v-slot:icon>
+      <RoundIconStarFull />
+    </template>
+    <template v-slot:title>
+      Favourites
+    </template>
+    <template v-slot:buttons>
       <Buttonizer modifier="icon">
         <button aria-label="edit">
           <IconEdit />
@@ -15,11 +17,13 @@
       </Buttonizer>
     </template>
 
-    <ul slot="body">
-      <li>body</li>
-      <li>body</li>
-      <li>body</li>
-    </ul>
+    <template v-slot:body>
+      <ul>
+        <li>body</li>
+        <li>body</li>
+        <li>body</li>
+      </ul>
+    </template>
   </Panel>
 </template>
 

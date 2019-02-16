@@ -57,13 +57,12 @@ export default {
 }
 
 .primary {
-  font-size: 1.3rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  font-size: 1.6rem;
   text-align: center;
   padding: 11px 35px;
-  background-color: var(--c-yellow);
+  background-color: var(--c-ocean-blue);
   color: var(--c-white);
+  box-shadow: 2px 2px 4px 0 var(--c-black);
 }
 
 .primary:disabled {

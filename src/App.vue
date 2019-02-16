@@ -1,6 +1,7 @@
 <template>
   <div id="app" :class="$style.root">
     <Mapbox
+      v-if="$route.name !== 'Intro'"
       :routes="routes"
       :vehicles="vehicles"
       @stopClick="handleStopClick"
@@ -11,7 +12,6 @@
 
 <script>
 import config from "./config";
-import Mapbox from "./components/Mapbox";
 import uniqBy from "lodash/uniqBy";
 import at from "./api/at";
 import { from, interval } from "rxjs";
@@ -28,7 +28,9 @@ import { mapState } from "vuex";
 
 export default {
   name: "App",
-  components: { Mapbox },
+  components: {
+    Mapbox: () => import(/* webpackChunkName: "mapbox" */ "./components/Mapbox")
+  },
   provide() {
     const colors = Object.keys(this.$style)
       .filter(key => key.substring(0, 5) === "color")

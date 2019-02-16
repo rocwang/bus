@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home";
+import Intro from "./views/Intro";
+import Favourites from "./views/Favourites";
 import Stop from "./views/Stop";
 
 Vue.use(Router);
@@ -11,8 +12,13 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "Home",
-      component: Home
+      name: "Intro",
+      component: Intro
+    },
+    {
+      path: "/favourites",
+      name: "Favourites",
+      component: Favourites
     },
     {
       path: "/stop/:stopCode",
@@ -22,7 +28,7 @@ export default new Router({
     },
     {
       path: "*",
-      redirect: { name: "Home" }
+      redirect: { name: "Intro" }
     }
   ]
 });

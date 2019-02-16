@@ -1,23 +1,27 @@
 <template>
   <Panel>
-    <RoundIconStop slot="icon" />
-    <template slot="prefix"
-      >Stop</template
-    >
-    <template slot="title">{{ stopCode }}</template>
-    <template slot="buttons">
-      <Buttonizer modifier="icon" aria-label="home">
-        <button @click="$router.push({ name: 'Home' })">
+    <template v-slot:icon>
+      <RoundIconStop />
+    </template>
+    <template v-slot:prefix>
+      Stop
+    </template>
+    <template v-slot:title>{{ stopCode }}</template>
+    <template v-slot:buttons>
+      <Buttonizer modifier="icon">
+        <button @click="$router.push({ name: 'Home' })" aria-label="home">
           <IconCross />
         </button>
       </Buttonizer>
     </template>
-    <template slot="subtitle">{{ stop.stop_name }}</template>
-    <ul slot="body">
-      <li v-for="group in routeGroups" :key="group">
-        {{ group }}
-      </li>
-    </ul>
+    <template v-slot:subtitle>{{ stop.stop_name }}</template>
+    <template v-slot:body>
+      <ul>
+        <li v-for="group in routeGroups" :key="group">
+          {{ group }}
+        </li>
+      </ul>
+    </template>
   </Panel>
 </template>
 

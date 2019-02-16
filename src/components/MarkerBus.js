@@ -1,5 +1,5 @@
 import mapboxgl from "mapbox-gl";
-import bus from "../assets/bus.svg";
+import bus from "../assets/bus-colorful.svg";
 
 export default {
   name: "MarkerBus",

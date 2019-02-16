@@ -7,7 +7,7 @@ import PanelFavourites from "../components/PanelFavourites";
 import { mapMutations } from "vuex";
 
 export default {
-  name: "Home",
+  name: "Favourites",
   components: { PanelFavourites },
   methods: mapMutations(["setRoutes"]),
   created() {
