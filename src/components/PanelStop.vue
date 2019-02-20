@@ -14,7 +14,7 @@
         </button>
       </Buttonizer>
     </template>
-    <template v-slot:subtitle>{{ stop.stop_name }}</template>
+    <template v-slot:subtitle>{{ stopName }}</template>
     <template v-slot:body>
       <ul>
         <li v-for="group in routeGroups" :key="group">
@@ -30,13 +30,16 @@ import Panel from "./Panel";
 import RoundIconStop from "./RoundIconStop";
 import IconCross from "./IconCross";
 import Buttonizer from "./Buttonizer";
-import { getStopByStopCode } from "../api/at";
 
 export default {
   name: "PanelStop",
   components: { Panel, RoundIconStop, IconCross, Buttonizer },
   props: {
     stopCode: {
+      type: String,
+      required: true
+    },
+    stopName: {
       type: String,
       required: true
     },
@@ -49,14 +52,6 @@ export default {
     return {
       stop: {}
     };
-  },
-  watch: {
-    stopCode: {
-      immediate: true,
-      async handler(stopCode) {
-        this.stop = (await getStopByStopCode(stopCode))[0];
-      }
-    }
   }
 };
 </script>

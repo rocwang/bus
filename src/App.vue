@@ -12,19 +12,7 @@
 
 <script>
 import config from "./config";
-import uniqBy from "lodash/uniqBy";
-import at from "./api/at";
-import { from, interval } from "rxjs";
-import {
-  switchMap,
-  map,
-  startWith,
-  filter,
-  pluck,
-  scan,
-  share
-} from "rxjs/operators";
-import { mapState } from "vuex";
+import { vehicles$, stopCode$, routes$ } from "./streams";
 
 export default {
   name: "App",
@@ -45,54 +33,15 @@ export default {
       colors
     };
   },
-  computed: mapState(["routes"]),
-  observableMethods: {
-    pushStopClick: "stopCode$"
-  },
   subscriptions() {
-    const trips$ = this.stopCode$.pipe(
-      switchMap(stopCode => from(at.getStopInfoByStopCode(stopCode))),
-      startWith([]),
-      share()
-    );
     return {
-      stopCode: this.stopCode$,
-      // routes: this.stopCode$.pipe(
-      //   switchMap(stopCode => from(at.getRoutesByStop(stopCode))),
-      //   map(routes =>
-      //     routes.sort((a, b) =>
-      //       a.route_short_name.localeCompare(b.route_short_name)
-      //     )
-      //   ),
-      //   startWith([])
-      // ),
-      trips: trips$,
-      vehicles: trips$.pipe(
-        filter(trips => trips.length),
-        map(trips => trips.map(t => t.trip_id).join(",")),
-        switchMap(tripIds =>
-          interval(10000).pipe(
-            startWith(-1),
-            map(() => tripIds)
-          )
-        ),
-        switchMap(tripIds => from(at.getVehiclePositions(tripIds))),
-        scan((latestResponse, response) =>
-          response.header.timestamp >= latestResponse.header.timestamp
-            ? response
-            : latestResponse
-        ),
-        pluck("entity"),
-        map(entities =>
-          uniqBy(entities.map(e => e.vehicle), v => v.vehicle.id)
-        ),
-        startWith([])
-      )
+      routes: routes$,
+      stopCode: stopCode$,
+      vehicles: vehicles$
     };
   },
   methods: {
     handleStopClick(stopCode) {
-      this.pushStopClick(stopCode);
       this.$router.push({
         name: "Stop",
         params: { stopCode }

@@ -1,10 +1,14 @@
 <template>
-  <PanelStop :stopCode="stopCode" :routeGroups="routeGroups" />
+  <PanelStop
+    :stopCode="stopCode"
+    :stopName="stopName"
+    :routeGroups="routeGroups"
+  />
 </template>
 
 <script>
 import PanelStop from "../components/PanelStop";
-import { mapState, mapGetters, mapActions } from "vuex";
+import { stopCode$, stopName$, routeGroups$ } from "../streams";
 
 export default {
   name: "Stop",
@@ -15,13 +19,19 @@ export default {
       required: true
     }
   },
-  computed: { ...mapState(["routes"]), ...mapGetters(["routeGroups"]) },
-  methods: mapActions(["getRoutesByStop"]),
+  subscriptions() {
+    return {
+      stopName: stopName$,
+      routeGroups: routeGroups$
+    };
+  },
   watch: {
     stopCode: {
       immediate: true,
       handler(stopCode) {
-        this.getRoutesByStop(stopCode);
+        this.$nextTick(() => {
+          stopCode$.next(stopCode);
+        });
       }
     }
   }
