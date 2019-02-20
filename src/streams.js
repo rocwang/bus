@@ -1,17 +1,24 @@
 import { Subject, from, interval } from "rxjs";
-import { switchMap, map, startWith, filter, pluck, scan } from "rxjs/operators";
+import {
+  switchMap,
+  map,
+  startWith,
+  filter,
+  pluck,
+  scan,
+  share
+} from "rxjs/operators";
 import uniqBy from "lodash/uniqBy";
-import { getVehiclePositions } from "./api/at";
+import { getVehiclePositions } from "./api/gtfsRealtime";
 import { queryGtfs } from "./api/gtfs";
 
-export const stopCode$ = new Subject();
+export const stopCode$ = new Subject().pipe(share());
 
 export const vehicles$ = stopCode$.pipe(
   switchMap(stopCode => {
     const now = new Date();
-    const nowFormatted = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-    now.setTime(now.getTime() + 2 * 60 * 60 * 1000);
-    const twoHoursLaterFormatted = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+    const nowFormatted = `${now.getHours()}:00:00`;
+    const threeHoursLaterFormatted = `${now.getHours() + 3}:00:00`;
     return from(
       queryGtfs(
         `
@@ -19,10 +26,14 @@ export const vehicles$ = stopCode$.pipe(
             from stops
                    inner join stop_times on stops.stop_id = stop_times.stop_id
                    inner join trips on stop_times.trip_id = trips.trip_id
-            where stops.stop_id = (select stop_id from stops where stop_code = :stopCode order by stop_id desc limit 1)
-              and departure_time >= :nowFormatted and departure_time <= :twoHoursLaterFormatted;
+            where stops.stop_id = (select stop_id from stops where stop_code = :stopCode order by stop_id asc limit 1)
+              and departure_time >= :nowFormatted and departure_time <= :threeHoursLaterFormatted;
           `,
-        { stopCode, nowFormatted, twoHoursLaterFormatted }
+        {
+          stopCode,
+          nowFormatted,
+          threeHoursLaterFormatted
+        }
       )
     );
   }),
@@ -54,13 +65,14 @@ export const routes$ = stopCode$.pipe(
                  inner join stop_times on stops.stop_id = stop_times.stop_id
                  inner join trips on stop_times.trip_id = trips.trip_id
                  inner join routes on trips.route_id = routes.route_id
-          where stops.stop_id = (select stop_id from stops where stop_code = ? order by stop_id desc limit 1)
+          where stops.stop_id = (select stop_id from stops where stop_code = ? order by stop_id asc limit 1)
           order by route_long_name asc;
         `,
         stopCode
       )
     )
   ),
+  share(),
   startWith([])
 );
 
