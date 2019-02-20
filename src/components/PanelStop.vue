@@ -9,7 +9,7 @@
     <template v-slot:title>{{ stopCode }}</template>
     <template v-slot:buttons>
       <Buttonizer modifier="icon">
-        <button @click="$router.push({ name: 'Home' })" aria-label="home">
+        <button @click="$router.push({ name: 'Favourites' })" aria-label="home">
           <IconCross />
         </button>
       </Buttonizer>
