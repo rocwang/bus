@@ -1,9 +1,5 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import Intro from "./Intro";
-import Vuex from "vuex";
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
 
 describe("Intro.vue", () => {
   let $router;
@@ -15,7 +11,7 @@ describe("Intro.vue", () => {
   });
 
   it("renders 2 buttons", () => {
-    const wrapper = shallowMount(Intro, { mocks: { $router }, localVue });
+    const wrapper = shallowMount(Intro, { mocks: { $router } });
 
     expect(wrapper.findAll("buttonwithicon-stub ").length).toBe(2);
   });
@@ -24,8 +20,7 @@ describe("Intro.vue", () => {
     const wrapper = shallowMount(Intro, {
       mocks: {
         $router
-      },
-      localVue
+      }
     });
 
     wrapper
@@ -37,7 +32,7 @@ describe("Intro.vue", () => {
   });
 
   it("pushes the Favourites route with query 'locate=yes' when clicking 'Show nearby stops'", () => {
-    const wrapper = shallowMount(Intro, { mocks: { $router }, localVue });
+    const wrapper = shallowMount(Intro, { mocks: { $router } });
 
     wrapper
       .findAll("buttonwithicon-stub")
