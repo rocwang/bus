@@ -12,7 +12,7 @@
 
 <script>
 import config from "./config";
-import { vehicles$, stopCode$, routes$ } from "./streams";
+import { vehicles$, stopCode$, routes$ } from "./observables";
 
 export default {
   name: "App",

@@ -8,7 +8,7 @@
 
 <script>
 import PanelStop from "../components/PanelStop";
-import { stopCode$, stopName$, routeGroups$ } from "../streams";
+import { stopCode$, stopName$, routeGroups$ } from "../observables";
 
 export default {
   name: "Stop",
