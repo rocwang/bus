@@ -1,6 +1,6 @@
 import { Subject, from, interval } from "rxjs";
 import { switchMap, map, startWith, pluck, share } from "rxjs/operators";
-import uniqBy from "lodash/uniqBy";
+import { uniqBy } from "lodash-es";
 import { getVehiclePositions } from "./api/gtfsRealtime";
 import { queryGtfs } from "./api/gtfs";
 
