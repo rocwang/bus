@@ -8,7 +8,10 @@
 
     <div :class="$style.actions">
       <Buttonizer>
-        <ButtonWithIcon :class="$style.button" @click="handleClickFindOnMap">
+        <ButtonWithIcon
+          :class="$style.button"
+          @click="handleButtonClick(false)"
+        >
           <template v-slot:icon>
             <RoundIconMap />
           </template>
@@ -19,7 +22,7 @@
       </Buttonizer>
 
       <Buttonizer>
-        <ButtonWithIcon :class="$style.button" @click="handleClickNearbyStops">
+        <ButtonWithIcon :class="$style.button" @click="handleButtonClick(true)">
           <template v-slot:icon>
             <RoundIconStreetView />
           </template>
@@ -61,12 +64,18 @@ export default {
     }
   },
   methods: {
-    handleClickFindOnMap() {
-      this.$router.push({ name: "Favourites" });
-    },
-    handleClickNearbyStops() {
-      this.$store.commit("setTriggerGeolocate", true);
-      this.$router.push({ name: "Favourites" });
+    handleButtonClick(locate = false) {
+      const route = {
+        name: "Favourites"
+      };
+
+      if (locate) {
+        route.query = {
+          locate: "yes"
+        };
+      }
+
+      this.$router.push(route);
     }
   }
 };
