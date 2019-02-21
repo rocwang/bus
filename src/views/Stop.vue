@@ -34,6 +34,9 @@ export default {
         });
       }
     }
+  },
+  destroyed() {
+    stopCode$.next("");
   }
 };
 </script>
