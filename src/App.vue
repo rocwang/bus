@@ -30,7 +30,7 @@ export default {
 
     return {
       config,
-      colors
+      colors: Object.freeze(colors)
     };
   },
   subscriptions() {
@@ -54,8 +54,8 @@ export default {
 <style module>
 @value colorOceanBlue, colorGreen, colorBlue from "./assets/global.module.css";
 @value colorYellow, colorRed, colorOrange from "./assets/global.module.css";
-@value colorGray, colorGrayA, colorGrayB from "./assets/global.module.css";
-@value colorGrayC, colorWhite, colorBlack from "./assets/global.module.css";
+@value colorGrayA, colorGrayB, colorGrayC from "./assets/global.module.css";
+@value colorGrayD, colorWhite, colorBlack from "./assets/global.module.css";
 
 .root {
   position: relative;

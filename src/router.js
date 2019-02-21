@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Intro from "./views/Intro";
 import Favourites from "./views/Favourites";
 import Stop from "./views/Stop";
+import RouteGroup from "./views/RouteGroup";
 
 Vue.use(Router);
 
@@ -24,6 +25,12 @@ export default new Router({
       path: "/stop/:stopCode",
       name: "Stop",
       component: Stop,
+      props: true
+    },
+    {
+      path: "/route_group/:group",
+      name: "RouteGroup",
+      component: RouteGroup,
       props: true
     },
     {

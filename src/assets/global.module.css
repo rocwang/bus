@@ -6,10 +6,10 @@
 @value colorOrange: #ea8c2e;
 
 @value colorBlack: #000;
-@value colorGray: #333;
-@value colorGrayA: #666;
-@value colorGrayB: #999;
-@value colorGrayC: #ccc;
+@value colorGrayA: #333;
+@value colorGrayB: #666;
+@value colorGrayC: #999;
+@value colorGrayD: #ccc;
 @value colorWhite: #FFF;
 
 :root {
@@ -21,10 +21,10 @@
   --c-orange: colorOrange;
 
   --c-white: colorWhite;
-  --c-gray: colorGray;
   --c-gray-a: colorGrayA;
   --c-gray-b: colorGrayB;
   --c-gray-c: colorGrayC;
+  --c-gray-d: colorGrayD;
   --c-black: colorBlack;
 
   --z-panel: 10;

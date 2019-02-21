@@ -66,7 +66,7 @@ export default {
 }
 
 .primary:disabled {
-  background-color: var(--c-gray);
+  background-color: var(--c-gray-a);
 }
 
 .secondary {
@@ -80,7 +80,7 @@ export default {
 }
 
 .secondary:disabled {
-  color: var(--c-gray);
+  color: var(--c-gray-a);
 }
 
 .icon {
