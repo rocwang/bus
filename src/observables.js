@@ -1,10 +1,10 @@
-import { Subject, from, interval } from "rxjs";
+import { of, from, interval, BehaviorSubject } from "rxjs";
 import { switchMap, map, startWith, pluck, share } from "rxjs/operators";
 import { uniqBy } from "lodash-es";
 import { getVehiclePositions } from "./api/gtfsRealtime";
 import { queryGtfs } from "./api/gtfs";
 
-export const stopCode$ = new Subject().pipe(share());
+export const stopCode$ = new BehaviorSubject("").pipe(share());
 
 export const vehicles$ = stopCode$.pipe(
   switchMap(stopCode => {
@@ -29,7 +29,7 @@ export const vehicles$ = stopCode$.pipe(
             }
           )
         )
-      : from(Promise.resolve([]));
+      : of([]);
   }),
   map(trips => trips.map(t => t.trip_id).join(",")),
   switchMap(tripIds =>
@@ -38,12 +38,10 @@ export const vehicles$ = stopCode$.pipe(
           startWith(-1),
           map(() => tripIds)
         )
-      : from(Promise.resolve(""))
+      : of("")
   ),
   switchMap(tripIds =>
-    tripIds
-      ? from(getVehiclePositions(tripIds))
-      : from(Promise.resolve({ entity: [] }))
+    tripIds ? from(getVehiclePositions(tripIds)) : of({ entity: [] })
   ),
   pluck("entity"),
   map(entities => uniqBy(entities.map(e => e.vehicle), v => v.vehicle.id))
@@ -66,7 +64,7 @@ export const routes$ = stopCode$.pipe(
             stopCode
           )
         )
-      : from(Promise.resolve([]))
+      : of([])
   ),
   share(),
   startWith([])
