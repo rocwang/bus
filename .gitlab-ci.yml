@@ -70,11 +70,11 @@ lighthouse:
   tags:
     - docker
   script:
-    - '$(npm bin)/netlify deploy --dir=dist
+    - 'npx netlify deploy --dir=dist
       --message="#${CI_COMMIT_SHORT_SHA} on ${CI_COMMIT_REF_NAME}: ${CI_COMMIT_TITLE}"
       | tee netlify-deploy.log'
     - mkdir lighthouse
-    - $(npm bin)/lighthouse $(grep "Live Draft URL" netlify-deploy.log | grep -o 'https://.*\.netlify\.com')
+    - npx lighthouse $(grep "Live Draft URL" netlify-deploy.log | grep -o 'https://.*\.netlify\.com')
       --output json html
       --output-path ./lighthouse/audit
       --emulated-form-factor=mobile
@@ -85,7 +85,7 @@ lighthouse:
   artifacts:
     expire_in: 1 week
     paths:
-      -  lighthouse
+      - lighthouse
     when: always
 
 deploy:
@@ -94,6 +94,5 @@ deploy:
   tags:
     - docker
   script:
-    - '$(npm bin)/netlify deploy --dir=dist --prod
-      --message="${CI_COMMIT_SHORT_SHA} on ${CI_COMMIT_REF_NAME}: ${CI_COMMIT_TITLE}"
-      | tee netlify-deploy.log'
+    - 'npx netlify deploy --dir=dist --prod
+      --message="${CI_COMMIT_SHORT_SHA} on ${CI_COMMIT_REF_NAME}: ${CI_COMMIT_TITLE}"'
