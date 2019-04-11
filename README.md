@@ -36,3 +36,11 @@
   ```
   
 For customize configuration, see [Configuration Reference](https://cli.vuejs.org/config/).
+
+## Required Environment Variables
+
+* VUE_APP_MAPBOX_ACCESS_TOKEN
+* VUE_APP_AUCKLAND_TRANSPORT_API_KEY
+* VUE_APP_GTFS_API
+* NETLIFY_AUTH_TOKEN
+* NETLIFY_SITE_ID

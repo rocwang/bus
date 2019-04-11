@@ -70,7 +70,7 @@ export default {
     }
   },
   async mounted() {
-    mapboxgl.accessToken = this.config.mapboxAccessToken;
+    mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
     const map = new mapboxgl.Map({
       container: this.$el,
       style: "mapbox://styles/mapbox/streets-v10",
