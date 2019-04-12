@@ -15,12 +15,13 @@ export const vehicles$ = stopCode$.pipe(
       ? from(
           queryGtfs(
             `
-            select distinct trips.trip_id, departure_time
+            select distinct trips.trip_id
             from stops
                    inner join stop_times on stops.stop_id = stop_times.stop_id
                    inner join trips on stop_times.trip_id = trips.trip_id
-            where stops.stop_id = (select stop_id from stops where stop_code = :stopCode order by stop_id asc limit 1)
-              and departure_time >= :nowFormatted and departure_time <= :threeHoursLaterFormatted;
+            where stops.stop_code = :stopCode
+              and departure_time >= :nowFormatted
+              and departure_time <= :threeHoursLaterFormatted;
           `,
             {
               stopCode,
@@ -55,10 +56,10 @@ export const routes$ = stopCode$.pipe(
             `
           select distinct stop_name, route_short_name, routes.route_id
           from stops
-                 inner join stop_times on stops.stop_id = stop_times.stop_id
-                 inner join trips on stop_times.trip_id = trips.trip_id
-                 inner join routes on trips.route_id = routes.route_id
-          where stops.stop_id = (select stop_id from stops where stop_code = ? order by stop_id asc limit 1)
+            inner join stop_times on stops.stop_id = stop_times.stop_id
+            inner join trips on stop_times.trip_id = trips.trip_id
+            inner join routes on trips.route_id = routes.route_id
+          where stops.stop_code = ?
           order by route_long_name asc;
         `,
             stopCode
