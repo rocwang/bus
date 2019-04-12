@@ -104,7 +104,7 @@ export const vehicles$ = trips$.pipe(
   map(trips => trips.map(t => t.trip_id).join(",")),
   switchMap(tripIds =>
     tripIds
-      ? interval(60000).pipe(
+      ? interval(10000).pipe(
           startWith(-1),
           map(() => tripIds)
         )
