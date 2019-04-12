@@ -2,8 +2,8 @@ export default {
   name: "LayerRoute",
   inject: ["mapPromise", "colors"],
   props: {
-    route: {
-      type: Object,
+    routePattern: {
+      type: String,
       required: true
     },
     index: {
@@ -27,14 +27,10 @@ export default {
   },
   async created() {
     this.map = await this.mapPromise;
-    this.addLayer(
-      this.route.route_id,
-      this.route.route_id.substring(0, 5),
-      this.index
-    );
+    this.addLayer(this.routePattern, this.routePattern, this.index);
   },
   destroyed() {
-    this.map.removeLayer(this.route.route_id);
+    this.map.removeLayer(this.routePattern);
   },
   methods: {
     async addLayer(id, routePattern, index) {

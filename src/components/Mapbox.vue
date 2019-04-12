@@ -7,10 +7,10 @@
     <ControlGeolocate />
 
     <LayerRoute
-      v-for="(r, i) in routes"
-      :route="r"
+      v-for="(r, i) in routePatterns"
+      :routePattern="r"
       :index="i"
-      :key="r.route_id"
+      :key="r"
     />
     <!--<LayerStopClusters/>-->
     <!--<LayerStopCount/>-->
@@ -56,7 +56,7 @@ export default {
   },
   inject: ["config"],
   props: {
-    routes: {
+    routePatterns: {
       type: Array,
       default() {
         return [];

@@ -18,16 +18,16 @@
     <template v-slot:body>
       <ul :class="$style.routeList">
         <li
-          v-for="(group, index) in routeGroups"
-          :key="group"
+          v-for="(shortName, index) in routeShortNames"
+          :key="shortName"
           :class="$style.route"
           :style="getRouteLeftBorderStyle(index)"
         >
           <router-link
             :class="$style.routeLink"
-            :to="{ name: 'RouteGroup', params: { group } }"
+            :to="{ name: 'Route', params: { stopCode, shortName } }"
           >
-            <span :class="$style.routeName">{{ group }}</span>
+            <span :class="$style.routeName">{{ shortName }}</span>
           </router-link>
         </li>
       </ul>
@@ -54,7 +54,7 @@ export default {
       type: String,
       required: true
     },
-    routeGroups: {
+    routeShortNames: {
       type: Array,
       required: true
     }

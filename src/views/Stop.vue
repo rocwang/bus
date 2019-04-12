@@ -2,13 +2,13 @@
   <PanelStop
     :stopCode="stopCode"
     :stopName="stopName"
-    :routeGroups="routeGroups"
+    :routeShortNames="routeShortNames"
   />
 </template>
 
 <script>
 import PanelStop from "../components/PanelStop";
-import { stopCode$, stopName$, routeGroups$ } from "../observables";
+import { stopCode$, stopName$, routeShortNames$ } from "../observables";
 
 export default {
   name: "Stop",
@@ -22,7 +22,7 @@ export default {
   subscriptions() {
     return {
       stopName: stopName$,
-      routeGroups: routeGroups$
+      routeShortNames: routeShortNames$
     };
   },
   watch: {

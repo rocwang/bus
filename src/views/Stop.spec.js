@@ -29,7 +29,7 @@ describe("Stop.vue", () => {
     });
 
     expect(wrapper.vm.stopCode).toBe("5678");
-    expect(wrapper.vm.routeGroups).toEqual([]);
+    expect(wrapper.vm.routeShortNames).toEqual([]);
     expect(wrapper.vm.stopName).toBe("stop name");
 
     wrapper.destroy();

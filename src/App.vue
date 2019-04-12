@@ -2,7 +2,7 @@
   <div id="app" :class="$style.root">
     <Mapbox
       v-if="$route.name !== 'Intro'"
-      :routes="routes"
+      :routePatterns="routePatterns"
       :vehicles="vehicles"
       @stopClick="handleStopClick"
     />
@@ -12,7 +12,7 @@
 
 <script>
 import config from "./config";
-import { vehicles$, stopCode$, routes$ } from "./observables";
+import { vehicles$, stopCode$, routePatterns$ } from "./observables";
 
 export default {
   name: "App",
@@ -35,7 +35,7 @@ export default {
   },
   subscriptions() {
     return {
-      routes: routes$,
+      routePatterns: routePatterns$,
       stopCode: stopCode$,
       vehicles: vehicles$
     };
