@@ -9,12 +9,7 @@
 
 <script>
 import PanelRoute from "../components/PanelRoute";
-import {
-  trips$,
-  theRouteShortName$,
-  stopCode$,
-  vehicles$
-} from "../observables";
+import { trips$, stopRouteTrip$, vehicles$ } from "../observables";
 
 export default {
   name: "Route",
@@ -29,6 +24,14 @@ export default {
       required: true
     }
   },
+  computed: {
+    stopRoute() {
+      return {
+        stopCode: this.stopCode,
+        routeShortName: this.shortName
+      };
+    }
+  },
   subscriptions() {
     return {
       trips: trips$,
@@ -36,22 +39,15 @@ export default {
     };
   },
   watch: {
-    stopCode: {
+    stopRoute: {
       immediate: true,
-      handler(stopCode) {
-        this.$nextTick(() => stopCode$.next(stopCode));
-      }
-    },
-    shortName: {
-      immediate: true,
-      handler(shortName) {
-        this.$nextTick(() => theRouteShortName$.next(shortName));
+      handler(stopRoute) {
+        this.$nextTick(() => stopRouteTrip$.next(stopRoute));
       }
     }
   },
   destroyed() {
-    stopCode$.next("");
-    theRouteShortName$.next("");
+    stopRouteTrip$.next({ stopeCode: "", routeShortName: "" });
   }
 };
 </script>

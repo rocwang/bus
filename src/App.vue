@@ -12,7 +12,7 @@
 
 <script>
 import config from "./config";
-import { vehicles$, stopCode$, routePatterns$ } from "./observables";
+import { vehicles$, routePatterns$ } from "./observables";
 
 export default {
   name: "App",
@@ -36,7 +36,6 @@ export default {
   subscriptions() {
     return {
       routePatterns: routePatterns$,
-      stopCode: stopCode$,
       vehicles: vehicles$
     };
   },

@@ -19,7 +19,10 @@
     </template>
     <template v-slot:body>
       <ul :class="$style.tripList">
-        <li v-for="item in tripsWithVehicles" :key="item.trip.trip_id">
+        <li
+          v-for="item in tripsWithVehicles"
+          :key="item.trip.trip_id + item.trip.departure_time"
+        >
           {{ item.trip.trip_headsign }} - {{ item.trip.departure_time }}
           <span v-if="item.vehicle && item.vehicle.occupancy_status">
             - occupancy_status: {{ item.vehicle.occupancy_status }}

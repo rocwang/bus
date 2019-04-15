@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from "@vue/test-utils";
 import Stop from "./Stop";
 import VueRx from "vue-rx";
-import { stopCode$ } from "../observables";
+import { stopRouteTrip$ } from "../observables";
 
 jest.mock("../observables");
 
@@ -34,6 +34,6 @@ describe("Stop.vue", () => {
 
     wrapper.destroy();
 
-    expect(stopCode$.value).toBe("");
+    expect(stopRouteTrip$.value).toEqual({ stopCode: "" });
   });
 });

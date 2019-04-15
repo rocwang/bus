@@ -1,99 +1,48 @@
-import { of, from, interval, combineLatest, BehaviorSubject } from "rxjs";
+import { of, from, interval, BehaviorSubject } from "rxjs";
 import { switchMap, map, startWith, pluck, share } from "rxjs/operators";
 import { uniqBy } from "lodash-es";
 import { getVehiclePositions } from "./api/gtfsRealtime";
-import { queryGtfs } from "./api/gtfs";
+import {
+  getTripsByStopAndTrip,
+  getTripsByStop,
+  getTripsByStopAndRoute,
+  getRoutesByStopAndTrip,
+  getRoutesByStopAndShortName,
+  getRoutesByStop
+} from "./api/gtfs";
 
-export const stopCode$ = new BehaviorSubject("").pipe(share());
-export const theRouteShortName$ = new BehaviorSubject("").pipe(share());
+export const stopRouteTrip$ = new BehaviorSubject({
+  stopCode: "",
+  routeShortName: "",
+  tripId: ""
+}).pipe(share());
 
-export const trips$ = combineLatest(stopCode$, theRouteShortName$).pipe(
-  switchMap(([stopCode, routeShortName]) => {
-    const now = new Date();
-    const nowFormatted = `${now.getHours()}:00:00`;
-
-    if (!stopCode) {
-      return of([]);
-    } else if (routeShortName) {
-      // route is chosen
-      return from(
-        queryGtfs(
-          `
-            select distinct trips.trip_id, trip_headsign, departure_time
-            from trips
-                   inner join stop_times on stop_times.trip_id = trips.trip_id
-                   inner join stops on stops.stop_id = stop_times.stop_id
-                   inner join routes on trips.route_id = routes.route_id
-            where stops.stop_code = :stopCode
-              and route_short_name = :routeShortName
-              and departure_time >= :nowFormatted
-            order by departure_time asc;
-          `,
-          { stopCode, routeShortName, nowFormatted }
-        )
-      );
+export const trips$ = stopRouteTrip$.pipe(
+  switchMap(({ stopCode, routeShortName, tripId }) => {
+    if (stopCode && tripId) {
+      return from(getTripsByStopAndTrip(stopCode, tripId));
+    } else if (stopCode && routeShortName) {
+      return from(getTripsByStopAndRoute(stopCode, routeShortName));
+    } else if (stopCode) {
+      return from(getTripsByStop(stopCode));
     } else {
-      // route is not chosen yet
-      return from(
-        queryGtfs(
-          `
-            select distinct trips.trip_id, trip_headsign, departure_time
-            from trips
-                   inner join stop_times on stop_times.trip_id = trips.trip_id
-                   inner join stops on stops.stop_id = stop_times.stop_id
-            where stops.stop_code = :stopCode
-              and departure_time >= :nowFormatted
-              and departure_time <= :threeHoursLaterFormatted;
-          `,
-          {
-            stopCode,
-            nowFormatted,
-            threeHoursLaterFormatted: `${now.getHours() + 3}:00:00`
-          }
-        )
-      );
+      return of([]);
     }
   }),
   share(),
   startWith([])
 );
 
-export const routes$ = combineLatest(stopCode$, theRouteShortName$).pipe(
-  switchMap(([stopCode, routeShortName]) => {
-    if (!stopCode) {
-      return of([]);
-    } else if (routeShortName) {
-      // route is chosen
-      return from(
-        queryGtfs(
-          `
-            select distinct stop_name, route_short_name, routes.route_id
-            from stops
-                   inner join stop_times on stops.stop_id = stop_times.stop_id
-                   inner join trips on stop_times.trip_id = trips.trip_id
-                   inner join routes on trips.route_id = routes.route_id
-            where stops.stop_code = :stopCode and route_short_name = :routeShortName
-            order by route_long_name asc;
-          `,
-          { stopCode, routeShortName }
-        )
-      );
+export const routes$ = stopRouteTrip$.pipe(
+  switchMap(({ stopCode, routeShortName, tripId }) => {
+    if (stopCode && tripId) {
+      return from(getRoutesByStopAndTrip(stopCode, tripId));
+    } else if (stopCode && routeShortName) {
+      return from(getRoutesByStopAndShortName(stopCode, routeShortName));
+    } else if (stopCode) {
+      return from(getRoutesByStop(stopCode));
     } else {
-      // route is not chosen yet
-      return from(
-        queryGtfs(
-          `
-              select distinct stop_name, route_short_name, routes.route_id
-              from stops
-                     inner join stop_times on stops.stop_id = stop_times.stop_id
-                     inner join trips on stop_times.trip_id = trips.trip_id
-                     inner join routes on trips.route_id = routes.route_id
-              where stops.stop_code = ?
-              order by route_long_name asc;
-            `,
-          stopCode
-        )
-      );
+      return of([]);
     }
   }),
   share(),

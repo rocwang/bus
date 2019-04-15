@@ -8,7 +8,7 @@
 
 <script>
 import PanelStop from "../components/PanelStop";
-import { stopCode$, stopName$, routeShortNames$ } from "../observables";
+import { stopRouteTrip$, stopName$, routeShortNames$ } from "../observables";
 
 export default {
   name: "Stop",
@@ -30,13 +30,13 @@ export default {
       immediate: true,
       handler(stopCode) {
         this.$nextTick(() => {
-          stopCode$.next(stopCode);
+          stopRouteTrip$.next({ stopCode });
         });
       }
     }
   },
   destroyed() {
-    stopCode$.next("");
+    stopRouteTrip$.next({ stopCode: "" });
   }
 };
 </script>
