@@ -59,7 +59,7 @@ e2e test:
     - npm run test:e2e -- --headless --browser chrome
 
 lighthouse:
-  image: cypress/browsers:chrome69
+  image: cypress/browsers:node11.13.0-chrome73
   stage: staging
   cache:
     key: ${CI_COMMIT_REF_SLUG}
