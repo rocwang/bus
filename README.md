@@ -2,13 +2,6 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/5d4a6825-e06a-4e34-ab06-6b344134bf97/deploy-status)](https://app.netlify.com/sites/busbus/deploys)
 
-## Todo
-
-- [ ] Stop panel
-- [ ] Route panel
-- [ ] Favourites
-- [ ] Service worker
-
 ## Project setup
 
 * Install dependencies: `npm install`
@@ -32,3 +25,6 @@ For customize configuration, see [Configuration Reference](https://cli.vuejs.org
 
 * NETLIFY_AUTH_TOKEN
 * NETLIFY_SITE_ID
+
+For local development, copy `.env.template` as `.env.local`
+and add the environment variable values there.
