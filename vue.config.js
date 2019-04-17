@@ -52,10 +52,15 @@ module.exports = {
   chainWebpack: config => {
     // set the HTML title tag
     config.plugin("html").tap(args => {
-      args[0].title = manifest.name;
-      args[0].meta = {
-        description: packageJson.description
-      };
+      const [options] = args;
+      Object.assign(options, {
+        title: manifest.name,
+        meta: {
+          description: packageJson.description
+        },
+        author: packageJson.author
+      });
+
       return args;
     });
 

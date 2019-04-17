@@ -14,6 +14,7 @@ describe("App", () => {
     );
     cy.get('head link[rel="manifest"]').should("have.attr", "href");
     cy.get('head link[rel="icon"]').should("have.attr", "href");
+    cy.get('head link[rel="author"]').should("have.attr", "href");
   });
 
   it("has the noscript tag saying requiring Javascript", () => {

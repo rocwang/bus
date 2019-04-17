@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "description": "Track buses in Auckland and more.",
-  "author": "Roc Wang <roc@kiwiberry.nz>",
+  "author": {
+    "name": "Roc Wang",
+    "email": "roc@kiwiberry.nz",
+    "url": "https://kiwiberry.nz/"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
