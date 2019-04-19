@@ -3,6 +3,7 @@ const fs = require("fs");
 const manifest = require("./src/manifest");
 const packageJson = require("./package");
 const WebappWebpackPlugin = require("webapp-webpack-plugin");
+const WorkboxPlugin = require("workbox-webpack-plugin");
 
 module.exports = {
   configureWebpack: {
@@ -49,9 +50,9 @@ module.exports = {
       setImmediate: false
     }
   },
-  chainWebpack: config => {
-    // set the HTML title tag
-    config.plugin("html").tap(args => {
+  chainWebpack: webpackConfig => {
+    // Set the HTML meta tags
+    webpackConfig.plugin("html").tap(args => {
       const [options] = args;
       Object.assign(options, {
         title: manifest.name,
@@ -64,16 +65,17 @@ module.exports = {
       return args;
     });
 
-    // disable the manifest generation from  @vue/cli-plugin-pwa, just use the workbox part
-    config.plugins.delete("pwa");
-
-    // disable workbox in legacy build, so we only get 1 precache manifest
+    // Disable workbox in legacy build, so we only get 1 precache manifest
     if (
-      process.env.NODE_ENV === "production" &&
-      process.env.VUE_CLI_MODERN_MODE &&
-      !process.env.VUE_CLI_MODERN_BUILD
+      (process.env.VUE_CLI_MODERN_MODE && process.env.VUE_CLI_MODERN_BUILD) ||
+      !process.env.VUE_CLI_MODERN_MODE
     ) {
-      config.plugins.delete("workbox");
+      webpackConfig.plugin("workbox").use(WorkboxPlugin.GenerateSW, [
+        {
+          cacheId: packageJson.name,
+          exclude: [/\.map$/, /manifest\.json$/]
+        }
+      ]);
     }
   },
   productionSourceMap: false,
@@ -86,10 +88,5 @@ module.exports = {
             cert: fs.readFileSync(os.homedir() + "/.localhost_ssl/server.crt")
           }
         : false
-  },
-  pwa: {
-    workboxOptions: {
-      exclude: [/\.map$/, /manifest\.json$/, /^iconstats/]
-    }
   }
 };

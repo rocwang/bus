@@ -55,14 +55,17 @@ export default {
   display: block;
   width: 100%;
 }
-
-.primary {
+.primary,
+.secondary {
   font-size: 1.6rem;
   text-align: center;
   padding: 11px 35px;
-  background-color: var(--c-ocean-blue);
-  color: var(--c-white);
-  box-shadow: 2px 2px 4px 0 var(--c-black);
+  box-shadow: 2px 2px 4px 0 var(--c-ocean-blue);
+}
+
+.primary {
+  background-color: var(--c-yellow);
+  color: var(--c-ocean-blue);
 }
 
 .primary:disabled {
@@ -70,12 +73,7 @@ export default {
 }
 
 .secondary {
-  font-size: 1.2rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 12px 35px;
-  background-color: transparent;
+  background-color: var(--c-white);
   color: var(--c-ocean-blue);
 }
 

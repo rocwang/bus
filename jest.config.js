@@ -8,7 +8,8 @@ module.exports = {
   },
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
-    "^lodash-es$": "lodash"
+    "^lodash-es$": "lodash",
+    "^workbox-window/Workbox.mjs$": "workbox-window"
   },
   snapshotSerializers: ["jest-serializer-vue"],
   testMatch: [

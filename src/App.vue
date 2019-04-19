@@ -1,5 +1,6 @@
 <template>
   <div id="app" :class="$style.root">
+    <UpdateNotification />
     <Mapbox
       v-if="$route.name !== 'Intro'"
       :routePatterns="routePatterns"
@@ -13,10 +14,12 @@
 <script>
 import config from "./config";
 import { vehicles$, routePatterns$ } from "./observables";
+import UpdateNotification from "./components/UpdateNotification";
 
 export default {
   name: "App",
   components: {
+    UpdateNotification,
     Mapbox: () => import(/* webpackChunkName: "mapbox" */ "./components/Mapbox")
   },
   provide() {
