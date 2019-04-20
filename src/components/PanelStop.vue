@@ -85,7 +85,7 @@ export default {
 }
 
 .route {
-  width: 81px;
+  max-width: 81px;
   height: 44px;
   line-height: 44px;
   background-color: var(--c-white);

@@ -3,6 +3,7 @@
     <UpdateNotification />
     <Mapbox
       v-if="$route.name !== 'Intro'"
+      :stopCode="stopCode"
       :routePatterns="routePatterns"
       :vehicles="vehicles"
       @stopClick="handleStopClick"
@@ -13,7 +14,7 @@
 
 <script>
 import config from "./config";
-import { vehicles$, routePatterns$ } from "./observables";
+import { vehicles$, routePatterns$, stopCode$ } from "./observables";
 import UpdateNotification from "./components/UpdateNotification";
 
 export default {
@@ -38,6 +39,7 @@ export default {
   },
   subscriptions() {
     return {
+      stopCode: stopCode$,
       routePatterns: routePatterns$,
       vehicles: vehicles$
     };

@@ -14,7 +14,7 @@
     />
     <!--<LayerStopClusters/>-->
     <!--<LayerStopCount/>-->
-    <LayerStops @click="$emit('stopClick', $event)" />
+    <LayerStops @click="$emit('stopClick', $event)" :stopCode="stopCode" />
 
     <MarkerBus v-for="v in vehicles" :vehicle="v" :key="v.vehicle.id" />
   </div>
@@ -56,6 +56,10 @@ export default {
   },
   inject: ["config"],
   props: {
+    stopCode: {
+      type: String,
+      default: ""
+    },
     routePatterns: {
       type: Array,
       default() {

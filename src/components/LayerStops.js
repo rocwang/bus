@@ -1,6 +1,20 @@
 export default {
   name: "LayerStops",
   inject: ["mapPromise"],
+  props: {
+    stopCode: {
+      type: String,
+      default: ""
+    }
+  },
+  watch: {
+    stopCode: {
+      handler() {
+        this.toggleCurrentStop();
+      },
+      immediate: true
+    }
+  },
   async created() {
     this.map = await this.mapPromise;
 
@@ -17,6 +31,8 @@ export default {
       }
     });
 
+    this.toggleCurrentStop();
+
     // Event handling
     this.map
       .on("click", "stops", this.handleStopClick)
@@ -30,6 +46,25 @@ export default {
     return null;
   },
   methods: {
+    async toggleCurrentStop() {
+      this.map = await this.mapPromise;
+
+      if (!this.map.getLayer("stops")) {
+        return;
+      }
+
+      if (this.stopCode) {
+        this.map.setFilter("stops", [
+          "==",
+          ["get", "STOPCODE"],
+          Number(this.stopCode)
+        ]);
+        this.map.setLayerZoomRange("stops", 0, 24);
+      } else {
+        this.map.setFilter("stops");
+        this.map.setLayerZoomRange("stops", 15, 24);
+      }
+    },
     handleStopClick(e) {
       // Center the map on the coordinates of the clicked stop
       this.map.easeTo({ center: e.features[0].geometry.coordinates });

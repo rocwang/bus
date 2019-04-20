@@ -17,6 +17,8 @@ export const stopRouteTrip$ = new BehaviorSubject({
   tripId: ""
 }).pipe(share());
 
+export const stopCode$ = stopRouteTrip$.pipe(pluck("stopCode"));
+
 export const trips$ = stopRouteTrip$.pipe(
   switchMap(({ stopCode, routeShortName, tripId }) => {
     if (stopCode && tripId) {

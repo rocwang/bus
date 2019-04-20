@@ -7,7 +7,7 @@ export default {
     this.map = await this.mapPromise;
     this.control = new mapboxgl.GeolocateControl({
       positionOptions: {
-        enableHighAccuracy: false
+        enableHighAccuracy: true
       },
       trackUserLocation: true
     });
