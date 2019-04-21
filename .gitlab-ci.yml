@@ -80,7 +80,6 @@ lighthouse:
       --emulated-form-factor=mobile
       --throttling-method=provided
       --chrome-flags="--headless --no-sandbox"
-      --extra-headers "{\"Authorization\":\"Basic bWlsYTptaWxh\"}"
     - node ./lighthouse-ci.js ./lighthouse/audit.report.json
   artifacts:
     expire_in: 1 week
