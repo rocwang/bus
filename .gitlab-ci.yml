@@ -14,7 +14,7 @@ before_script:
   - npm ci --prefer-offline
 
 build:
-  image: node:11
+  image: node:12
   stage: build
   cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -31,7 +31,7 @@ build:
       - dist
 
 unit test:
-  image: node:11
+  image: node:12
   stage: test
   cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -70,17 +70,19 @@ lighthouse:
   tags:
     - docker
   script:
-    - 'npx netlify deploy --dir=dist
+    - 'npx netlify deploy
+      --dir=dist
       --message="#${CI_COMMIT_SHORT_SHA} on ${CI_COMMIT_REF_NAME}: ${CI_COMMIT_TITLE}"
       | tee netlify-deploy.log'
-    - mkdir lighthouse
+    - mkdir -p lighthouse
     - npx lighthouse $(grep "Live Draft URL" netlify-deploy.log | grep -o 'https://.*\.netlify\.com')
+      --budget-path=./tests/budgets/home.json
       --output json html
       --output-path ./lighthouse/audit
       --emulated-form-factor=mobile
       --throttling-method=provided
       --chrome-flags="--headless --no-sandbox"
-    - node ./lighthouse-ci.js ./lighthouse/audit.report.json
+    - node ./tests/budgets/check-lighthouse-report.js ./lighthouse/audit.report.json
   artifacts:
     expire_in: 1 week
     paths:
@@ -88,12 +90,14 @@ lighthouse:
     when: always
 
 deploy:
-  image: node:11
+  image: node:12
   stage: deploy
   tags:
     - docker
   script:
-    - 'npx netlify deploy --dir=dist --prod
+    - 'npx netlify deploy
+      --dir=dist
+      --prod
       --message="${CI_COMMIT_SHORT_SHA} on ${CI_COMMIT_REF_NAME}: ${CI_COMMIT_TITLE}"'
   only:
     - master
