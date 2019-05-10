@@ -42,7 +42,7 @@ unit test:
   tags:
     - docker
   script:
-    - npm run test:unit
+    - npm run test:unit -- --coverage
 
 e2e test:
   image: cypress/browsers:node11.13.0-chrome73
