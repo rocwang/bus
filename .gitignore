@@ -1,11 +1,18 @@
 .DS_Store
 node_modules
+
+# The build folder
 /dist
 
-
+# Cyress artifacts
 /tests/e2e/videos/
 /tests/e2e/screenshots/
+
+# Lighthouse repot
 /lighthouse/
+
+# Jest coverage report
+/coverage/
 
 # local env files
 .env.local
