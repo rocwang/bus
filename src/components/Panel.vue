@@ -58,6 +58,7 @@ export default {
 }
 
 .head {
+  height: 90px;
   padding: 18px;
   display: grid;
   grid-template:
@@ -108,5 +109,8 @@ export default {
 
 .body {
   padding: 10px 18px 18px;
+  height: 200px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 </style>

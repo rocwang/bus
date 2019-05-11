@@ -119,6 +119,7 @@ html {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   font-size: 10px;
+  box-sizing: border-box;
 }
 
 iframe {
