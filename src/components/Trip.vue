@@ -90,6 +90,10 @@ export default {
   padding-bottom: 4px;
 }
 
+.icon {
+  width: 36px;
+}
+
 .headSign,
 .departureTime {
   font-size: 1.6rem;
