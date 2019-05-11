@@ -18,15 +18,21 @@
       Stop Code: {{ stopCode }}
     </template>
     <template v-slot:body>
-      <ul :class="$style.tripList">
+      <ul>
         <li
           v-for="item in tripsWithVehicles"
           :key="item.trip.trip_id + item.trip.departure_time"
         >
-          {{ item.trip.trip_headsign }} - {{ item.trip.departure_time }}
-          <span v-if="item.vehicle && item.vehicle.occupancy_status">
-            - occupancy_status: {{ item.vehicle.occupancy_status }}
-          </span>
+          <Trip
+            :headSign="item.trip.trip_headsign"
+            :departureTime="item.trip.departure_time"
+            :isRealTime="!!item.vehicle"
+            :occupancyStatus="
+              item.vehicle && item.vehicle.occupancy_status
+                ? item.vehicle.occupancy_status
+                : undefined
+            "
+          />
         </li>
       </ul>
     </template>
@@ -36,12 +42,13 @@
 <script>
 import Panel from "./Panel";
 import RoundIconRoute from "./RoundIconRoute";
+import Trip from "./Trip";
 import IconCross from "./IconCross";
 import Buttonizer from "./Buttonizer";
 
 export default {
   name: "PanelRoute",
-  components: { Panel, RoundIconRoute, IconCross, Buttonizer },
+  components: { Panel, RoundIconRoute, IconCross, Buttonizer, Trip },
   props: {
     stopCode: {
       type: String,
@@ -72,10 +79,3 @@ export default {
   }
 };
 </script>
-
-<style module>
-.tripList {
-  height: 180px;
-  overflow: auto;
-}
-</style>
