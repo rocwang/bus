@@ -1,17 +1,17 @@
 <template>
   <Notification v-if="isVisible" :class="$style.root">
     <p :class="$style.text">
-      An update is found. Refresh to get it.
+      Update available
     </p>
     <div :class="$style.buttons">
       <Buttonizer modifier="secondary">
         <button @click="close" :class="$style.btn">
-          Later
+          Dismiss
         </button>
       </Buttonizer>
       <Buttonizer modifier="primary">
         <button @click="update" :class="$style.btn">
-          Refresh
+          Reload
         </button>
       </Buttonizer>
     </div>
