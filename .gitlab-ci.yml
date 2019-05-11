@@ -92,12 +92,19 @@ lighthouse:
 deploy:
   image: node:12
   stage: deploy
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - ${CI_PROJECT_DIR}/.npm/
+      - ${CI_PROJECT_DIR}/.cypress/
+    policy: pull
   tags:
     - docker
   script:
     - 'npx netlify deploy
       --dir=dist
       --prod
-      --message="${CI_COMMIT_SHORT_SHA} on ${CI_COMMIT_REF_NAME}: ${CI_COMMIT_TITLE}"'
+      --message="#${CI_COMMIT_SHORT_SHA} on ${CI_COMMIT_REF_NAME}:
+      ${CI_COMMIT_TITLE}"'
   only:
     - master
