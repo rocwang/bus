@@ -35,9 +35,6 @@ unit test:
   stage: test
   cache:
     key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - ${CI_PROJECT_DIR}/.npm/
-      - ${CI_PROJECT_DIR}/.cypress/
     policy: pull
   tags:
     - docker
@@ -49,9 +46,6 @@ e2e test:
   stage: test
   cache:
     key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - ${CI_PROJECT_DIR}/.npm/
-      - ${CI_PROJECT_DIR}/.cypress/
     policy: pull
   tags:
     - docker
@@ -63,9 +57,6 @@ lighthouse:
   stage: staging
   cache:
     key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - ${CI_PROJECT_DIR}/.npm/
-      - ${CI_PROJECT_DIR}/.cypress/
     policy: pull
   tags:
     - docker
@@ -92,6 +83,9 @@ lighthouse:
 deploy:
   image: node:12
   stage: deploy
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    policy: pull
   tags:
     - docker
   script:
