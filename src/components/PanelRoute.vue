@@ -1,7 +1,7 @@
 <template>
   <Panel>
     <template v-slot:icon>
-      <RoundIconStop />
+      <RoundIconRoute />
     </template>
     <template v-slot:prefix>
       Route
@@ -35,13 +35,13 @@
 
 <script>
 import Panel from "./Panel";
-import RoundIconStop from "./RoundIconStop";
+import RoundIconRoute from "./RoundIconRoute";
 import IconCross from "./IconCross";
 import Buttonizer from "./Buttonizer";
 
 export default {
   name: "PanelRoute",
-  components: { Panel, RoundIconStop, IconCross, Buttonizer },
+  components: { Panel, RoundIconRoute, IconCross, Buttonizer },
   props: {
     stopCode: {
       type: String,

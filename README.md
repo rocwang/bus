@@ -1,7 +1,7 @@
 # Mila
 
-[![pipeline status](https://gitlab.com/rocwang/bus/badges/master/pipeline.svg)](https://gitlab.com/rocwang/bus/commits/master)
-[![coverage report](https://gitlab.com/rocwang/bus/badges/master/coverage.svg)](https://gitlab.com/rocwang/bus/commits/master)
+[![Pipeline Status](https://gitlab.com/rocwang/mila/badges/master/pipeline.svg)](https://gitlab.com/rocwang/mila/commits/master)
+[![Coverage Report](https://gitlab.com/rocwang/mila/badges/master/coverage.svg)](https://gitlab.com/rocwang/mila/commits/master)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/5d4a6825-e06a-4e34-ab06-6b344134bf97/deploy-status)](https://app.netlify.com/sites/busbus/deploys)
 
 ## Project setup
