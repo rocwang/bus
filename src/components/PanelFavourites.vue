@@ -21,7 +21,11 @@
       <ul>
         <li
           v-for="item in items"
-          :key="`${item.stopCode}-${item.routeShortName}`"
+          :key="
+            `${item.stopCode}-${item.routeShortName}-${
+              item.trip ? item.trip.trip_id : ''
+            }`
+          "
         >
           <router-link
             :class="$style.itemLink"
@@ -83,18 +87,11 @@ export default {
     const trips = await getNexTripsByStopRouteItems(this.items);
     this.items = this.items.map(item => ({
       ...item,
-      trip: trips.find(trip => {
-        console.log(
-          trip.stop_code,
-          item.stopCode,
-          trip.route_short_name,
-          item.routeShortname
-        );
-        return (
+      trip: trips.find(
+        trip =>
           trip.stop_code === item.stopCode &&
           trip.route_short_name === item.routeShortName
-        );
-      })
+      )
     }));
   },
   methods: {
