@@ -59,8 +59,11 @@ export function getNexTripsByStopRouteItems(stopRouteItems) {
   const dayOfWeek = getDayOfWeek(now);
 
   const bindPlaceholders = stopRouteItems
-    .map((item, index) => `(:stopCode${index}, :routeShortName${index})`)
-    .join(", ");
+    .map(
+      (item, index) =>
+        `(stop_code = :stopCode${index} AND route_short_name = :routeShortName${index})`
+    )
+    .join(" OR ");
   const bindValues = stopRouteItems.reduce(
     (values, item, index) =>
       Object.assign(values, {
@@ -84,7 +87,7 @@ export function getNexTripsByStopRouteItems(stopRouteItems) {
         AND :today <= end_date
         AND (${dayOfWeek} = TRUE OR exception_type = 1)
         AND departure_time >= :departureFrom
-        AND (stop_code, route_short_name) IN (VALUES ${bindPlaceholders})
+        AND (${bindPlaceholders})
       GROUP BY stop_code, route_short_name;
     `,
     { departureFrom, today, ...bindValues }
