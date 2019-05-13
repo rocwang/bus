@@ -23,7 +23,23 @@
           v-for="item in items"
           :key="`${item.stopCode}-${item.routeShortName}`"
         >
-          {{ item.name }}
+          <router-link
+            :class="$style.itemLink"
+            :to="{
+              name: 'Route',
+              params: {
+                stopCode: item.stopCode,
+                shortName: item.routeShortName
+              }
+            }"
+          >
+            <Trip
+              :headSign="item.name"
+              :departureTime="item.trip ? item.trip.departure_time : undefined"
+              :isRealTime="false"
+              :occupancyStatus="6"
+            />
+          </router-link>
         </li>
       </ul>
     </template>
@@ -36,11 +52,20 @@ import RoundIconStarFull from "../components/RoundIconStarFull";
 import IconArrow from "../components/IconArrow";
 import IconEdit from "../components/IconEdit";
 import Buttonizer from "../components/Buttonizer";
+import Trip from "./Trip";
 import { list } from "../favouritesStore";
+import { getNexTripsByStopRouteItems } from "../api/gtfs";
 
 export default {
   name: "PanelFavourites",
-  components: { Panel, RoundIconStarFull, IconArrow, IconEdit, Buttonizer },
+  components: {
+    Panel,
+    RoundIconStarFull,
+    IconArrow,
+    IconEdit,
+    Buttonizer,
+    Trip
+  },
   props: {
     isCollapsedInitially: {
       type: Boolean,
@@ -55,6 +80,22 @@ export default {
   },
   async created() {
     this.items = await list();
+    const trips = await getNexTripsByStopRouteItems(this.items);
+    this.items = this.items.map(item => ({
+      ...item,
+      trip: trips.find(trip => {
+        console.log(
+          trip.stop_code,
+          item.stopCode,
+          trip.route_short_name,
+          item.routeShortname
+        );
+        return (
+          trip.stop_code === item.stopCode &&
+          trip.route_short_name === item.routeShortName
+        );
+      })
+    }));
   },
   methods: {
     handleArrowClick() {
@@ -63,3 +104,9 @@ export default {
   }
 };
 </script>
+
+<style module>
+.itemLink {
+  display: block;
+}
+</style>
