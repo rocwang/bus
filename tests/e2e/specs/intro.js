@@ -8,7 +8,7 @@ describe("Intro", () => {
       .contains("Find stops on map")
       .should("exist");
     cy.get("button")
-      .contains("Show nearby stops")
+      .contains("Favourites")
       .should("exist");
   });
 
@@ -19,9 +19,9 @@ describe("Intro", () => {
     cy.url().should("include", "/favourites");
   });
 
-  it("navigates to Favourites when click 'Show nearby stops'", () => {
+  it("navigates to Favourites when click 'Favourites'", () => {
     cy.get("button")
-      .contains("Find stops on map")
+      .contains("Favourites")
       .click();
     cy.url().should("include", "/favourites");
   });

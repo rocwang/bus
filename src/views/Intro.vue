@@ -27,7 +27,7 @@
             <RoundIconStarFull />
           </template>
           <template v-slot:text>
-            Show nearby stops
+            Favourites
           </template>
         </ButtonWithIcon>
       </Buttonizer>
