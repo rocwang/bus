@@ -102,18 +102,12 @@ export default {
     this.del$ = new Subject();
 
     const added$ = this.add$.pipe(
-      switchMap(() => {
-        console.log("add");
-        return from(set(this.stopCode, this.shortName));
-      }),
+      switchMap(() => from(set(this.stopCode, this.shortName))),
       map(() => true)
     );
 
     const deleted$ = this.del$.pipe(
-      switchMap(() => {
-        console.log("del");
-        return from(del(this.stopCode, this.shortName));
-      }),
+      switchMap(() => from(del(this.stopCode, this.shortName))),
       map(() => false)
     );
 
@@ -122,11 +116,6 @@ export default {
         from(has(this.stopCode, this.shortName)),
         added$,
         deleted$
-      ).pipe(
-        map(value => {
-          console.log(value);
-          return value;
-        })
       )
     };
   },
