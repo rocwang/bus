@@ -44,7 +44,7 @@ export default {
     },
     departureTime: {
       type: String,
-      required: true
+      required: false
     },
     occupancyStatus: {
       type: Number,
@@ -60,17 +60,21 @@ export default {
       formattedDepartureTime: interval(30000).pipe(
         startWith(0),
         map(() => {
-          const timeComponents = this.departureTime.split(":");
-          const now = new Date();
-          const then = new Date(now);
-          then.setHours(timeComponents[0]);
-          then.setMinutes(timeComponents[1]);
-          then.setSeconds(timeComponents[2]);
+          if (this.departureTime) {
+            const timeComponents = this.departureTime.split(":");
+            const now = new Date();
+            const then = new Date(now);
+            then.setHours(timeComponents[0]);
+            then.setMinutes(timeComponents[1]);
+            then.setSeconds(timeComponents[2]);
 
-          // Show a relative time if the departure time is less than 44 mins 30 secs
-          return then.getTime() - now.getTime() < (44 * 60 + 30) * 1000
-            ? distanceInWordsToNow(then, { addSuffix: true })
-            : this.departureTime;
+            // Show a relative time if the departure time is less than 44 mins 30 secs
+            return then.getTime() - now.getTime() < (44 * 60 + 30) * 1000
+              ? distanceInWordsToNow(then, { addSuffix: true })
+              : this.departureTime;
+          } else {
+            return "N/A";
+          }
         })
       )
     };
