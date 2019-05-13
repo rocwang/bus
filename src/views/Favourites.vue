@@ -1,5 +1,5 @@
 <template>
-  <PanelFavourites />
+  <PanelFavourites :isCollapsedInitially="$route.query.isCollapsed === 'yes'" />
 </template>
 
 <script>

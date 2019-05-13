@@ -8,10 +8,7 @@
 
     <div :class="$style.actions">
       <Buttonizer>
-        <ButtonWithIcon
-          :class="$style.button"
-          @click="handleButtonClick(false)"
-        >
+        <ButtonWithIcon :class="$style.button" @click="handleButtonClick(true)">
           <template v-slot:icon>
             <RoundIconMap />
           </template>
@@ -22,9 +19,12 @@
       </Buttonizer>
 
       <Buttonizer>
-        <ButtonWithIcon :class="$style.button" @click="handleButtonClick(true)">
+        <ButtonWithIcon
+          :class="$style.button"
+          @click="handleButtonClick(false)"
+        >
           <template v-slot:icon>
-            <RoundIconStreetView />
+            <RoundIconStarFull />
           </template>
           <template v-slot:text>
             Show nearby stops
@@ -42,7 +42,7 @@ import IconTrain from "../components/IconTrain";
 import Buttonizer from "../components/Buttonizer";
 import ButtonWithIcon from "../components/ButtonWithIcon";
 import RoundIconMap from "../components/RoundIconMap";
-import RoundIconStreetView from "../components/RoundIconStreetView";
+import RoundIconStarFull from "../components/RoundIconStarFull";
 
 export default {
   name: "Intro",
@@ -52,7 +52,7 @@ export default {
     IconTrain,
     Buttonizer,
     RoundIconMap,
-    RoundIconStreetView,
+    RoundIconStarFull,
     ButtonWithIcon
   },
   beforeRouteEnter(to, from, next) {
@@ -64,14 +64,14 @@ export default {
     }
   },
   methods: {
-    handleButtonClick(locate = false) {
+    handleButtonClick(isFavouritesCollapsed = true) {
       const route = {
         name: "Favourites"
       };
 
-      if (locate) {
+      if (isFavouritesCollapsed) {
         route.query = {
-          locate: "yes"
+          isCollapsed: "yes"
         };
       }
 

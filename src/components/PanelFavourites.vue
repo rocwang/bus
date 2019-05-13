@@ -19,9 +19,12 @@
 
     <template v-slot:body>
       <ul>
-        <li>body</li>
-        <li>body</li>
-        <li>body</li>
+        <li
+          v-for="item in items"
+          :key="`${item.stopCode}-${item.routeShortName}`"
+        >
+          {{ item.name }}
+        </li>
       </ul>
     </template>
   </Panel>
@@ -33,14 +36,25 @@ import RoundIconStarFull from "../components/RoundIconStarFull";
 import IconArrow from "../components/IconArrow";
 import IconEdit from "../components/IconEdit";
 import Buttonizer from "../components/Buttonizer";
+import { list } from "../favouritesStore";
 
 export default {
   name: "PanelFavourites",
   components: { Panel, RoundIconStarFull, IconArrow, IconEdit, Buttonizer },
+  props: {
+    isCollapsedInitially: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
-      isCollapsed: true
+      isCollapsed: this.isCollapsedInitially,
+      items: []
     };
+  },
+  async created() {
+    this.items = await list();
   },
   methods: {
     handleArrowClick() {

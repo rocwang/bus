@@ -9,6 +9,23 @@
     <template v-slot:title>{{ shortName }}</template>
     <template v-slot:buttons>
       <Buttonizer modifier="icon">
+        <button
+          v-if="isFavoured"
+          v-stream:click="del$"
+          aria-label="Delete from Favourites"
+          key="del"
+        >
+          <IconFullStar />
+        </button>
+        <button
+          v-else
+          v-stream:click="add$"
+          aria-label="Add to Favourites"
+          key="add"
+        >
+          <IconEmptyStar />
+        </button>
+
         <button @click="$router.back()" aria-label="back">
           <IconCross />
         </button>
@@ -44,11 +61,24 @@ import Panel from "./Panel";
 import RoundIconRoute from "./RoundIconRoute";
 import Trip from "./Trip";
 import IconCross from "./IconCross";
+import IconEmptyStar from "./IconEmptyStar";
+import IconFullStar from "./IconFullStar";
 import Buttonizer from "./Buttonizer";
+import { set, del, has } from "../favouritesStore";
+import { from, Subject, merge } from "rxjs";
+import { switchMap, map } from "rxjs/operators";
 
 export default {
   name: "PanelRoute",
-  components: { Panel, RoundIconRoute, IconCross, Buttonizer, Trip },
+  components: {
+    Buttonizer,
+    IconCross,
+    IconEmptyStar,
+    IconFullStar,
+    Panel,
+    RoundIconRoute,
+    Trip
+  },
   props: {
     stopCode: {
       type: String,
@@ -66,6 +96,39 @@ export default {
       type: Array,
       required: true
     }
+  },
+  subscriptions() {
+    this.add$ = new Subject();
+    this.del$ = new Subject();
+
+    const added$ = this.add$.pipe(
+      switchMap(() => {
+        console.log("add");
+        return from(set(this.stopCode, this.shortName));
+      }),
+      map(() => true)
+    );
+
+    const deleted$ = this.del$.pipe(
+      switchMap(() => {
+        console.log("del");
+        return from(del(this.stopCode, this.shortName));
+      }),
+      map(() => false)
+    );
+
+    return {
+      isFavoured: merge(
+        from(has(this.stopCode, this.shortName)),
+        added$,
+        deleted$
+      ).pipe(
+        map(value => {
+          console.log(value);
+          return value;
+        })
+      )
+    };
   },
   computed: {
     tripsWithVehicles() {
