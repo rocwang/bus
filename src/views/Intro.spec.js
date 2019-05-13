@@ -16,7 +16,7 @@ describe("Intro.vue", () => {
     expect(wrapper.findAll("buttonwithicon-stub ").length).toBe(2);
   });
 
-  it("pushes the Favourites route when clicking 'Find stops on map'", () => {
+  it("pushes the Favourites route with query 'isCollapsed=yes' when clicking 'Find stops on map'", () => {
     const wrapper = shallowMount(Intro, {
       mocks: {
         $router
@@ -28,10 +28,13 @@ describe("Intro.vue", () => {
       .at(0)
       .vm.$emit("click");
 
-    expect($router.push).toBeCalledWith({ name: "Favourites" });
+    expect($router.push).toBeCalledWith({
+      name: "Favourites",
+      query: { isCollapsed: "yes" }
+    });
   });
 
-  it("pushes the Favourites route with query 'locate=yes' when clicking 'Show nearby stops'", () => {
+  it("pushes the Favourites route when clicking 'Show nearby stops'", () => {
     const wrapper = shallowMount(Intro, { mocks: { $router } });
 
     wrapper
@@ -40,8 +43,7 @@ describe("Intro.vue", () => {
       .vm.$emit("click");
 
     expect($router.push).toBeCalledWith({
-      name: "Favourites",
-      query: { locate: "yes" }
+      name: "Favourites"
     });
   });
 });
