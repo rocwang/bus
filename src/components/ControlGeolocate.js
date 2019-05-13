@@ -13,12 +13,6 @@ export default {
     });
 
     this.map.addControl(this.control);
-
-    this.map.once("idle", () => {
-      if (this.$route.query.locate === "yes") {
-        this.control.trigger();
-      }
-    });
   },
   destroyed() {
     this.map.removeControl(this.control);
