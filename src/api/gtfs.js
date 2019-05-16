@@ -147,6 +147,26 @@ export function getTripsByStopAndTrip(stopCode, tripId) {
   );
 }
 
+export function getStopNameById(stopCode) {
+  const now = new Date();
+  const today = format(now, "YYYYMMDD");
+
+  return queryGtfs(
+    `
+    SELECT stop_name FROM stops
+      INNER JOIN stop_times ON stop_times.stop_id = stops.stop_id
+      INNER JOIN trips ON trips.trip_id = stop_times.trip_id
+      INNER JOIN calendar ON trips.service_id = calendar.service_id
+    WHERE stop_code=:stopCode AND start_date <= :today AND :today <= end_date
+    LIMIT 1
+`,
+    {
+      stopCode,
+      today
+    }
+  );
+}
+
 export function getRoutesByStop(stopCode) {
   const now = new Date();
   const today = format(now, "YYYYMMDD");
@@ -154,7 +174,7 @@ export function getRoutesByStop(stopCode) {
 
   return queryGtfs(
     `
-    SELECT routes.route_id, route_short_name, stop_name
+    SELECT routes.route_id, route_short_name
     FROM routes
            INNER JOIN trips ON trips.route_id = routes.route_id
            INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id
@@ -179,7 +199,7 @@ export function getRoutesByStopAndShortName(stopCode, routeShortName) {
 
   return queryGtfs(
     `
-    SELECT routes.route_id, route_short_name, stop_name
+    SELECT routes.route_id, route_short_name
     FROM routes
            INNER JOIN trips ON trips.route_id = routes.route_id
            INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id
@@ -205,7 +225,7 @@ export function getRoutesByStopAndTrip(stopCode, tripId) {
 
   return queryGtfs(
     `
-    SELECT routes.route_id, route_short_name, stop_name
+    SELECT routes.route_id, route_short_name
     FROM routes
            INNER JOIN trips ON trips.route_id = routes.route_id
            INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id

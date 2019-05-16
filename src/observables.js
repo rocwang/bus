@@ -1,8 +1,17 @@
-import { of, from, interval, BehaviorSubject } from "rxjs";
-import { switchMap, map, startWith, pluck, share } from "rxjs/operators";
+import { merge, of, from, interval, BehaviorSubject } from "rxjs";
+import {
+  distinctUntilChanged,
+  switchMap,
+  map,
+  startWith,
+  pluck,
+  filter,
+  shareReplay
+} from "rxjs/operators";
 import { uniqBy } from "lodash-es";
 import { getVehiclePositions } from "./api/gtfsRealtime";
 import {
+  getStopNameById,
   getTripsByStopAndTrip,
   getTripsByStop,
   getTripsByStopAndRoute,
@@ -11,44 +20,73 @@ import {
   getRoutesByStop
 } from "./api/gtfs";
 
-export const stopRouteTrip$ = new BehaviorSubject({
-  stopCode: "",
-  routeShortName: "",
-  tripId: ""
-}).pipe(share());
+export const actionViewStop$ = new BehaviorSubject(undefined).pipe(
+  filter(value => value)
+); // { stopCode }
+export const actionViewRoute$ = new BehaviorSubject(undefined).pipe(
+  filter(value => value)
+); // { stopCode, routeShortName }
+export const actionViewTrip$ = new BehaviorSubject(undefined).pipe(
+  filter(value => value)
+); // { stopCode, tripId }
 
-export const stopCode$ = stopRouteTrip$.pipe(pluck("stopCode"));
-
-export const trips$ = stopRouteTrip$.pipe(
-  switchMap(({ stopCode, routeShortName, tripId }) => {
-    if (stopCode && tripId) {
-      return from(getTripsByStopAndTrip(stopCode, tripId));
-    } else if (stopCode && routeShortName) {
-      return from(getTripsByStopAndRoute(stopCode, routeShortName));
-    } else if (stopCode) {
-      return from(getTripsByStop(stopCode));
-    } else {
-      return of([]);
-    }
-  }),
-  share(),
-  startWith([])
+export const stopCode$ = merge(
+  actionViewStop$,
+  actionViewRoute$.pipe(pluck("stopCode")),
+  actionViewTrip$.pipe(pluck("stopCode"))
+).pipe(
+  startWith(""),
+  distinctUntilChanged(),
+  shareReplay(1)
 );
 
-export const routes$ = stopRouteTrip$.pipe(
-  switchMap(({ stopCode, routeShortName, tripId }) => {
-    if (stopCode && tripId) {
-      return from(getRoutesByStopAndTrip(stopCode, tripId));
-    } else if (stopCode && routeShortName) {
-      return from(getRoutesByStopAndShortName(stopCode, routeShortName));
-    } else if (stopCode) {
-      return from(getRoutesByStop(stopCode));
-    } else {
-      return of([]);
-    }
-  }),
-  share(),
-  startWith([])
+export const stopName$ = stopCode$.pipe(
+  switchMap(stopCode =>
+    stopCode ? from(getStopNameById(stopCode)) : of([{ stop_name: "" }])
+  ),
+  map(stopCodes => stopCodes[0]),
+  pluck("stop_name"),
+  startWith(""),
+  shareReplay(1)
+);
+
+export const routeShortName$ = actionViewRoute$.pipe(
+  pluck("routeShortName"),
+  startWith("")
+);
+
+export const trips$ = merge(
+  actionViewRoute$.pipe(
+    switchMap(({ stopCode, routeShortName }) =>
+      from(getTripsByStopAndRoute(stopCode, routeShortName))
+    )
+  ),
+  actionViewTrip$.pipe(
+    switchMap(({ stopCode, tripId }) =>
+      from(getTripsByStopAndTrip(stopCode, tripId))
+    )
+  ),
+  actionViewStop$.pipe(switchMap(stopCode => from(getTripsByStop(stopCode))))
+).pipe(
+  startWith([]),
+  shareReplay(1)
+);
+
+export const routes$ = merge(
+  actionViewTrip$.pipe(
+    switchMap(({ stopCode, tripId }) =>
+      from(getRoutesByStopAndTrip(stopCode, tripId))
+    )
+  ),
+  actionViewRoute$.pipe(
+    switchMap(({ stopCode, routeShortName }) =>
+      from(getRoutesByStopAndShortName(stopCode, routeShortName))
+    )
+  ),
+  actionViewStop$.pipe(switchMap(stopCode => from(getRoutesByStop(stopCode))))
+).pipe(
+  startWith([]),
+  shareReplay(1)
 );
 
 export const vehicles$ = trips$.pipe(
@@ -74,15 +112,11 @@ export const routePatterns$ = routes$.pipe(
   )
 );
 
-export const routeShortNames$ = routes$.pipe(
+export const routeShortNamesByStop$ = routes$.pipe(
   map(routes =>
     Array.from(new Set(routes.map(route => route.route_short_name))).sort(
       (a, b) =>
         a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
     )
   )
-);
-
-export const stopName$ = routes$.pipe(
-  map(routes => (routes[0] ? routes[0].stop_name : ""))
 );
