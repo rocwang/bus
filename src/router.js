@@ -4,6 +4,7 @@ import Intro from "./views/Intro";
 import Favourites from "./views/Favourites";
 import Stop from "./views/Stop";
 import Route from "./views/Route";
+import { actionViewStop$, actionViewRoute$ } from "./observables";
 
 Vue.use(Router);
 
@@ -25,13 +26,22 @@ export default new Router({
       path: "/stop/:stopCode",
       name: "Stop",
       component: Stop,
-      props: true
+      beforeEnter: (to, from, next) => {
+        actionViewStop$.next(to.params.stopCode);
+        next();
+      }
     },
     {
       path: "/stop/:stopCode/route_group/:shortName",
       name: "Route",
       component: Route,
-      props: true
+      beforeEnter: (to, from, next) => {
+        actionViewRoute$.next({
+          stopCode: to.params.stopCode,
+          routeShortName: to.params.shortName
+        });
+        next();
+      }
     },
     {
       path: "*",
