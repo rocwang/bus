@@ -38,11 +38,11 @@
       <ul>
         <li
           v-for="item in tripsWithVehicles"
-          :key="item.trip.trip_id + item.trip.departure_time"
+          :key="item.trip_id + item.departure_time"
         >
           <Trip
-            :headSign="item.trip.trip_headsign"
-            :departureTime="item.trip.departure_time"
+            :headSign="item.trip_headsign"
+            :departureTime="item.departure_time"
             :isRealTime="!!item.vehicle"
             :occupancyStatus="
               item.vehicle && item.vehicle.occupancy_status
@@ -64,9 +64,12 @@ import IconCross from "./IconCross";
 import IconEmptyStar from "./IconEmptyStar";
 import IconFullStar from "./IconFullStar";
 import Buttonizer from "./Buttonizer";
-import { set, del, has } from "../favouritesStore";
-import { from, Subject, merge } from "rxjs";
-import { switchMap, map } from "rxjs/operators";
+import {
+  actionRemoveFromFavourite$,
+  actionAddToFavourite$
+} from "../favouritesStore";
+import { Subject } from "rxjs";
+import { tap } from "rxjs/operators";
 
 export default {
   name: "PanelRoute",
@@ -95,38 +98,34 @@ export default {
     vehicles: {
       type: Array,
       required: true
+    },
+    tripsWithVehicles: {
+      type: Array,
+      required: true
+    },
+    favourites: {
+      type: Array,
+      required: true
     }
   },
-  subscriptions() {
+  created() {
     this.add$ = new Subject();
     this.del$ = new Subject();
 
-    const added$ = this.add$.pipe(
-      switchMap(() => from(set(this.stopCode, this.shortName))),
-      map(() => true)
+    this.add$.pipe(
+      tap(() => actionAddToFavourite$.next(this.stopCode, this.shortName))
     );
 
-    const deleted$ = this.del$.pipe(
-      switchMap(() => from(del(this.stopCode, this.shortName))),
-      map(() => false)
+    this.del$.pipe(
+      tap(() => actionRemoveFromFavourite$.next(this.stopCode, this.shortName))
     );
-
-    return {
-      isFavoured: merge(
-        from(has(this.stopCode, this.shortName)),
-        added$,
-        deleted$
-      )
-    };
   },
   computed: {
-    tripsWithVehicles() {
-      return this.trips.map(trip => ({
-        trip,
-        vehicle: this.vehicles.find(
-          vehicle => vehicle.trip.trip_id === trip.trip_id
-        )
-      }));
+    isFavoured() {
+      return !!this.favourites.find(
+        ({ stopCode, routeShortName }) =>
+          stopCode === this.stopCode && routeShortName === this.shortName
+      );
     }
   }
 };
