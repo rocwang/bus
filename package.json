@@ -24,7 +24,7 @@
     "rxjs": "^6.5.2",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",
-    "vue-rx": "^6.1.0",
+    "vue-rx": "^6.2.0",
     "workbox-window": "^4.3.1"
   },
   "devDependencies": {
@@ -41,9 +41,9 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.2",
     "lighthouse": "^5.0.0",
-    "lint-staged": "^8.1.6",
+    "lint-staged": "^8.1.7",
     "lodash": "^4.17.11",
-    "netlify-cli": "^2.11.18",
+    "netlify-cli": "^2.11.19",
     "vue-template-compiler": "^2.6.10",
     "webapp-webpack-plugin": "^2.7.0",
     "workbox-webpack-plugin": "^4.3.1"
