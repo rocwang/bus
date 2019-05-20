@@ -5,6 +5,7 @@ import Favourites from "./views/Favourites";
 import Stop from "./views/Stop";
 import Route from "./views/Route";
 import { actionViewStop$, actionViewRoute$ } from "./observables";
+import { actionViewFavourites$ } from "./favouritesStore";
 
 Vue.use(Router);
 
@@ -20,7 +21,14 @@ export default new Router({
     {
       path: "/favourites",
       name: "Favourites",
-      component: Favourites
+      component: Favourites,
+      props: route => ({
+        isCollapsedInitially: route.query.isCollapsed === "yes"
+      }),
+      beforeEnter: (to, from, next) => {
+        actionViewFavourites$.next();
+        next();
+      }
     },
     {
       path: "/stop/:stopCode",

@@ -5,10 +5,12 @@ import {
   keys as idbKeys,
   del as idbDel
 } from "idb-keyval";
+import { merge, ReplaySubject, Subject, from } from "rxjs";
+import { tap, switchMap, shareReplay, startWith } from "rxjs/operators";
 
 const store = new Store("favourites", "favourites");
 
-export function set(stopCode, routeShortName, name = "") {
+function set(stopCode, routeShortName, name = "") {
   name = name || `${routeShortName} at ${stopCode}`;
   return idbSet(
     `${stopCode}-${routeShortName}`,
@@ -17,17 +19,30 @@ export function set(stopCode, routeShortName, name = "") {
   );
 }
 
-export function del(stopCode, routeShortName) {
+function del(stopCode, routeShortName) {
   return idbDel(`${stopCode}-${routeShortName}`, store);
 }
 
-export async function has(stopCode, routeShortName) {
-  const value = await get(`${stopCode}-${routeShortName}`, store);
-  return value !== undefined;
-}
-
-export async function list() {
+async function list() {
   const keys = await idbKeys(store);
   const values = keys.map(key => get(key, store));
   return Promise.all(values);
 }
+
+export const actionAddToFavourite$ = new Subject();
+export const actionRemoveFromFavourite$ = new Subject();
+export const actionViewFavourites$ = new ReplaySubject(1);
+
+export const favourites$ = merge(
+  actionAddToFavourite$.pipe(
+    tap(({ stopCode, routeShortName }) => set(stopCode, routeShortName))
+  ),
+  actionRemoveFromFavourite$.pipe(
+    tap(({ stopCode, routeShortName }) => del(stopCode, routeShortName))
+  ),
+  actionViewFavourites$
+).pipe(
+  switchMap(() => from(list())),
+  startWith([]),
+  shareReplay(1)
+);

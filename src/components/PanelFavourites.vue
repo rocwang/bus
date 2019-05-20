@@ -20,7 +20,7 @@
     <template v-slot:body>
       <ul>
         <li
-          v-for="item in items"
+          v-for="item in favouritesWithTrips"
           :key="
             `${item.stopCode}-${item.routeShortName}-${
               item.trip ? item.trip.trip_id : ''
@@ -40,8 +40,14 @@
             <Trip
               :headSign="item.name"
               :departureTime="item.trip ? item.trip.departure_time : undefined"
-              :isRealTime="false"
-              :occupancyStatus="6"
+              :isRealTime="!!(item.trip && item.trip.vehicle)"
+              :occupancyStatus="
+                item.trip &&
+                item.trip.vehicle &&
+                item.trip.vehicle.occupancy_status
+                  ? item.trip.vehicle.occupancy_status
+                  : undefined
+              "
             />
           </router-link>
         </li>
@@ -57,8 +63,6 @@ import IconArrow from "../components/IconArrow";
 import IconEdit from "../components/IconEdit";
 import Buttonizer from "../components/Buttonizer";
 import Trip from "./Trip";
-import { list } from "../favouritesStore";
-import { getNexTripsByStopRouteItems } from "../api/gtfs";
 
 export default {
   name: "PanelFavourites",
@@ -74,25 +78,16 @@ export default {
     isCollapsedInitially: {
       type: Boolean,
       default: true
+    },
+    favouritesWithTrips: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      isCollapsed: this.isCollapsedInitially,
-      items: []
+      isCollapsed: this.isCollapsedInitially
     };
-  },
-  async created() {
-    this.items = await list();
-    const trips = await getNexTripsByStopRouteItems(this.items);
-    this.items = this.items.map(item => ({
-      ...item,
-      trip: trips.find(
-        trip =>
-          trip.stop_code === item.stopCode &&
-          trip.route_short_name === item.routeShortName
-      )
-    }));
   },
   methods: {
     handleArrowClick() {

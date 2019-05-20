@@ -1,11 +1,10 @@
-import { merge, of, from, interval, BehaviorSubject } from "rxjs";
+import { combineLatest, merge, of, from, interval, ReplaySubject } from "rxjs";
 import {
   distinctUntilChanged,
   switchMap,
   map,
   startWith,
   pluck,
-  filter,
   shareReplay
 } from "rxjs/operators";
 import { uniqBy } from "lodash-es";
@@ -19,16 +18,15 @@ import {
   getRoutesByStopAndShortName,
   getRoutesByStop
 } from "./api/gtfs";
+import {
+  getNexTripsByStopRouteItems,
+  getRoutesByStopRouteItems
+} from "./api/gtfs";
+import { favourites$ } from "./favouritesStore";
 
-export const actionViewStop$ = new BehaviorSubject(undefined).pipe(
-  filter(value => value)
-); // { stopCode }
-export const actionViewRoute$ = new BehaviorSubject(undefined).pipe(
-  filter(value => value)
-); // { stopCode, routeShortName }
-export const actionViewTrip$ = new BehaviorSubject(undefined).pipe(
-  filter(value => value)
-); // { stopCode, tripId }
+export const actionViewStop$ = new ReplaySubject(1); // { stopCode }
+export const actionViewRoute$ = new ReplaySubject(1); // { stopCode, routeShortName }
+export const actionViewTrip$ = new ReplaySubject(1); // { stopCode, tripId }
 
 export const stopCode$ = merge(
   actionViewStop$,
@@ -56,6 +54,9 @@ export const routeShortName$ = actionViewRoute$.pipe(
 );
 
 export const trips$ = merge(
+  favourites$.pipe(
+    switchMap(favourites => from(getNexTripsByStopRouteItems(favourites)))
+  ),
   actionViewRoute$.pipe(
     switchMap(({ stopCode, routeShortName }) =>
       from(getTripsByStopAndRoute(stopCode, routeShortName))
@@ -73,6 +74,9 @@ export const trips$ = merge(
 );
 
 export const routes$ = merge(
+  favourites$.pipe(
+    switchMap(favourites => from(getRoutesByStopRouteItems(favourites)))
+  ),
   actionViewTrip$.pipe(
     switchMap(({ stopCode, tripId }) =>
       from(getRoutesByStopAndTrip(stopCode, tripId))
@@ -103,13 +107,28 @@ export const vehicles$ = trips$.pipe(
     tripIds ? from(getVehiclePositions(tripIds)) : of({ entity: [] })
   ),
   pluck("entity"),
-  map(entities => uniqBy(entities.map(e => e.vehicle), v => v.vehicle.id))
+  map(entities => uniqBy(entities.map(e => e.vehicle), v => v.vehicle.id)),
+  startWith([]),
+  shareReplay(1)
+);
+
+export const tripsWithVehicles$ = combineLatest([trips$, vehicles$]).pipe(
+  map(([trips, vehicles]) =>
+    trips.map(trip => ({
+      ...trip,
+      vehicle: vehicles.find(vehicle => vehicle.trip.trip_id === trip.trip_id)
+    }))
+  ),
+  startWith([]),
+  shareReplay(1)
 );
 
 export const routePatterns$ = routes$.pipe(
   map(routes =>
     Array.from(new Set(routes.map(route => route.route_id.substring(0, 5))))
-  )
+  ),
+  startWith([]),
+  shareReplay(1)
 );
 
 export const routeShortNamesByStop$ = routes$.pipe(
@@ -118,5 +137,25 @@ export const routeShortNamesByStop$ = routes$.pipe(
       (a, b) =>
         a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
     )
-  )
+  ),
+  startWith([]),
+  shareReplay(1)
+);
+
+export const favouritesWithTrips$ = combineLatest([
+  favourites$,
+  tripsWithVehicles$
+]).pipe(
+  map(([favourites, tripsWithVehicles]) =>
+    favourites.map(fav => ({
+      ...fav,
+      trip: tripsWithVehicles.find(
+        trip =>
+          trip.stop_code === fav.stopCode &&
+          trip.route_short_name === fav.routeShortName
+      )
+    }))
+  ),
+  startWith([]),
+  shareReplay(1)
 );
