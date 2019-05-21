@@ -5,7 +5,7 @@ import {
   keys as idbKeys,
   del as idbDel
 } from "idb-keyval";
-import { merge, ReplaySubject, Subject, from } from "rxjs";
+import { merge, ReplaySubject, Subject, from, of } from "rxjs";
 import { tap, switchMap, shareReplay, startWith } from "rxjs/operators";
 
 const store = new Store("favourites", "favourites");
@@ -40,7 +40,8 @@ export const favourites$ = merge(
   actionRemoveFromFavourite$.pipe(
     tap(({ stopCode, routeShortName }) => del(stopCode, routeShortName))
   ),
-  actionViewFavourites$
+  actionViewFavourites$,
+  of(null)
 ).pipe(
   switchMap(() => from(list())),
   startWith([]),

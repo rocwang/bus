@@ -1,6 +1,6 @@
-import { format } from "date-fns";
+import { format, startOfMinute } from "date-fns";
 
-export function queryGtfs(sql, bind) {
+function queryGtfs(sql, bind) {
   const url = new URL(process.env.VUE_APP_GTFS_API);
   url.searchParams.set("sql", sql.trim());
   if (bind) {
@@ -14,12 +14,42 @@ function getDayOfWeek(date) {
   return date.toLocaleString("en-NZ", { weekday: "long" }).toLocaleLowerCase();
 }
 
-export function getTripsByStop(stopCode) {
+export function getStopNameById(stopCode) {
+  if (!stopCode) {
+    return "";
+  }
+
   const now = new Date();
-  const departureFrom = `${("0" + now.getHours()).slice(-2)}:00:00`;
-  // Times like "25:00:00" is OK, see:
+  const today = format(now, "YYYYMMDD");
+
+  return queryGtfs(
+    `
+    SELECT stop_name FROM stops
+      INNER JOIN stop_times ON stop_times.stop_id = stops.stop_id
+      INNER JOIN trips ON trips.trip_id = stop_times.trip_id
+      INNER JOIN calendar ON trips.service_id = calendar.service_id
+    WHERE stop_code=:stopCode AND start_date <= :today AND :today <= end_date
+    LIMIT 1
+`,
+    {
+      stopCode,
+      today
+    }
+  );
+}
+
+export function getTripsByStop(stopCode) {
+  if (!stopCode) {
+    return [];
+  }
+
+  const now = startOfMinute(new Date());
+  const departureFrom = format(now, "HH:mm:ss");
+  // 1 hours later. Times like "25:00:00" is OK, see:
   // https://developers.google.com/transit/gtfs/reference/#stop_timestxt
-  const departureTo = `${("0" + (now.getHours() + 2)).slice(-2)}:00:00`;
+  const departureTo = `${("0" + (now.getHours() + 1)).slice(
+    -2
+  )}:${now.getMinutes()}:00`;
   const today = format(now, "YYYYMMDD");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -43,69 +73,13 @@ export function getTripsByStop(stopCode) {
   );
 }
 
-export function getRoutesByStopRouteItems(stopRouteItems) {
-  if (stopRouteItems.length === 0) {
-    return [];
-  }
-
-  const now = new Date();
-  const departureHours = ("0" + now.getHours()).slice(-2);
-  const departureMinutes = (now.getMinutes() === 0
-    ? "00"
-    : "0" + (now.getMinutes() - 1)
-  ).slice(-2);
-  const departureFrom = `${departureHours}:${departureMinutes}:00`;
-  const today = format(now, "YYYYMMDD");
-  const dayOfWeek = getDayOfWeek(now);
-
-  const bindPlaceholders = stopRouteItems
-    .map(
-      (item, index) =>
-        `(stop_code = :stopCode${index} AND route_short_name = :routeShortName${index})`
-    )
-    .join(" OR ");
-  const bindValues = stopRouteItems.reduce(
-    (values, item, index) =>
-      Object.assign(values, {
-        [`stopCode${index}`]: item.stopCode,
-        [`routeShortName${index}`]: item.routeShortName
-      }),
-    {}
-  );
-
-  return queryGtfs(
-    `
-      SELECT routes.route_id, route_short_name
-      FROM routes
-             INNER JOIN trips ON trips.route_id = routes.route_id
-             INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id
-             INNER JOIN stops ON stops.stop_id = stop_times.stop_id
-             INNER JOIN calendar ON trips.service_id = calendar.service_id
-             LEFT JOIN calendar_dates ON calendar.service_id = calendar_dates.service_id
-        AND date = :today
-      WHERE start_date <= :today
-        AND :today <= end_date
-        AND (${dayOfWeek} = TRUE OR exception_type = 1)
-        AND departure_time >= :departureFrom
-        AND (${bindPlaceholders})
-      GROUP BY stop_code, route_short_name;
-    `,
-    { departureFrom, today, ...bindValues }
-  );
-}
-
 export function getNexTripsByStopRouteItems(stopRouteItems) {
   if (stopRouteItems.length === 0) {
     return [];
   }
 
   const now = new Date();
-  const departureHours = ("0" + now.getHours()).slice(-2);
-  const departureMinutes = (now.getMinutes() === 0
-    ? "00"
-    : "0" + (now.getMinutes() - 1)
-  ).slice(-2);
-  const departureFrom = `${departureHours}:${departureMinutes}:00`;
+  const departureFrom = format(startOfMinute(now), "HH:mm:ss");
   const today = format(now, "YYYYMMDD");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -146,8 +120,12 @@ export function getNexTripsByStopRouteItems(stopRouteItems) {
 }
 
 export function getTripsByStopAndRoute(stopCode, routeShortName) {
+  if (!stopCode || !routeShortName) {
+    return [];
+  }
+
   const now = new Date();
-  const departureFrom = `${("0" + now.getHours()).slice(-2)}:00:00`;
+  const departureFrom = format(startOfMinute(now), "HH:mm:ss");
   const today = format(now, "YYYYMMDD");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -174,6 +152,10 @@ export function getTripsByStopAndRoute(stopCode, routeShortName) {
 }
 
 export function getTripsByStopAndTrip(stopCode, tripId) {
+  if (!stopCode || !tripId) {
+    return [];
+  }
+
   const now = new Date();
   const today = format(now, "YYYYMMDD");
   const dayOfWeek = getDayOfWeek(now);
@@ -198,27 +180,57 @@ export function getTripsByStopAndTrip(stopCode, tripId) {
   );
 }
 
-export function getStopNameById(stopCode) {
+export function getRoutesByStopRouteItems(stopRouteItems) {
+  if (stopRouteItems.length === 0) {
+    return [];
+  }
+
   const now = new Date();
+  const departureFrom = format(startOfMinute(now), "HH:mm:ss");
   const today = format(now, "YYYYMMDD");
+  const dayOfWeek = getDayOfWeek(now);
+
+  const bindPlaceholders = stopRouteItems
+    .map(
+      (item, index) =>
+        `(stop_code = :stopCode${index} AND route_short_name = :routeShortName${index})`
+    )
+    .join(" OR ");
+  const bindValues = stopRouteItems.reduce(
+    (values, item, index) =>
+      Object.assign(values, {
+        [`stopCode${index}`]: item.stopCode,
+        [`routeShortName${index}`]: item.routeShortName
+      }),
+    {}
+  );
 
   return queryGtfs(
     `
-    SELECT stop_name FROM stops
-      INNER JOIN stop_times ON stop_times.stop_id = stops.stop_id
-      INNER JOIN trips ON trips.trip_id = stop_times.trip_id
-      INNER JOIN calendar ON trips.service_id = calendar.service_id
-    WHERE stop_code=:stopCode AND start_date <= :today AND :today <= end_date
-    LIMIT 1
-`,
-    {
-      stopCode,
-      today
-    }
+      SELECT routes.route_id, route_short_name
+      FROM routes
+             INNER JOIN trips ON trips.route_id = routes.route_id
+             INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id
+             INNER JOIN stops ON stops.stop_id = stop_times.stop_id
+             INNER JOIN calendar ON trips.service_id = calendar.service_id
+             LEFT JOIN calendar_dates ON calendar.service_id = calendar_dates.service_id
+        AND date = :today
+      WHERE start_date <= :today
+        AND :today <= end_date
+        AND (${dayOfWeek} = TRUE OR exception_type = 1)
+        AND departure_time >= :departureFrom
+        AND (${bindPlaceholders})
+      GROUP BY stop_code, route_short_name;
+    `,
+    { departureFrom, today, ...bindValues }
   );
 }
 
 export function getRoutesByStop(stopCode) {
+  if (!stopCode) {
+    return [];
+  }
+
   const now = new Date();
   const today = format(now, "YYYYMMDD");
   const dayOfWeek = getDayOfWeek(now);
@@ -244,6 +256,10 @@ export function getRoutesByStop(stopCode) {
 }
 
 export function getRoutesByStopAndShortName(stopCode, routeShortName) {
+  if (!stopCode || !routeShortName) {
+    return [];
+  }
+
   const now = new Date();
   const today = format(now, "YYYYMMDD");
   const dayOfWeek = getDayOfWeek(now);
@@ -270,6 +286,10 @@ export function getRoutesByStopAndShortName(stopCode, routeShortName) {
 }
 
 export function getRoutesByStopAndTrip(stopCode, tripId) {
+  if (!stopCode || !tripId) {
+    return [];
+  }
+
   const now = new Date();
   const today = format(now, "YYYYMMDD");
   const dayOfWeek = getDayOfWeek(now);

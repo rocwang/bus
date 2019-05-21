@@ -11,18 +11,13 @@
       <Buttonizer modifier="icon">
         <button
           v-if="isFavoured"
-          v-stream:click="del$"
+          @click="del"
           aria-label="Delete from Favourites"
           key="del"
         >
           <IconFullStar />
         </button>
-        <button
-          v-else
-          v-stream:click="add$"
-          aria-label="Add to Favourites"
-          key="add"
-        >
+        <button v-else @click="add" aria-label="Add to Favourites" key="add">
           <IconEmptyStar />
         </button>
 
@@ -68,8 +63,6 @@ import {
   actionRemoveFromFavourite$,
   actionAddToFavourite$
 } from "../favouritesStore";
-import { Subject } from "rxjs";
-import { tap } from "rxjs/operators";
 
 export default {
   name: "PanelRoute",
@@ -108,17 +101,19 @@ export default {
       required: true
     }
   },
-  created() {
-    this.add$ = new Subject();
-    this.del$ = new Subject();
-
-    this.add$.pipe(
-      tap(() => actionAddToFavourite$.next(this.stopCode, this.shortName))
-    );
-
-    this.del$.pipe(
-      tap(() => actionRemoveFromFavourite$.next(this.stopCode, this.shortName))
-    );
+  methods: {
+    add() {
+      actionAddToFavourite$.next({
+        stopCode: this.stopCode,
+        routeShortName: this.shortName
+      });
+    },
+    del() {
+      actionRemoveFromFavourite$.next({
+        stopCode: this.stopCode,
+        routeShortName: this.shortName
+      });
+    }
   },
   computed: {
     isFavoured() {

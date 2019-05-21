@@ -4,8 +4,6 @@ import Intro from "./views/Intro";
 import Favourites from "./views/Favourites";
 import Stop from "./views/Stop";
 import Route from "./views/Route";
-import { actionViewStop$, actionViewRoute$ } from "./observables";
-import { actionViewFavourites$ } from "./favouritesStore";
 
 Vue.use(Router);
 
@@ -24,32 +22,17 @@ export default new Router({
       component: Favourites,
       props: route => ({
         isCollapsedInitially: route.query.isCollapsed === "yes"
-      }),
-      beforeEnter: (to, from, next) => {
-        actionViewFavourites$.next();
-        next();
-      }
+      })
     },
     {
       path: "/stop/:stopCode",
       name: "Stop",
-      component: Stop,
-      beforeEnter: (to, from, next) => {
-        actionViewStop$.next(to.params.stopCode);
-        next();
-      }
+      component: Stop
     },
     {
       path: "/stop/:stopCode/route_group/:shortName",
       name: "Route",
-      component: Route,
-      beforeEnter: (to, from, next) => {
-        actionViewRoute$.next({
-          stopCode: to.params.stopCode,
-          routeShortName: to.params.shortName
-        });
-        next();
-      }
+      component: Route
     },
     {
       path: "*",

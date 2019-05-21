@@ -8,7 +8,12 @@
 
 <script>
 import PanelStop from "../components/PanelStop";
-import { stopCode$, stopName$, routeShortNamesByStop$ } from "../observables";
+import {
+  actionViewStop$,
+  stopCode$,
+  stopName$,
+  routeShortNamesByStop$
+} from "../observables";
 
 export default {
   name: "Stop",
@@ -19,6 +24,18 @@ export default {
       routeShortNames: routeShortNamesByStop$,
       stopCode: stopCode$
     };
+  },
+  beforeRouteEnter: (to, from, next) => {
+    actionViewStop$.next(to.params.stopCode);
+    next();
+  },
+  beforeRouteUpdate(to, from, next) {
+    actionViewStop$.next(to.params.stopCode);
+    next();
+  },
+  beforeRouteLeave(to, from, next) {
+    actionViewStop$.next("");
+    next();
   }
 };
 </script>
