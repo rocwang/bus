@@ -8,6 +8,7 @@
 <script>
 import PanelFavourites from "../components/PanelFavourites";
 import { favouritesWithTrips$ } from "../observables";
+import { actionViewFavourites$ } from "../favouritesStore";
 
 export default {
   name: "Favourites",
@@ -22,6 +23,10 @@ export default {
     return {
       favouritesWithTrips: favouritesWithTrips$
     };
+  },
+  beforeRouteEnter(to, from, next) {
+    actionViewFavourites$.next();
+    next();
   }
 };
 </script>

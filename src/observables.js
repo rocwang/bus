@@ -22,9 +22,9 @@ import {
   getNexTripsByStopRouteItems,
   getRoutesByStopRouteItems
 } from "./api/gtfs";
-import { favourites$ } from "./favouritesStore";
+import { favourites$, actionViewFavourites$ } from "./favouritesStore";
 
-export const actionViewStop$ = new ReplaySubject(1); // { stopCode }
+export const actionViewStop$ = new ReplaySubject(1); // "stopCode"
 export const actionViewRoute$ = new ReplaySubject(1); // { stopCode, routeShortName }
 export const actionViewTrip$ = new ReplaySubject(1); // { stopCode, tripId }
 
@@ -54,7 +54,8 @@ export const routeShortName$ = actionViewRoute$.pipe(
 );
 
 export const trips$ = merge(
-  favourites$.pipe(
+  actionViewFavourites$.pipe(
+    switchMap(() => favourites$),
     switchMap(favourites => from(getNexTripsByStopRouteItems(favourites)))
   ),
   actionViewRoute$.pipe(
@@ -74,7 +75,8 @@ export const trips$ = merge(
 );
 
 export const routes$ = merge(
-  favourites$.pipe(
+  actionViewFavourites$.pipe(
+    switchMap(() => favourites$),
     switchMap(favourites => from(getRoutesByStopRouteItems(favourites)))
   ),
   actionViewTrip$.pipe(
