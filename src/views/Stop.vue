@@ -8,12 +8,9 @@
 
 <script>
 import PanelStop from "../components/PanelStop";
-import {
-  actionViewStop$,
-  stopCode$,
-  stopName$,
-  routeShortNamesByStop$
-} from "../observables";
+import { stopCode$, stopName$ } from "../store/stop";
+import { actionViewStop$ } from "../store/actions";
+import { routeShortNamesByStop$ } from "../store/routes";
 
 export default {
   name: "Stop",

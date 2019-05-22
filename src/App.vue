@@ -14,7 +14,9 @@
 
 <script>
 import config from "./config";
-import { vehicles$, routePatterns$, stopCode$ } from "./observables";
+import { vehicles$ } from "./store/trips";
+import { routePatterns$ } from "./store/routes";
+import { stopCode$ } from "./store/stop";
 import UpdateNotification from "./components/UpdateNotification";
 
 export default {
