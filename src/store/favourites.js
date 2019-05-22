@@ -4,7 +4,7 @@ import {
   get,
   keys as idbKeys,
   del as idbDel
-} from "idb-keyval/dist/idb-keyval";
+} from "idb-keyval";
 import { merge, from, of } from "rxjs";
 import { tap, switchMap, shareReplay, startWith } from "rxjs/operators";
 import {
