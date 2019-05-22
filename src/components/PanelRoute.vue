@@ -62,7 +62,7 @@ import Buttonizer from "./Buttonizer";
 import {
   actionRemoveFromFavourite$,
   actionAddToFavourite$
-} from "../favouritesStore";
+} from "../store/actions";
 
 export default {
   name: "PanelRoute",

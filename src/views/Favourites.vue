@@ -7,8 +7,8 @@
 
 <script>
 import PanelFavourites from "../components/PanelFavourites";
-import { favouritesWithTrips$ } from "../observables";
-import { actionViewFavourites$ } from "../favouritesStore";
+import { favouritesWithTrips$ } from "../store/trips";
+import { actionViewFavourites$ } from "../store/actions";
 
 export default {
   name: "Favourites",

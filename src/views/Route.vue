@@ -11,10 +11,11 @@
 
 <script>
 import PanelRoute from "../components/PanelRoute";
-import { trips$, stopCode$, routeShortName$, vehicles$ } from "../observables";
-import { tripsWithVehicles$ } from "../observables";
-import { favourites$ } from "../favouritesStore";
-import { actionViewRoute$ } from "../observables";
+import { stopCode$ } from "../store/stop";
+import { routeShortName$ } from "../store/routes";
+import { trips$, tripsWithVehicles$, vehicles$ } from "../store/trips";
+import { favourites$ } from "../store/favourites";
+import { actionViewRoute$ } from "../store/actions";
 
 export default {
   name: "Route",

@@ -4,9 +4,14 @@ import {
   get,
   keys as idbKeys,
   del as idbDel
-} from "idb-keyval";
-import { merge, ReplaySubject, Subject, from, of } from "rxjs";
+} from "idb-keyval/dist/idb-keyval";
+import { merge, from, of } from "rxjs";
 import { tap, switchMap, shareReplay, startWith } from "rxjs/operators";
+import {
+  actionAddToFavourite$,
+  actionRemoveFromFavourite$,
+  actionViewFavourites$
+} from "./actions";
 
 const store = new Store("favourites", "favourites");
 
@@ -28,10 +33,6 @@ async function list() {
   const values = keys.map(key => get(key, store));
   return Promise.all(values);
 }
-
-export const actionAddToFavourite$ = new Subject();
-export const actionRemoveFromFavourite$ = new Subject();
-export const actionViewFavourites$ = new ReplaySubject(1);
 
 export const favourites$ = merge(
   actionAddToFavourite$.pipe(
