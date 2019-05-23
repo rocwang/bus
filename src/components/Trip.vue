@@ -1,31 +1,46 @@
 <template>
-  <div :class="$style.root">
-    <RoundIconRoute :class="$style.icon" />
-    <span :class="$style.headSign">
-      {{ headSign }}
-      <template v-if="isRealTime">
-        (R)
-      </template>
-      <template v-else>
-        (S)
-      </template>
-    </span>
-    <span :class="$style.departureTime">
-      {{ formattedDepartureTime }}
-    </span>
-    <meter
-      v-if="occupancyStatus"
-      :class="$style.occupancyStatus"
-      :value="occupancyStatus"
-      min="0"
-      max="6"
-      low="2"
-      high="4"
-      optimum="2"
-    >
-      Occupancy Status: {{ occupancyStatus }}/6
-    </meter>
-  </div>
+  <Buttonizer>
+    <div :class="$style.root" @click="toggle">
+      <RoundIconRoute :class="$style.icon" />
+      <span :class="$style.headSign">
+        {{ headSign }}
+        <template v-if="isRealTime">
+          (R)
+        </template>
+        <template v-else>
+          (S)
+        </template>
+      </span>
+      <span :class="$style.departureTime">
+        {{ formattedDepartureTime }}
+      </span>
+      <meter
+        v-if="occupancyStatus"
+        :class="$style.occupancyStatus"
+        :value="occupancyStatus"
+        min="0"
+        max="6"
+        low="2"
+        high="4"
+        optimum="2"
+      >
+        Occupancy Status: {{ occupancyStatus }}/6
+      </meter>
+
+      <table :class="$style.detail" v-if="isExpanded">
+        <tbody>
+          <tr>
+            <td>Departure</td>
+            <td :class="$style.value">{{ departureTime }}</td>
+          </tr>
+          <tr>
+            <td>Occupancy</td>
+            <td :class="$style.value">{{ formattedOccupancy }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </Buttonizer>
 </template>
 
 <script>
@@ -33,10 +48,11 @@ import RoundIconRoute from "./RoundIconRoute";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 import { interval } from "rxjs";
 import { map, startWith } from "rxjs/operators";
+import Buttonizer from "./Buttonizer";
 
 export default {
   name: "Trip",
-  components: { RoundIconRoute },
+  components: { RoundIconRoute, Buttonizer },
   props: {
     headSign: {
       type: String,
@@ -53,7 +69,30 @@ export default {
     isRealTime: {
       type: Boolean,
       required: true
+    },
+    isDetailEnabled: {
+      type: Boolean,
+      default: true
     }
+  },
+  computed: {
+    formattedOccupancy() {
+      const status = [
+        "Empty",
+        "Many seats available",
+        "Few seats available",
+        "Standing room only",
+        "Crushed standing room only",
+        "Full",
+        "Not accepting passengers"
+      ];
+      return status[this.occupancyStatus] || "N/A";
+    }
+  },
+  data() {
+    return {
+      isExpanded: false
+    };
   },
   subscriptions() {
     return {
@@ -78,6 +117,13 @@ export default {
         })
       )
     };
+  },
+  methods: {
+    toggle() {
+      if (this.isDetailEnabled) {
+        this.isExpanded = !this.isExpanded;
+      }
+    }
   }
 };
 </script>
@@ -87,6 +133,7 @@ export default {
   display: grid;
   grid-template:
     "icon headSign departimeTime occupancyStatus" auto
+    ". detail detail detail" auto
     / 36px 1fr auto 57px;
   place-items: center start;
   grid-column-gap: 18px;
@@ -137,5 +184,15 @@ export default {
   background: var(--c-white);
   margin: 1px;
   height: calc(100% - 2px);
+}
+
+.detail {
+  font-size: 1.2rem;
+  line-height: 1.7rem;
+  grid-area: detail;
+}
+
+.value {
+  padding-left: 10px;
 }
 </style>

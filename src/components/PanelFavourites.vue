@@ -48,6 +48,7 @@
                   ? item.trip.vehicle.occupancy_status
                   : undefined
               "
+              :isDetailEnabled="false"
             />
           </router-link>
         </li>
