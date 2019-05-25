@@ -3,13 +3,15 @@ import {
   set as idbSet,
   get,
   keys as idbKeys,
-  del as idbDel
+  del as idbDel,
+  clear as idbClear
 } from "idb-keyval";
-import { merge, from, of } from "rxjs";
-import { tap, switchMap, shareReplay, startWith } from "rxjs/operators";
+import { defer, merge } from "rxjs";
+import { shareReplay, startWith, concatAll, mapTo, map } from "rxjs/operators";
 import {
-  actionAddToFavourite$,
-  actionRemoveFromFavourite$,
+  actionAddToFavourites$,
+  actionRemoveFromFavourites$,
+  actionClearFavourites$,
   actionViewFavourites$
 } from "./actions";
 
@@ -34,17 +36,38 @@ async function list() {
   return Promise.all(values);
 }
 
+function clear() {
+  return idbClear(store);
+}
+
 export const favourites$ = merge(
-  actionAddToFavourite$.pipe(
-    tap(({ stopCode, routeShortName }) => set(stopCode, routeShortName))
+  actionAddToFavourites$.pipe(
+    map(({ stopCode, routeShortName }) =>
+      defer(async () => {
+        await set(stopCode, routeShortName);
+        return list();
+      })
+    )
   ),
-  actionRemoveFromFavourite$.pipe(
-    tap(({ stopCode, routeShortName }) => del(stopCode, routeShortName))
+  actionRemoveFromFavourites$.pipe(
+    map(({ stopCode, routeShortName }) =>
+      defer(async () => {
+        await del(stopCode, routeShortName);
+        return list();
+      })
+    )
   ),
-  actionViewFavourites$,
-  of(null)
+  actionClearFavourites$.pipe(
+    mapTo(
+      defer(async () => {
+        await clear();
+        return list();
+      })
+    )
+  ),
+  actionViewFavourites$.pipe(mapTo(defer(list)))
 ).pipe(
-  switchMap(() => from(list())),
+  concatAll(),
   startWith([]),
   shareReplay(1)
 );

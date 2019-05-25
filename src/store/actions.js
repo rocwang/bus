@@ -1,7 +1,8 @@
 import { Subject, ReplaySubject } from "rxjs";
 
-export const actionAddToFavourite$ = new Subject();
-export const actionRemoveFromFavourite$ = new Subject();
+export const actionAddToFavourites$ = new Subject();
+export const actionRemoveFromFavourites$ = new Subject();
+export const actionClearFavourites$ = new Subject();
 export const actionViewFavourites$ = new ReplaySubject(1);
 
 export const actionViewRoute$ = new ReplaySubject(1); // { stopCode, routeShortName }
