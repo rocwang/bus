@@ -60,8 +60,8 @@ import IconEmptyStar from "./IconEmptyStar";
 import IconFullStar from "./IconFullStar";
 import Buttonizer from "./Buttonizer";
 import {
-  actionRemoveFromFavourite$,
-  actionAddToFavourite$
+  actionRemoveFromFavourites$,
+  actionAddToFavourites$
 } from "../store/actions";
 
 export default {
@@ -103,13 +103,13 @@ export default {
   },
   methods: {
     add() {
-      actionAddToFavourite$.next({
+      actionAddToFavourites$.next({
         stopCode: this.stopCode,
         routeShortName: this.shortName
       });
     },
     del() {
-      actionRemoveFromFavourite$.next({
+      actionRemoveFromFavourites$.next({
         stopCode: this.stopCode,
         routeShortName: this.shortName
       });
