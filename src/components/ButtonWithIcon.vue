@@ -33,4 +33,7 @@ export default {
   width: 36px;
   margin-right: 18px;
 }
+
+.text {
+}
 </style>

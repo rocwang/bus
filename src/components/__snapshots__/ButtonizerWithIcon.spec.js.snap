@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ButtonWithIcon.vue renders 2 buttons 1`] = `
+<button
+  class="root"
+>
+  <div
+    class="icon"
+  />
+   
+  <span
+    class="text"
+  />
+</button>
+`;
