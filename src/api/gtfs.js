@@ -1,4 +1,5 @@
-import { format, startOfMinute } from "date-fns";
+import format from "date-fns/format";
+import startOfMinute from "date-fns/start_of_minute";
 
 function queryGtfs(sql, bind) {
   const url = new URL(process.env.VUE_APP_GTFS_API);
