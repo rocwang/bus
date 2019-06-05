@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Notification.vue matches the snapshot 1`] = `
+<div
+  class="root"
+  enter-active-class="active"
+  enter-class="enterAndLeaveTo"
+  leave-active-class="active"
+  leave-to-class="enterAndLeaveTo"
+/>
+`;
