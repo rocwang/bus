@@ -1,4 +1,3 @@
-import "fake-indexeddb/auto";
 import { shallowMount } from "@vue/test-utils";
 import Intro from "./Intro";
 

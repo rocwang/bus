@@ -53,11 +53,11 @@
 
 <script>
 import Panel from "./Panel";
-import RoundIconRoute from "./RoundIconRoute";
+import RoundIconRoute from "./icons/RoundIconRoute";
 import Trip from "./Trip";
-import IconCross from "./IconCross";
-import IconEmptyStar from "./IconEmptyStar";
-import IconFullStar from "./IconFullStar";
+import IconCross from "./icons/IconCross";
+import IconEmptyStar from "./icons/IconEmptyStar";
+import IconFullStar from "./icons/IconFullStar";
 import Buttonizer from "./Buttonizer";
 import {
   actionRemoveFromFavourites$,

@@ -17,5 +17,6 @@ module.exports = {
     "<rootDir>/tests/unit/**/*.spec.(js|jsx|ts|tsx)",
     "**/__tests__/*.(js|jsx|ts|tsx)"
   ],
+  testPathIgnorePatterns: ["/node_modules/", "/__fixtures__/"],
   testURL: "http://localhost/"
 };

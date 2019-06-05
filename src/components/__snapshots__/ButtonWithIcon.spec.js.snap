@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ButtonWithIcon.vue renders 2 buttons 1`] = `
+exports[`ButtonWithIcon.vue matches the snapshot 1`] = `
 <button
   class="root"
 >
