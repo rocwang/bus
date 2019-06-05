@@ -37,8 +37,8 @@
 
 <script>
 import Panel from "./Panel";
-import RoundIconStop from "./RoundIconStop";
-import IconCross from "./IconCross";
+import RoundIconStop from "./icons/RoundIconStop";
+import IconCross from "./icons/IconCross";
 import Buttonizer from "./Buttonizer";
 
 export default {

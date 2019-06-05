@@ -1,7 +1,7 @@
 <template>
   <Panel :isCollapsed="isCollapsed">
     <template v-slot:icon>
-      <RoundIconStarFull />
+      <RoundIconFullStar />
     </template>
     <template v-slot:title>
       Favourites
@@ -59,9 +59,9 @@
 
 <script>
 import Panel from "../components/Panel";
-import RoundIconStarFull from "../components/RoundIconStarFull";
-import IconArrow from "../components/IconArrow";
-import IconEdit from "../components/IconEdit";
+import RoundIconFullStar from "../components/icons/RoundIconFullStar";
+import IconArrow from "../components/icons/IconArrow";
+import IconEdit from "../components/icons/IconEdit";
 import Buttonizer from "../components/Buttonizer";
 import Trip from "./Trip";
 
@@ -69,7 +69,7 @@ export default {
   name: "PanelFavourites",
   components: {
     Panel,
-    RoundIconStarFull,
+    RoundIconFullStar,
     IconArrow,
     IconEdit,
     Buttonizer,

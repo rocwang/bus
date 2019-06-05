@@ -24,7 +24,7 @@
           @click="handleButtonClick(false)"
         >
           <template v-slot:icon>
-            <RoundIconStarFull />
+            <RoundIconFullStar />
           </template>
           <template v-slot:text>
             Favourites
@@ -36,13 +36,13 @@
 </template>
 
 <script>
-import IconBus from "../components/IconBus";
-import IconShip from "../components/IconShip";
-import IconTrain from "../components/IconTrain";
+import IconBus from "../components/icons/IconBus";
+import IconShip from "../components/icons/IconShip";
+import IconTrain from "../components/icons/IconTrain";
 import Buttonizer from "../components/Buttonizer";
 import ButtonWithIcon from "../components/ButtonWithIcon";
-import RoundIconMap from "../components/RoundIconMap";
-import RoundIconStarFull from "../components/RoundIconStarFull";
+import RoundIconMap from "../components/icons/RoundIconMap";
+import RoundIconFullStar from "../components/icons/RoundIconFullStar";
 
 export default {
   name: "Intro",
@@ -52,7 +52,7 @@ export default {
     IconTrain,
     Buttonizer,
     RoundIconMap,
-    RoundIconStarFull,
+    RoundIconFullStar,
     ButtonWithIcon
   },
   beforeRouteEnter(to, from, next) {

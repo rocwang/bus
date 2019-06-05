@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import RoundIconRoute from "./RoundIconRoute";
+import RoundIconRoute from "./icons/RoundIconRoute";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 import { interval } from "rxjs";
 import { map, startWith } from "rxjs/operators";
