@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Panel.vue matches the snapshot 1`] = `
+<div
+  class="root"
+>
+  <div
+    class="head"
+  >
+    <div
+      class="icon"
+    />
+     
+    <h1
+      class="title"
+    >
+      <small
+        class="prefix"
+      />
+       
+    </h1>
+     
+    <div
+      class="buttons"
+    />
+     
+    <p
+      class="subtitle"
+    />
+  </div>
+   
+  <div
+    class="body"
+  />
+</div>
+`;

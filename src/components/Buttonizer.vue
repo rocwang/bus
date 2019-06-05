@@ -16,6 +16,7 @@ export default {
     }
   },
   render(createElement, { props, children, $style }) {
+    $style = $style || {};
     let classNames = [$style.root, { [$style["full-width"]]: props.fullWidth }];
 
     if (props.modifier) {

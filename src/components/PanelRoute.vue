@@ -6,7 +6,7 @@
     <template v-slot:prefix>
       Route
     </template>
-    <template v-slot:title>{{ shortName }}</template>
+    <template v-slot:title>{{ routeShortName }}</template>
     <template v-slot:buttons>
       <Buttonizer modifier="icon">
         <button
@@ -78,48 +78,40 @@ export default {
   props: {
     stopCode: {
       type: String,
-      required: true
+      default: ""
     },
-    shortName: {
+    routeShortName: {
       type: String,
-      required: true
-    },
-    trips: {
-      type: Array,
-      required: true
-    },
-    vehicles: {
-      type: Array,
-      required: true
+      default: ""
     },
     tripsWithVehicles: {
       type: Array,
-      required: true
+      default: () => []
     },
     favourites: {
       type: Array,
-      required: true
+      default: () => []
     }
   },
   methods: {
     add() {
       actionAddToFavourites$.next({
         stopCode: this.stopCode,
-        routeShortName: this.shortName
+        routeShortName: this.routeShortName
       });
     },
     del() {
       actionRemoveFromFavourites$.next({
         stopCode: this.stopCode,
-        routeShortName: this.shortName
+        routeShortName: this.routeShortName
       });
     }
   },
   computed: {
     isFavoured() {
-      return !!this.favourites.find(
+      return this.favourites.some(
         ({ stopCode, routeShortName }) =>
-          stopCode === this.stopCode && routeShortName === this.shortName
+          stopCode === this.stopCode && routeShortName === this.routeShortName
       );
     }
   }

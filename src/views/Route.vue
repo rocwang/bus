@@ -1,9 +1,7 @@
 <template>
   <PanelRoute
-    :shortName="shortName"
+    :routeShortName="routeShortName"
     :stopCode="stopCode"
-    :trips="trips"
-    :vehicles="vehicles"
     :tripsWithVehicles="tripsWithVehicles"
     :favourites="favourites"
   />
@@ -13,7 +11,7 @@
 import PanelRoute from "../components/PanelRoute";
 import { stopCode$ } from "../store/stop";
 import { routeShortName$ } from "../store/routes";
-import { trips$, tripsWithVehicles$, vehicles$ } from "../store/trips";
+import { tripsWithVehicles$ } from "../store/trips";
 import { favourites$ } from "../store/favourites";
 import { actionViewRoute$ } from "../store/actions";
 
@@ -22,10 +20,8 @@ export default {
   components: { PanelRoute },
   subscriptions() {
     return {
-      trips: trips$,
-      vehicles: vehicles$,
       stopCode: stopCode$,
-      shortName: routeShortName$,
+      routeShortName: routeShortName$,
       tripsWithVehicles: tripsWithVehicles$,
       favourites: favourites$
     };
