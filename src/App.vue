@@ -23,7 +23,8 @@ export default {
   name: "App",
   components: {
     UpdateNotification,
-    Mapbox: () => import(/* webpackChunkName: "mapbox" */ "./components/Mapbox")
+    Mapbox: () =>
+      import(/* webpackChunkName: "mapbox" */ "./components/mapbox/Mapbox")
   },
   provide() {
     const colors = Object.keys(this.$style)

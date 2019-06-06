@@ -23,15 +23,15 @@
 <script>
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import ControlGeolocate from "../components/ControlGeolocate";
-import SourceRoutes from "../components/SourceRoutes";
-import SourceStops from "../components/SourceStops";
-import LayerStops from "../components/LayerStops";
+import ControlGeolocate from "./ControlGeolocate";
+import SourceRoutes from "./SourceRoutes";
+import SourceStops from "./SourceStops";
+import LayerStops from "./LayerStops";
 // import LayerStopClusters from "../components/LayerStopClusters";
 // import LayerStopCount from "../components/LayerStopCount";
-import LayerRoute from "../components/LayerRoute";
-import MarkerBus from "../components/MarkerBus";
-import ImageStop from "../components/ImageStop";
+import LayerRoute from "./LayerRoute";
+import MarkerBus from "./MarkerBus";
+import ImageStop from "./ImageStop";
 
 export default {
   name: "Mapbox",
