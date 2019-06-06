@@ -1,4 +1,4 @@
-import stopIcon from "../assets/stop.png";
+import stopIcon from "../../assets/stop.png";
 
 export default {
   name: "ImageStop",
