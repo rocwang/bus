@@ -16,21 +16,29 @@ export default {
     }
   },
   render(createElement, { props, children, $style }) {
-    $style = $style || {};
-    let classNames = [$style.root, { [$style["full-width"]]: props.fullWidth }];
+    // Work around for unit testing on functional components with css module
+    $style = $style || {
+      root: "root",
+      fullWidth: "fullWidth",
+      primary: "primary",
+      secondary: "secondary",
+      icon: "icon"
+    };
+
+    let classNames = [$style.root, { [$style.fullWidth]: props.fullWidth }];
 
     if (props.modifier) {
       classNames.push($style[props.modifier]);
     }
 
     return children.map(child => {
-      if (child.data) {
-        child.data.class = child.data.class
-          ? classNames.concat(child.data.class)
-          : classNames;
-      } else {
-        child.data = { class: classNames };
+      if (!child.data) {
+        child.data = {};
       }
+
+      child.data.class = child.data.class
+        ? classNames.concat(child.data.class)
+        : classNames;
 
       return child;
     });
@@ -52,7 +60,7 @@ export default {
   transform: translate(1px, 1px);
 }
 
-.full-width {
+.fullWidth {
   display: block;
   width: 100%;
 }

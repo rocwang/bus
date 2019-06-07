@@ -3,26 +3,20 @@ import Intro from "./Intro";
 
 describe("Intro.vue", () => {
   let $router;
+  let wrapper;
 
   beforeEach(() => {
     $router = {
       push: jest.fn()
     };
+    wrapper = shallowMount(Intro, { mocks: { $router } });
   });
 
   it("renders 2 buttons", () => {
-    const wrapper = shallowMount(Intro, { mocks: { $router } });
-
     expect(wrapper.findAll("buttonwithicon-stub ").length).toBe(2);
   });
 
   it("pushes the Favourites route with query 'isCollapsed=yes' when clicking 'Find stops on map'", () => {
-    const wrapper = shallowMount(Intro, {
-      mocks: {
-        $router
-      }
-    });
-
     wrapper
       .findAll("buttonwithicon-stub")
       .at(0)
@@ -35,8 +29,6 @@ describe("Intro.vue", () => {
   });
 
   it("pushes the Favourites route when clicking 'Show nearby stops'", () => {
-    const wrapper = shallowMount(Intro, { mocks: { $router } });
-
     wrapper
       .findAll("buttonwithicon-stub")
       .at(1)

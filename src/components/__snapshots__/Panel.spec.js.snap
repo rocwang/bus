@@ -2,35 +2,70 @@
 
 exports[`Panel.vue matches the snapshot 1`] = `
 <div
-  class="root"
+  class="root collapsed"
 >
   <div
     class="head"
   >
     <div
       class="icon"
-    />
+    >
+      <p
+        class="icon"
+      >
+        test
+      </p>
+    </div>
      
     <h1
       class="title"
     >
       <small
         class="prefix"
-      />
+      >
+        <p
+          class="prefix"
+        >
+          test
+        </p>
+      </small>
        
+      <p
+        class="title"
+      >
+        test
+      </p>
     </h1>
      
     <div
       class="buttons"
-    />
+    >
+      <p
+        class="buttons"
+      >
+        test
+      </p>
+    </div>
      
     <p
       class="subtitle"
-    />
+    >
+      <p
+        class="subtitle"
+      >
+        test
+      </p>
+    </p>
   </div>
    
   <div
     class="body"
-  />
+  >
+    <p
+      class="body"
+    >
+      test
+    </p>
+  </div>
 </div>
 `;

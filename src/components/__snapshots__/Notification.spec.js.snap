@@ -7,5 +7,7 @@ exports[`Notification.vue matches the snapshot 1`] = `
   enter-class="enterAndLeaveTo"
   leave-active-class="active"
   leave-to-class="enterAndLeaveTo"
-/>
+>
+  <button />
+</div>
 `;

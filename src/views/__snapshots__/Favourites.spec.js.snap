@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Favourites.vue matches the snapshot 1`] = `
+<panelfavourites-stub
+  favouriteswithtrips=""
+  iscollapsedinitially="true"
+/>
+`;

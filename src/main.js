@@ -13,5 +13,5 @@ Vue.use(VueRx);
 
 new Vue({
   router,
-  render: h => h(App)
+  render: createElement => createElement(App)
 }).$mount("#app");

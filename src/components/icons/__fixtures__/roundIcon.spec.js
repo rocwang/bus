@@ -2,24 +2,25 @@ import { mount } from "@vue/test-utils";
 import colors from "../../__fixtures__/colors";
 
 export default component => () => {
-  it("matches the snapshot", () => {
-    const wrapper = mount(component, {
-      provide: {
-        colors
-      }
-    });
-    expect(wrapper.element).toMatchSnapshot();
-  });
+  let wrapper;
 
-  it("has a color", () => {
-    const wrapper = mount(component, {
+  beforeEach(() => {
+    wrapper = mount(component, {
       provide: {
         colors
       },
       propsData: {
-        color: colors.red
+        color: colors.red,
+        bg: colors.blue
       }
     });
+  });
+
+  it("matches the snapshot", () => {
+    expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it("has a color", () => {
     expect(
       wrapper
         .findAll("path")
@@ -29,14 +30,6 @@ export default component => () => {
   });
 
   it("has a background", () => {
-    const wrapper = mount(component, {
-      provide: {
-        colors
-      },
-      propsData: {
-        bg: colors.blue
-      }
-    });
     expect(
       wrapper
         .findAll("path")

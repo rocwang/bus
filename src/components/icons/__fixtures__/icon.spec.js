@@ -2,17 +2,10 @@ import { mount } from "@vue/test-utils";
 import colors from "../../__fixtures__/colors";
 
 export default component => () => {
-  it("matches the snapshot", () => {
-    const wrapper = mount(component, {
-      provide: {
-        colors
-      }
-    });
-    expect(wrapper.element).toMatchSnapshot();
-  });
+  let wrapper;
 
-  it("has a color", () => {
-    const wrapper = mount(component, {
+  beforeEach(() => {
+    wrapper = mount(component, {
       provide: {
         colors
       },
@@ -20,6 +13,13 @@ export default component => () => {
         color: colors.red
       }
     });
+  });
+
+  it("matches the snapshot", () => {
+    expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it("has a color", () => {
     expect(wrapper.find("path").attributes("fill")).toBe(colors.red);
   });
 };

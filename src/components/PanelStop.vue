@@ -48,21 +48,16 @@ export default {
   props: {
     stopCode: {
       type: String,
-      required: true
+      default: ""
     },
     stopName: {
       type: String,
-      required: true
+      default: ""
     },
     routeShortNames: {
       type: Array,
-      required: true
+      default: () => []
     }
-  },
-  data() {
-    return {
-      stop: {}
-    };
   },
   methods: {
     getRouteLeftBorderStyle(index) {
