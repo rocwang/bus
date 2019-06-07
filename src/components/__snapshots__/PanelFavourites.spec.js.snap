@@ -2,7 +2,7 @@
 
 exports[`PanelFavourites.vue matches the snapshot 1`] = `
 <div
-  class="root collapsed"
+  class="root"
 >
   <div
     class="head"
@@ -42,7 +42,7 @@ exports[`PanelFavourites.vue matches the snapshot 1`] = `
     >
       <button
         aria-label="edit"
-        class=""
+        class="root icon"
       >
         <svg
           viewBox="0 0 30 30"
@@ -57,9 +57,10 @@ exports[`PanelFavourites.vue matches the snapshot 1`] = `
        
       <button
         aria-label="toggle the panel"
-        class=""
+        class="root icon"
       >
         <svg
+          class="down"
           viewBox="0 0 30 30"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -79,7 +80,72 @@ exports[`PanelFavourites.vue matches the snapshot 1`] = `
   <div
     class="body"
   >
-    <ul />
+    <ul>
+      <li>
+        <router-link-stub
+          class="itemLink"
+          to="[object Object]"
+        >
+          <div
+            class="root root"
+          >
+            <span
+              class="headSign"
+            >
+              
+      test1
+      
+        (S)
+      
+            </span>
+             
+            <span
+              class="departureTime"
+            >
+              
+      
+    
+            </span>
+             
+            <!---->
+             
+            <!---->
+          </div>
+        </router-link-stub>
+      </li>
+      <li>
+        <router-link-stub
+          class="itemLink"
+          to="[object Object]"
+        >
+          <div
+            class="root root"
+          >
+            <span
+              class="headSign"
+            >
+              
+      test2
+      
+        (S)
+      
+            </span>
+             
+            <span
+              class="departureTime"
+            >
+              
+      
+    
+            </span>
+             
+            <!---->
+             
+            <!---->
+          </div>
+        </router-link-stub>
+      </li>
+    </ul>
   </div>
 </div>
 `;

@@ -1,7 +1,6 @@
 <template>
   <Buttonizer>
     <div :class="$style.root" @click="toggle">
-      <RoundIconRoute :class="$style.icon" />
       <span :class="$style.headSign">
         {{ headSign }}
         <template v-if="isRealTime">
@@ -24,7 +23,7 @@
         high="4"
         optimum="2"
       >
-        Occupancy Status: {{ occupancyStatus }}/6
+        Occupancy: {{ formattedOccupancy }}
       </meter>
 
       <table :class="$style.detail" v-if="isExpanded">
@@ -44,7 +43,6 @@
 </template>
 
 <script>
-import RoundIconRoute from "./icons/RoundIconRoute";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 import { interval } from "rxjs";
 import { map, startWith } from "rxjs/operators";
@@ -52,7 +50,7 @@ import Buttonizer from "./Buttonizer";
 
 export default {
   name: "Trip",
-  components: { RoundIconRoute, Buttonizer },
+  components: { Buttonizer },
   props: {
     headSign: {
       type: String,
@@ -132,17 +130,13 @@ export default {
 .root {
   display: grid;
   grid-template:
-    "icon headSign departimeTime occupancyStatus" auto
-    ". detail detail detail" auto
-    / 36px 1fr auto 57px;
+    "headSign departimeTime occupancyStatus" auto
+    "detail detail detail" auto
+    / 1fr auto 57px;
   place-items: center start;
   grid-column-gap: 18px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-.icon {
-  width: 36px;
+  padding-top: 14px;
+  padding-bottom: 14px;
 }
 
 .headSign,
