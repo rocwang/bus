@@ -43,6 +43,10 @@ unit test:
     - docker
   script:
     - npm run test:unit -- --coverage
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - coverage
 
 e2e test:
   image: cypress/browsers:node11.13.0-chrome73
