@@ -1,7 +1,11 @@
 <template>
   <Panel :isCollapsed="isCollapsed">
     <template v-slot:icon>
-      <RoundIconFullStar />
+      <RoundIcon
+        name="FullStar"
+        :bg="colors.yellow"
+        :color="colors.oceanBlue"
+      />
     </template>
     <template v-slot:title>
       Favourites
@@ -9,10 +13,14 @@
     <template v-slot:buttons>
       <Buttonizer modifier="icon">
         <button aria-label="edit">
-          <IconEdit />
+          <Icon name="Edit" :color="colors.yellow" />
         </button>
         <button @click="handleArrowClick" aria-label="toggle the panel">
-          <IconArrow :direction="isCollapsed ? 'up' : 'down'" />
+          <Icon
+            name="Arrow"
+            :direction="isCollapsed ? 'up' : 'down'"
+            :color="colors.yellow"
+          />
         </button>
       </Buttonizer>
     </template>
@@ -59,19 +67,18 @@
 
 <script>
 import Panel from "../components/Panel";
-import RoundIconFullStar from "../components/icons/RoundIconFullStar";
-import IconArrow from "../components/icons/IconArrow";
-import IconEdit from "../components/icons/IconEdit";
+import RoundIcon from "./RoundIcon";
+import Icon from "./Icon";
 import Buttonizer from "../components/Buttonizer";
 import Trip from "./Trip";
 
 export default {
   name: "PanelFavourites",
+  inject: ["colors"],
   components: {
     Panel,
-    RoundIconFullStar,
-    IconArrow,
-    IconEdit,
+    RoundIcon,
+    Icon,
     Buttonizer,
     Trip
   },

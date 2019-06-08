@@ -1,16 +1,20 @@
 <template>
   <div :class="$style.root">
     <div :class="$style.image">
-      <IconBus :class="$style.iconBus" />
-      <IconShip :class="$style.iconShip" />
-      <IconTrain :class="$style.iconTrain" />
+      <Icon name="Bus" :class="$style.iconBus" :color="colors.oceanBlue" />
+      <Icon name="Ship" :class="$style.iconShip" :color="colors.oceanBlue" />
+      <Icon name="Train" :class="$style.iconTrain" :color="colors.oceanBlue" />
     </div>
 
     <div :class="$style.actions">
       <Buttonizer>
         <ButtonWithIcon :class="$style.button" @click="handleButtonClick(true)">
           <template v-slot:icon>
-            <RoundIconMap />
+            <RoundIcon
+              name="Map"
+              :bg="colors.yellow"
+              :color="colors.oceanBlue"
+            />
           </template>
           <template v-slot:text>
             Find stops on map
@@ -24,7 +28,11 @@
           @click="handleButtonClick(false)"
         >
           <template v-slot:icon>
-            <RoundIconFullStar />
+            <RoundIcon
+              name="FullStar"
+              :bg="colors.yellow"
+              :color="colors.oceanBlue"
+            />
           </template>
           <template v-slot:text>
             Favourites
@@ -36,23 +44,18 @@
 </template>
 
 <script>
-import IconBus from "../components/icons/IconBus";
-import IconShip from "../components/icons/IconShip";
-import IconTrain from "../components/icons/IconTrain";
+import Icon from "../components/Icon/index";
 import Buttonizer from "../components/Buttonizer";
 import ButtonWithIcon from "../components/ButtonWithIcon";
-import RoundIconMap from "../components/icons/RoundIconMap";
-import RoundIconFullStar from "../components/icons/RoundIconFullStar";
+import RoundIcon from "../components/RoundIcon";
 
 export default {
   name: "Intro",
+  inject: ["colors"],
   components: {
-    IconBus,
-    IconShip,
-    IconTrain,
+    Icon,
     Buttonizer,
-    RoundIconMap,
-    RoundIconFullStar,
+    RoundIcon,
     ButtonWithIcon
   },
   beforeRouteEnter(to, from, next) {

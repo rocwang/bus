@@ -1,7 +1,7 @@
 <template>
   <Panel>
     <template v-slot:icon>
-      <RoundIconStop />
+      <RoundIcon name="Stop" :bg="colors.yellow" :color="colors.oceanBlue" />
     </template>
     <template v-slot:prefix>
       Stop
@@ -10,7 +10,7 @@
     <template v-slot:buttons>
       <Buttonizer modifier="icon">
         <button @click="$router.push({ name: 'Favourites' })" aria-label="home">
-          <IconCross />
+          <Icon name="Cross" :color="colors.yellow" />
         </button>
       </Buttonizer>
     </template>
@@ -37,13 +37,13 @@
 
 <script>
 import Panel from "./Panel";
-import RoundIconStop from "./icons/RoundIconStop";
-import IconCross from "./icons/IconCross";
+import RoundIcon from "./RoundIcon";
+import Icon from "./Icon";
 import Buttonizer from "./Buttonizer";
 
 export default {
   name: "PanelStop",
-  components: { Panel, RoundIconStop, IconCross, Buttonizer },
+  components: { Panel, RoundIcon, Icon, Buttonizer },
   inject: ["colors"],
   props: {
     stopCode: {

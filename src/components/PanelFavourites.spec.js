@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import PanelFavourites from "./PanelFavourites";
-import colors from "./__fixtures__/colors";
+import colors from "../__fixtures__/colors";
 
 describe("PanelFavourites.vue", () => {
   let wrapper;
