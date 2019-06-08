@@ -1,7 +1,7 @@
 <template>
   <Panel>
     <template v-slot:icon>
-      <RoundIconRoute />
+      <RoundIcon name="Route" :bg="colors.yellow" :color="colors.oceanBlue" />
     </template>
     <template v-slot:prefix>
       Route
@@ -15,14 +15,14 @@
           aria-label="Delete from Favourites"
           key="del"
         >
-          <IconFullStar />
+          <Icon name="FullStar" :color="colors.yellow" />
         </button>
         <button v-else @click="add" aria-label="Add to Favourites" key="add">
-          <IconEmptyStar />
+          <Icon name="EmptyStar" :color="colors.yellow" />
         </button>
 
         <button @click="$router.back()" aria-label="back">
-          <IconCross />
+          <Icon name="Cross" :color="colors.yellow" />
         </button>
       </Buttonizer>
     </template>
@@ -53,11 +53,9 @@
 
 <script>
 import Panel from "./Panel";
-import RoundIconRoute from "./icons/RoundIconRoute";
+import RoundIcon from "./RoundIcon";
 import Trip from "./Trip";
-import IconCross from "./icons/IconCross";
-import IconEmptyStar from "./icons/IconEmptyStar";
-import IconFullStar from "./icons/IconFullStar";
+import Icon from "./Icon";
 import Buttonizer from "./Buttonizer";
 import {
   actionRemoveFromFavourites$,
@@ -66,13 +64,12 @@ import {
 
 export default {
   name: "PanelRoute",
+  inject: ["colors"],
   components: {
     Buttonizer,
-    IconCross,
-    IconEmptyStar,
-    IconFullStar,
+    Icon,
     Panel,
-    RoundIconRoute,
+    RoundIcon,
     Trip
   },
   props: {

@@ -1,5 +1,6 @@
 import { shallowMount } from "@vue/test-utils";
 import Intro from "./Intro";
+import colors from "../__fixtures__/colors";
 
 describe("Intro.vue", () => {
   let $router;
@@ -9,7 +10,12 @@ describe("Intro.vue", () => {
     $router = {
       push: jest.fn()
     };
-    wrapper = shallowMount(Intro, { mocks: { $router } });
+    wrapper = shallowMount(Intro, {
+      mocks: { $router },
+      provide: {
+        colors
+      }
+    });
   });
 
   it("renders 2 buttons", () => {

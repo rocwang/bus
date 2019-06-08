@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import PanelRoute from "./PanelRoute";
-import colors from "./__fixtures__/colors";
+import colors from "../__fixtures__/colors";
 import {
   actionRemoveFromFavourites$,
   actionAddToFavourites$

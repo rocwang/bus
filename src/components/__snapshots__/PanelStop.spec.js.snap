@@ -21,7 +21,8 @@ exports[`PanelStop.vue matches the snapshot 1`] = `
          
         <path
           d="M39.063 13.75H17.5v-2.813a.94.94 0 0 0-.938-.937h-1.875a.94.94 0 0 0-.937.938v2.812h-2.813a.94.94 0 0 0-.937.938v1.874a.94.94 0 0 0 .938.938h2.812v21.563a.94.94 0 0 0 .938.937h1.874a.94.94 0 0 0 .938-.938V17.5h21.563a.94.94 0 0 0 .937-.938v-1.875a.94.94 0 0 0-.938-.937zM19.375 32.5h18.75V19.375h-18.75V32.5z"
-          fill="#001120"
+          fill="currentColor"
+          style="color: rgb(0, 17, 32);"
         />
       </svg>
     </div>
@@ -47,13 +48,14 @@ exports[`PanelStop.vue matches the snapshot 1`] = `
         class="root icon"
       >
         <svg
+          style="color: rgb(255, 219, 27);"
           viewBox="0 0 30 30"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="M15 15L29 1 15 15 1 1l14 14zm0 0L1 29l14-14 14 14-14-14z"
             fill="none"
-            stroke="#ffdb1b"
+            stroke="currentColor"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
