@@ -1,4 +1,4 @@
-import { combineLatest, merge, of, from, interval } from "rxjs";
+import { combineLatest, merge, interval } from "rxjs";
 import { switchMap, map, startWith, pluck, shareReplay } from "rxjs/operators";
 import { uniqBy } from "lodash-es";
 import { getVehiclePositions } from "../api/gtfsRealtime";
@@ -19,37 +19,31 @@ import {
 export const trips$ = merge(
   actionViewFavourites$.pipe(
     switchMap(() => favourites$),
-    switchMap(favourites => from(getNexTripsByStopRouteItems(favourites)))
+    switchMap(favourites => getNexTripsByStopRouteItems(favourites))
   ),
   actionViewRoute$.pipe(
     switchMap(({ stopCode, routeShortName }) =>
-      from(getTripsByStopAndRoute(stopCode, routeShortName))
+      getTripsByStopAndRoute(stopCode, routeShortName)
     )
   ),
   actionViewTrip$.pipe(
-    switchMap(({ stopCode, tripId }) =>
-      from(getTripsByStopAndTrip(stopCode, tripId))
-    )
+    switchMap(({ stopCode, tripId }) => getTripsByStopAndTrip(stopCode, tripId))
   ),
-  actionViewStop$.pipe(switchMap(stopCode => from(getTripsByStop(stopCode))))
+  actionViewStop$.pipe(switchMap(stopCode => getTripsByStop(stopCode)))
 ).pipe(
   startWith([]),
   shareReplay(1)
 );
 
 export const vehicles$ = trips$.pipe(
-  map(trips => trips.map(t => t.trip_id).join(",")),
+  map(trips => trips.map(t => t.trip_id)),
   switchMap(tripIds =>
-    tripIds
-      ? interval(10000).pipe(
-          startWith(-1),
-          map(() => tripIds)
-        )
-      : of("")
+    interval(10000).pipe(
+      startWith(-1),
+      map(() => tripIds)
+    )
   ),
-  switchMap(tripIds =>
-    tripIds ? from(getVehiclePositions(tripIds)) : of({ entity: [] })
-  ),
+  switchMap(tripIds => getVehiclePositions(tripIds)),
   pluck("entity"),
   map(entities => uniqBy(entities.map(e => e.vehicle), v => v.vehicle.id)),
   startWith([]),

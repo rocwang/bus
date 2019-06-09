@@ -13,6 +13,12 @@ function callApi(request) {
     .then(json => json.response);
 }
 
-export function getVehiclePositions(tripId) {
-  return callApi(`public/realtime/vehiclelocations?tripid=${tripId}`);
+export async function getVehiclePositions(tripIds) {
+  if (!tripIds || tripIds.length === 0) {
+    return { entity: [] };
+  }
+
+  const tripid = tripIds.join(",");
+
+  return callApi(`public/realtime/vehiclelocations?tripid=${tripid}`);
 }

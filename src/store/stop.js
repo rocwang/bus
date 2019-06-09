@@ -1,4 +1,4 @@
-import { merge, of, from } from "rxjs";
+import { merge } from "rxjs";
 import {
   distinctUntilChanged,
   switchMap,
@@ -21,9 +21,7 @@ export const stopCode$ = merge(
 );
 
 export const stopName$ = stopCode$.pipe(
-  switchMap(stopCode =>
-    stopCode ? from(getStopNameById(stopCode)) : of([{ stop_name: "" }])
-  ),
+  switchMap(stopCode => getStopNameById(stopCode)),
   map(stopCodes => stopCodes[0]),
   pluck("stop_name"),
   startWith(""),
