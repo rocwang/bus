@@ -1,4 +1,4 @@
-import { merge, from } from "rxjs";
+import { merge } from "rxjs";
 import { switchMap, map, startWith, pluck, shareReplay } from "rxjs/operators";
 import {
   getRoutesByStopAndTrip,
@@ -22,19 +22,19 @@ export const routeShortName$ = actionViewRoute$.pipe(
 export const routes$ = merge(
   actionViewFavourites$.pipe(
     switchMap(() => favourites$),
-    switchMap(favourites => from(getRoutesByStopRouteItems(favourites)))
+    switchMap(favourites => getRoutesByStopRouteItems(favourites))
   ),
   actionViewTrip$.pipe(
     switchMap(({ stopCode, tripId }) =>
-      from(getRoutesByStopAndTrip(stopCode, tripId))
+      getRoutesByStopAndTrip(stopCode, tripId)
     )
   ),
   actionViewRoute$.pipe(
     switchMap(({ stopCode, routeShortName }) =>
-      from(getRoutesByStopAndShortName(stopCode, routeShortName))
+      getRoutesByStopAndShortName(stopCode, routeShortName)
     )
   ),
-  actionViewStop$.pipe(switchMap(stopCode => from(getRoutesByStop(stopCode))))
+  actionViewStop$.pipe(switchMap(stopCode => getRoutesByStop(stopCode)))
 ).pipe(
   startWith([]),
   shareReplay(1)

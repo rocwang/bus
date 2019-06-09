@@ -15,9 +15,9 @@ function getDayOfWeek(date) {
   return date.toLocaleString("en-NZ", { weekday: "long" }).toLocaleLowerCase();
 }
 
-export function getStopNameById(stopCode) {
+export async function getStopNameById(stopCode) {
   if (!stopCode) {
-    return "";
+    return [{ stop_name: "" }];
   }
 
   const now = new Date();
@@ -39,7 +39,7 @@ export function getStopNameById(stopCode) {
   );
 }
 
-export function getTripsByStop(stopCode) {
+export async function getTripsByStop(stopCode) {
   if (!stopCode) {
     return [];
   }
@@ -74,8 +74,8 @@ export function getTripsByStop(stopCode) {
   );
 }
 
-export function getNexTripsByStopRouteItems(stopRouteItems) {
-  if (stopRouteItems.length === 0) {
+export async function getNexTripsByStopRouteItems(stopRouteItems) {
+  if (!stopRouteItems || stopRouteItems.length === 0) {
     return [];
   }
 
@@ -120,7 +120,7 @@ export function getNexTripsByStopRouteItems(stopRouteItems) {
   );
 }
 
-export function getTripsByStopAndRoute(stopCode, routeShortName) {
+export async function getTripsByStopAndRoute(stopCode, routeShortName) {
   if (!stopCode || !routeShortName) {
     return [];
   }
@@ -152,7 +152,7 @@ export function getTripsByStopAndRoute(stopCode, routeShortName) {
   );
 }
 
-export function getTripsByStopAndTrip(stopCode, tripId) {
+export async function getTripsByStopAndTrip(stopCode, tripId) {
   if (!stopCode || !tripId) {
     return [];
   }
@@ -181,8 +181,8 @@ export function getTripsByStopAndTrip(stopCode, tripId) {
   );
 }
 
-export function getRoutesByStopRouteItems(stopRouteItems) {
-  if (stopRouteItems.length === 0) {
+export async function getRoutesByStopRouteItems(stopRouteItems) {
+  if (!stopRouteItems || stopRouteItems.length === 0) {
     return [];
   }
 
@@ -227,7 +227,7 @@ export function getRoutesByStopRouteItems(stopRouteItems) {
   );
 }
 
-export function getRoutesByStop(stopCode) {
+export async function getRoutesByStop(stopCode) {
   if (!stopCode) {
     return [];
   }
@@ -256,7 +256,7 @@ export function getRoutesByStop(stopCode) {
   );
 }
 
-export function getRoutesByStopAndShortName(stopCode, routeShortName) {
+export async function getRoutesByStopAndShortName(stopCode, routeShortName) {
   if (!stopCode || !routeShortName) {
     return [];
   }
@@ -286,7 +286,7 @@ export function getRoutesByStopAndShortName(stopCode, routeShortName) {
   );
 }
 
-export function getRoutesByStopAndTrip(stopCode, tripId) {
+export async function getRoutesByStopAndTrip(stopCode, tripId) {
   if (!stopCode || !tripId) {
     return [];
   }
