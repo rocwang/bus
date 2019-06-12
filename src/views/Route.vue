@@ -10,7 +10,6 @@
 <script>
 import PanelRoute from "../components/PanelRoute";
 import { stopCode$ } from "../store/stop";
-import { routeShortName$ } from "../store/routes";
 import { tripsWithVehicles$ } from "../store/trips";
 import { favourites$ } from "../store/favourites";
 import { actionViewRoute$ } from "../store/actions";
@@ -21,17 +20,20 @@ export default {
   subscriptions() {
     return {
       stopCode: stopCode$,
-      routeShortName: routeShortName$,
       tripsWithVehicles: tripsWithVehicles$,
       favourites: favourites$
     };
   },
-  beforeRouteEnter(to, from, next) {
+  computed: {
+    routeShortName() {
+      return this.$route.params.shortName;
+    }
+  },
+  created() {
     actionViewRoute$.next({
-      stopCode: to.params.stopCode,
-      routeShortName: to.params.shortName
+      stopCode: this.$route.params.stopCode,
+      routeShortName: this.$route.params.shortName
     });
-    next();
   },
   beforeRouteUpdate(to, from, next) {
     actionViewRoute$.next({

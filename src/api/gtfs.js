@@ -99,6 +99,7 @@ export async function getNexTripsByStopRouteItems(stopRouteItems) {
     {}
   );
 
+  // TODO: add stop_code, route_short_name to other query results for trips as well?
   return queryGtfs(
     `
       SELECT trips.trip_id, trip_headsign, min(departure_time) AS departure_time, stop_code, route_short_name

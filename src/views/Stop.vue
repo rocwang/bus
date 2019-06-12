@@ -22,9 +22,8 @@ export default {
       stopCode: stopCode$
     };
   },
-  beforeRouteEnter: (to, from, next) => {
-    actionViewStop$.next(to.params.stopCode);
-    next();
+  created() {
+    actionViewStop$.next(this.$route.params.stopCode);
   },
   beforeRouteUpdate(to, from, next) {
     actionViewStop$.next(to.params.stopCode);

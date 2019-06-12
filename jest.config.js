@@ -1,4 +1,12 @@
 module.exports = {
+  collectCoverageFrom: [
+    "!**/node_modules/**",
+    "!**/vendor/**",
+    "!**/__fixtures__/**",
+    "!src/.eslintrc.js",
+    "src/**/*.{js,jsx,vue}"
+  ],
+  setupFiles: ["./src/__mocks__/indexedDb.js"],
   moduleFileExtensions: ["js", "jsx", "json", "vue"],
   transform: {
     "^.+\\.vue$": "vue-jest",

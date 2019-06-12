@@ -1,4 +1,3 @@
-import "fake-indexeddb/auto";
 import {
   actionClearFavourites$,
   actionAddToFavourites$,
