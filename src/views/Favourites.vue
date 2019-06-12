@@ -24,9 +24,8 @@ export default {
       favouritesWithTrips: favouritesWithTrips$
     };
   },
-  beforeRouteEnter(to, from, next) {
+  created() {
     actionViewFavourites$.next();
-    next();
   }
 };
 </script>

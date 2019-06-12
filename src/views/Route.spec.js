@@ -6,7 +6,16 @@ describe("Route.vue", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(Route);
+    wrapper = shallowMount(Route, {
+      mocks: {
+        $route: {
+          params: {
+            stopCode: "1234",
+            shortName: "NX1"
+          }
+        }
+      }
+    });
   });
 
   it("matches the snapshot", () => {

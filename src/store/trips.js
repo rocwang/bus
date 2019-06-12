@@ -1,6 +1,13 @@
 import { combineLatest, merge, interval } from "rxjs";
-import { switchMap, map, startWith, pluck, shareReplay } from "rxjs/operators";
-import { uniqBy } from "lodash-es";
+import {
+  switchMap,
+  map,
+  startWith,
+  pluck,
+  shareReplay,
+  distinctUntilChanged
+} from "rxjs/operators";
+import { uniqBy, isEqual } from "lodash-es";
 import { getVehiclePositions } from "../api/gtfsRealtime";
 import {
   getTripsByStopAndTrip,
@@ -76,5 +83,6 @@ export const favouritesWithTrips$ = combineLatest([
     }))
   ),
   startWith([]),
+  distinctUntilChanged((x, y) => isEqual(x, y)),
   shareReplay(1)
 );

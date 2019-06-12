@@ -3,7 +3,7 @@
 exports[`Route.vue matches the snapshot 1`] = `
 <panelroute-stub
   favourites=""
-  routeshortname=""
+  routeshortname="NX1"
   stopcode=""
   tripswithvehicles=""
 />

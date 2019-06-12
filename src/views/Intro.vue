@@ -58,14 +58,6 @@ export default {
     RoundIcon,
     ButtonWithIcon
   },
-  beforeRouteEnter(to, from, next) {
-    const hasFavourites = false;
-    if (hasFavourites) {
-      next({ name: "Favourites" });
-    } else {
-      next();
-    }
-  },
   methods: {
     handleButtonClick(isFavouritesCollapsed = true) {
       const route = {
