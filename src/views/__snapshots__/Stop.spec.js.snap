@@ -2,8 +2,8 @@
 
 exports[`Stop.vue matches the snapshot 1`] = `
 <panelstop-stub
-  routeshortnames=""
-  stopcode=""
-  stopname=""
+  routeshortnames="NX1"
+  stopcode="1234"
+  stopname="ABCD"
 />
 `;
