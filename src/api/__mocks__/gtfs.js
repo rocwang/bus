@@ -1,4 +1,7 @@
-const routes = [{ route_id: "12345ABCDE", route_short_name: "NX1" }];
+const routes = [
+  { route_id: "12345ABCDE", route_short_name: "NX1" }
+  // { route_id: "567890XYZ", route_short_name: "NX2" }
+];
 const trips = [
   {
     trip_id: "1234",

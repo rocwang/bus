@@ -59,7 +59,7 @@ export default {
     ButtonWithIcon
   },
   methods: {
-    handleButtonClick(isFavouritesCollapsed = true) {
+    handleButtonClick(isFavouritesCollapsed) {
       const route = {
         name: "Favourites"
       };

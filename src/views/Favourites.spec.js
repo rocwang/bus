@@ -1,12 +1,17 @@
-import { shallowMount } from "@vue/test-utils";
-import Favourites from "./Favourites";
-import "fake-indexeddb/auto";
+import { createLocalVue, shallowMount } from "@vue/test-utils";
+import VueRx from "vue-rx";
 
 describe("Favourites.vue", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(Favourites);
+    jest.resetModules();
+
+    const localVue = createLocalVue();
+    localVue.use(VueRx);
+
+    const Favourites = require("./Favourites").default;
+    wrapper = shallowMount(Favourites, { localVue });
   });
 
   it("matches the snapshot", () => {
@@ -17,5 +22,7 @@ describe("Favourites.vue", () => {
     expect(wrapper.vm.isCollapsedInitially).toBe(true);
   });
 
-  it.skip("triggers the view favourites action before route enter", () => {});
+  it("has favouritesWithTrips", () => {
+    expect(wrapper.vm.favouritesWithTrips).toEqual([]);
+  });
 });
