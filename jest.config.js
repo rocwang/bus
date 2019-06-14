@@ -1,8 +1,7 @@
 module.exports = {
   collectCoverageFrom: [
-    "!**/node_modules/**",
-    "!**/vendor/**",
     "!**/__fixtures__/**",
+    "!src/main.js",
     "!src/.eslintrc.js",
     "src/**/*.{js,jsx,vue}"
   ],

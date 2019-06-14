@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import PanelStop from "./PanelStop";
-import colors from "../__fixtures__/colors";
+import colors from "../__mocks__/colors";
 
 describe("PanelStop.vue", () => {
   let wrapper;
