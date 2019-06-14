@@ -2,19 +2,28 @@ import { shallowMount, createLocalVue } from "@vue/test-utils";
 import App from "./App";
 import config from "./config";
 import VueRouter from "vue-router";
+import VueRx from "vue-rx";
 
 const localVue = createLocalVue();
 localVue.use(VueRouter);
+localVue.use(VueRx);
 
 describe("App.vue", () => {
   const wrapper = shallowMount(App, {
     stubs: ["Mapbox"],
     localVue,
-    router: new VueRouter()
+    router: new VueRouter({
+      routes: [
+        {
+          path: "/stop/:stopCode",
+          name: "Stop"
+        }
+      ]
+    })
   });
 
   it("renders a div as the app container", () => {
-    expect(wrapper.contains("div")).toBe(true);
+    expect(wrapper.is("div")).toBe(true);
   });
 
   it('has attribute id="app"', () => {
@@ -36,5 +45,17 @@ describe("App.vue", () => {
         }
       }).colors
     ).toStrictEqual({ red: "red" });
+  });
+
+  it("can handle stop click", () => {
+    wrapper.find("mapbox-stub").vm.$emit("stopClick", "1234");
+    expect(wrapper.vm.$router.currentRoute.name).toBe("Stop");
+    expect(wrapper.vm.$router.currentRoute.params.stopCode).toBe("1234");
+  });
+
+  it("subscribes to stopCode$, routePatterns$ and vehicles$", () => {
+    expect(wrapper.vm.stopCode).toBe("");
+    expect(wrapper.vm.routePatterns).toEqual([]);
+    expect(wrapper.vm.vehicles).toEqual([]);
   });
 });

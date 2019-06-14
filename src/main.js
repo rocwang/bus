@@ -3,52 +3,21 @@ import "./assets/global.module.css";
 
 import Vue from "vue";
 import App from "./App.vue";
-import Router from "vue-router";
-import Intro from "./views/Intro";
-import Favourites from "./views/Favourites";
-import Stop from "./views/Stop";
-import Route from "./views/Route";
+import router from "./router";
 import VueRx from "vue-rx";
 import "pwacompat";
-import "./workBox";
+import { workBox } from "./workBox";
 
 Vue.config.productionTip = false;
-Vue.use(Router);
 Vue.use(VueRx);
 
 new Vue({
-  router: new Router({
-    mode: "history",
-    base: process.env.BASE_URL,
-    routes: [
-      {
-        path: "/",
-        name: "Intro",
-        component: Intro
-      },
-      {
-        path: "/favourites",
-        name: "Favourites",
-        component: Favourites,
-        props: route => ({
-          isCollapsedInitially: route.query.isCollapsed === "yes"
-        })
-      },
-      {
-        path: "/stop/:stopCode",
-        name: "Stop",
-        component: Stop
-      },
-      {
-        path: "/stop/:stopCode/route_group/:shortName",
-        name: "Route",
-        component: Route
-      },
-      {
-        path: "*",
-        redirect: { name: "Intro" }
-      }
-    ]
-  }),
+  router,
   render: createElement => createElement(App)
 }).$mount("#app");
+
+if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
+  // Register the service worker after event listeners have been added.
+  // By default this method delays registration until after the window has loaded.
+  workBox.register();
+}

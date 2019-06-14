@@ -1,6 +1,6 @@
 import { shallowMount } from "@vue/test-utils";
 import Intro from "./Intro";
-import colors from "../__fixtures__/colors";
+import colors from "../__mocks__/colors";
 
 describe("Intro.vue", () => {
   let $router;

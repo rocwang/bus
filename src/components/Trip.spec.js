@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from "@vue/test-utils";
 import VueRx from "vue-rx";
 import Trip from "./Trip";
-import colors from "../__fixtures__/colors";
+import colors from "../__mocks__/colors";
 
 describe("Trip.vue", () => {
   let wrapper;
