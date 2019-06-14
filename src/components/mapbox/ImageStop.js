@@ -6,12 +6,12 @@ export default {
   async created() {
     this.map = await this.mapPromise;
 
-    const image = await new Promise((resolve, reject) =>
+    this.image = await new Promise((resolve, reject) =>
       this.map.loadImage(stopIcon, (error, image) =>
         error ? reject(error) : resolve(image)
       )
     );
-    this.map.addImage("stop", image);
+    this.map.addImage("stop", this.image);
   },
   destroyed() {
     this.map.removeImage("stop");
