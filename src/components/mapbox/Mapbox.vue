@@ -22,7 +22,6 @@
 
 <script>
 import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
 import ControlGeolocate from "./ControlGeolocate";
 import SourceRoutes from "./SourceRoutes";
 import SourceStops from "./SourceStops";
@@ -73,15 +72,17 @@ export default {
       }
     }
   },
-  async mounted() {
+  mounted() {
     mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
-    const map = new mapboxgl.Map({
+    this.map = new mapboxgl.Map({
       container: this.$el,
       style: "mapbox://styles/mapbox/streets-v10",
       bounds: this.config.defaultMapBounds
-    }).on("load", () => this.resovleMap(map));
+    });
 
-    this.map = await this.mapPromise;
+    this.map.on("load", () => {
+      this.resovleMap(this.map);
+    });
   },
   destroyed() {
     this.map.remove();
@@ -89,6 +90,7 @@ export default {
 };
 </script>
 
+<style src="mapbox-gl/dist/mapbox-gl.css" />
 <style module>
 .root {
   width: 100%;

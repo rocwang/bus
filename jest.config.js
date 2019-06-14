@@ -15,6 +15,7 @@ module.exports = {
   },
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    "\\.css$": "<rootDir>/__mocks__/styleMock.js",
     "^lodash-es$": "lodash",
     "^workbox-window/Workbox.mjs$": "workbox-window"
   },
