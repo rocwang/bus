@@ -19,7 +19,7 @@ export default {
     },
     bearing() {
       // "bearing" can be undefined.
-      return this.vehicle.position.bearing || "90";
+      return this.vehicle.position.bearing || 90;
     }
   },
   beforeCreate() {

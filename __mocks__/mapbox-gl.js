@@ -43,9 +43,34 @@ class Map extends EventEmitter {
           this.originalOn(event, layerId_listener);
           break;
       }
+
+      return this;
     });
 
+    this.getLayer = jest.fn(() => "layerId");
+    this.setFilter = jest.fn();
+    this.setLayerZoomRange = jest.fn();
+    this.getCanvas = jest.fn(() => ({
+      style: {}
+    }));
+    this.easeTo = jest.fn();
+    this.addSource = jest.fn();
+    this.removeSource = jest.fn();
+
     setTimeout(() => this.emit("load"), 0);
+  }
+}
+
+class Marker extends EventEmitter {
+  constructor(el) {
+    super();
+
+    this.element = el;
+
+    this.addTo = jest.fn();
+    this.remove = jest.fn();
+    this.setLngLat = jest.fn();
+    this.getElement = jest.fn(() => el);
   }
 }
 
@@ -53,5 +78,6 @@ class GeolocateControl {}
 
 module.exports = {
   Map,
-  GeolocateControl
+  GeolocateControl,
+  Marker
 };
