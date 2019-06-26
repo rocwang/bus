@@ -1,4 +1,4 @@
-import { merge } from "rxjs";
+import { merge, of } from "rxjs";
 import { switchMap, map, startWith, shareReplay } from "rxjs/operators";
 import {
   getRoutesByStopAndTrip,
@@ -15,22 +15,30 @@ import {
 } from "./actions";
 
 export const routes$ = merge(
-  actionViewFavourites$.pipe(
-    switchMap(() => favourites$),
-    switchMap(favourites => getRoutesByStopRouteItems(favourites))
-  ),
-  actionViewTrip$.pipe(
-    switchMap(({ stopCode, tripId }) =>
-      getRoutesByStopAndTrip(stopCode, tripId)
-    )
-  ),
-  actionViewRoute$.pipe(
-    switchMap(({ stopCode, routeShortName }) =>
-      getRoutesByStopAndShortName(stopCode, routeShortName)
-    )
-  ),
-  actionViewStop$.pipe(switchMap(stopCode => getRoutesByStop(stopCode)))
+  actionViewFavourites$.pipe(map(() => ({ type: "viewFavourites" }))),
+  actionViewTrip$.pipe(map(payload => ({ type: "viewTrip", ...payload }))),
+  actionViewRoute$.pipe(map(payload => ({ type: "viewRoute", ...payload }))),
+  actionViewStop$.pipe(map(stopCode => ({ type: "viewStop", stopCode })))
 ).pipe(
+  switchMap(action => {
+    switch (action.type) {
+      case "viewFavourites":
+        return favourites$.pipe(
+          switchMap(favourites => getRoutesByStopRouteItems(favourites))
+        );
+      case "viewTrip":
+        return getRoutesByStopAndTrip(action.stopCode, action.tripId);
+      case "viewRoute":
+        return getRoutesByStopAndShortName(
+          action.stopCode,
+          action.routeShortName
+        );
+      case "viewStop":
+        return getRoutesByStop(action.stopCode);
+      default:
+        return of([]);
+    }
+  }),
   startWith([]),
   shareReplay(1)
 );

@@ -1,4 +1,4 @@
-import { combineLatest, merge, interval } from "rxjs";
+import { combineLatest, merge, interval, of } from "rxjs";
 import {
   switchMap,
   map,
@@ -24,20 +24,27 @@ import {
 } from "./actions";
 
 export const trips$ = merge(
-  actionViewFavourites$.pipe(
-    switchMap(() => favourites$),
-    switchMap(favourites => getNexTripsByStopRouteItems(favourites))
-  ),
-  actionViewRoute$.pipe(
-    switchMap(({ stopCode, routeShortName }) =>
-      getTripsByStopAndRoute(stopCode, routeShortName)
-    )
-  ),
-  actionViewTrip$.pipe(
-    switchMap(({ stopCode, tripId }) => getTripsByStopAndTrip(stopCode, tripId))
-  ),
-  actionViewStop$.pipe(switchMap(stopCode => getTripsByStop(stopCode)))
+  actionViewFavourites$.pipe(map(() => ({ type: "viewFavourites" }))),
+  actionViewTrip$.pipe(map(payload => ({ type: "viewTrip", ...payload }))),
+  actionViewRoute$.pipe(map(payload => ({ type: "viewRoute", ...payload }))),
+  actionViewStop$.pipe(map(stopCode => ({ type: "viewStop", stopCode })))
 ).pipe(
+  switchMap(action => {
+    switch (action.type) {
+      case "viewFavourites":
+        return favourites$.pipe(
+          switchMap(favourites => getNexTripsByStopRouteItems(favourites))
+        );
+      case "viewTrip":
+        return getTripsByStopAndTrip(action.stopCode, action.tripId);
+      case "viewRoute":
+        return getTripsByStopAndRoute(action.stopCode, action.routeShortName);
+      case "viewStop":
+        return getTripsByStop(action.stopCode);
+      default:
+        return of([]);
+    }
+  }),
   startWith([]),
   shareReplay(1)
 );
