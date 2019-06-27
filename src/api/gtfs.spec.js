@@ -8,7 +8,8 @@ import {
   getRoutesByStopRouteItems,
   getRoutesByStop,
   getRoutesByStopAndShortName,
-  getRoutesByStopAndTrip
+  getRoutesByStopAndTrip,
+  getShapeByTrip
 } from "./gtfs";
 
 describe("Function getStopNameById()", () => {
@@ -292,5 +293,26 @@ describe("Function getRoutesByStopAndTrip()", () => {
     fetchMock.reset();
 
     expect(trips).toEqual(expectedRoutes);
+  });
+
+  it("returns an array of shape point positions by trip ID", async () => {
+    const expectedShape = [
+      { shape_pt_lat: -36.84346, shape_pt_lon: 174.76561 },
+      { shape_pt_lat: -36.84349, shape_pt_lon: 174.76569 },
+      { shape_pt_lat: -36.8433, shape_pt_lon: 174.76577 },
+      { shape_pt_lat: -36.84315, shape_pt_lon: 174.76576 },
+      { shape_pt_lat: -36.84309, shape_pt_lon: 174.76576 },
+      { shape_pt_lat: -36.84306, shape_pt_lon: 174.76575 },
+      { shape_pt_lat: -36.84304, shape_pt_lon: 174.76575 },
+      { shape_pt_lat: -36.84301, shape_pt_lon: 174.76573 },
+      { shape_pt_lat: -36.84299, shape_pt_lon: 174.76572 },
+      { shape_pt_lat: -36.84296, shape_pt_lon: 174.76569 }
+    ];
+
+    fetchMock.once("*", expectedShape);
+    const shape = await getShapeByTrip("5678");
+    fetchMock.reset();
+
+    expect(shape).toEqual(expectedShape);
   });
 });
