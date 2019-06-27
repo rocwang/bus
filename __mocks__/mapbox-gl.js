@@ -28,7 +28,8 @@ class Map extends EventEmitter {
       }
     ]);
     this.getSource = jest.fn(() => ({
-      getClusterExpansionZoom: jest.fn((clusterId, cb) => cb(undefined, 0))
+      getClusterExpansionZoom: jest.fn((clusterId, cb) => cb(undefined, 0)),
+      setData: jest.fn()
     }));
     this.easeTo = jest.fn();
 
