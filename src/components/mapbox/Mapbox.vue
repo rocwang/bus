@@ -1,17 +1,10 @@
 <template>
   <div :class="$style.root">
     <SourceStops />
-    <SourceRoutes />
     <ImageStop />
 
     <ControlGeolocate />
 
-    <LayerRoute
-      v-for="(r, i) in routePatterns"
-      :routePattern="r"
-      :index="i"
-      :key="r"
-    />
     <!--<LayerStopClusters/>-->
     <!--<LayerStopCount/>-->
     <LayerStops @click="$emit('stopClick', $event)" :stopCode="stopCode" />
@@ -23,12 +16,10 @@
 <script>
 import mapboxgl from "mapbox-gl";
 import ControlGeolocate from "./ControlGeolocate";
-import SourceRoutes from "./SourceRoutes";
 import SourceStops from "./SourceStops";
 import LayerStops from "./LayerStops";
 // import LayerStopClusters from "../components/LayerStopClusters";
 // import LayerStopCount from "../components/LayerStopCount";
-import LayerRoute from "./LayerRoute";
 import MarkerBus from "./MarkerBus";
 import ImageStop from "./ImageStop";
 
@@ -36,11 +27,9 @@ export default {
   name: "Mapbox",
   components: {
     ControlGeolocate,
-    LayerRoute,
     LayerStops,
     // LayerStopClusters,
     // LayerStopCount,
-    SourceRoutes,
     SourceStops,
     MarkerBus,
     ImageStop
