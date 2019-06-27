@@ -316,3 +316,16 @@ export async function getRoutesByStopAndTrip(stopCode, tripId) {
     { stopCode, tripId, today }
   );
 }
+
+export async function getShapeByTrip(tripId) {
+  return queryGtfs(
+    `
+      SELECT shape_pt_lat, shape_pt_lon
+      FROM shapes
+             INNER JOIN trips ON trips.shape_id = shapes.shape_id
+      WHERE trip_id = :tripId
+      ORDER BY shape_pt_sequence;
+    `,
+    { tripId }
+  );
+}
