@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { interval } from "rxjs";
 import { map, startWith } from "rxjs/operators";
 import Buttonizer from "./Buttonizer";
@@ -107,7 +107,7 @@ export default {
 
             // Show a relative time if the departure time is less than 44 mins 30 secs
             return then.getTime() - now.getTime() < (44 * 60 + 30) * 1000
-              ? distanceInWordsToNow(then, { addSuffix: true })
+              ? formatDistanceToNow(then, { addSuffix: true })
               : this.departureTime;
           } else {
             return "N/A";

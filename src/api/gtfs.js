@@ -1,5 +1,5 @@
 import format from "date-fns/format";
-import startOfMinute from "date-fns/start_of_minute";
+import startOfMinute from "date-fns/startOfMinute";
 
 function queryGtfs(sql, bind) {
   const url = new URL(process.env.VUE_APP_GTFS_API);
@@ -21,7 +21,7 @@ export async function getStopNameById(stopCode) {
   }
 
   const now = new Date();
-  const today = format(now, "YYYYMMDD");
+  const today = format(now, "yyyyMMdd");
 
   return queryGtfs(
     `
@@ -51,7 +51,7 @@ export async function getTripsByStop(stopCode) {
   const departureTo = `${("0" + (now.getHours() + 1)).slice(
     -2
   )}:${now.getMinutes()}:00`;
-  const today = format(now, "YYYYMMDD");
+  const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
   return queryGtfs(
@@ -81,7 +81,7 @@ export async function getNexTripsByStopRouteItems(stopRouteItems) {
 
   const now = new Date();
   const departureFrom = format(startOfMinute(now), "HH:mm:ss");
-  const today = format(now, "YYYYMMDD");
+  const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
   const bindPlaceholders = stopRouteItems
@@ -128,7 +128,7 @@ export async function getTripsByStopAndRoute(stopCode, routeShortName) {
 
   const now = new Date();
   const departureFrom = format(startOfMinute(now), "HH:mm:ss");
-  const today = format(now, "YYYYMMDD");
+  const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
   return queryGtfs(
@@ -159,7 +159,7 @@ export async function getTripsByStopAndTrip(stopCode, tripId) {
   }
 
   const now = new Date();
-  const today = format(now, "YYYYMMDD");
+  const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
   return queryGtfs(
@@ -189,7 +189,7 @@ export async function getRoutesByStopRouteItems(stopRouteItems) {
 
   const now = new Date();
   const departureFrom = format(startOfMinute(now), "HH:mm:ss");
-  const today = format(now, "YYYYMMDD");
+  const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
   const bindPlaceholders = stopRouteItems
@@ -234,7 +234,7 @@ export async function getRoutesByStop(stopCode) {
   }
 
   const now = new Date();
-  const today = format(now, "YYYYMMDD");
+  const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
   return queryGtfs(
@@ -263,7 +263,7 @@ export async function getRoutesByStopAndShortName(stopCode, routeShortName) {
   }
 
   const now = new Date();
-  const today = format(now, "YYYYMMDD");
+  const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
   return queryGtfs(
@@ -293,7 +293,7 @@ export async function getRoutesByStopAndTrip(stopCode, tripId) {
   }
 
   const now = new Date();
-  const today = format(now, "YYYYMMDD");
+  const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
   return queryGtfs(
