@@ -34,7 +34,7 @@ module.exports = {
     ],
     // Turn off various NodeJS environment polyfills Webpack adds to bundles.
     // They're supposed to be added only when used, but the heuristic is loose
-    // (eg: existence of a variable called setImmedaite in any scope)
+    // (eg: existence of a variable called setImmediate in any scope)
     node: {
       console: false,
       // Keep global, it's just an alias of window and used by many third party modules:
