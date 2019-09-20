@@ -32,3 +32,6 @@ netlify-deploy.log*
 *.njsproj
 *.sln
 *.sw*
+
+*.pdf
+*.sketch
