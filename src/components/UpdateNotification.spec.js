@@ -54,11 +54,5 @@ describe("UpdateNotification.vue", () => {
       expect.any(Function)
     );
     expect(workBox.messageSW).toBeCalledWith({ type: "SKIP_WAITING" });
-
-    const { reload } = window.location;
-    window.location.reload = jest.fn();
-    workboxEmitter.emit("controlling");
-    expect(window.location.reload).toBeCalled();
-    window.location.reload = reload;
   });
 });
