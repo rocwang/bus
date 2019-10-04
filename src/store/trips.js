@@ -7,7 +7,6 @@ import {
   shareReplay,
   distinctUntilChanged
 } from "rxjs/operators";
-import { uniqBy, isEqual } from "lodash-es";
 import { getVehiclePositions } from "../api/gtfsRealtime";
 import {
   getTripsByStopAndTrip,
@@ -22,6 +21,7 @@ import {
   actionViewTrip$,
   actionViewStop$
 } from "./actions";
+import * as R from "ramda";
 
 export const trips$ = merge(
   actionViewFavourites$.pipe(map(() => ({ type: "viewFavourites" }))),
@@ -32,9 +32,7 @@ export const trips$ = merge(
   switchMap(action => {
     switch (action.type) {
       case "viewFavourites":
-        return favourites$.pipe(
-          switchMap(favourites => getNexTripsByStopRouteItems(favourites))
-        );
+        return favourites$.pipe(switchMap(getNexTripsByStopRouteItems));
       case "viewTrip":
         return getTripsByStopAndTrip(action.stopCode, action.tripId);
       case "viewRoute":
@@ -49,17 +47,29 @@ export const trips$ = merge(
   shareReplay(1)
 );
 
-export const vehicles$ = trips$.pipe(
-  map(trips => trips.map(t => t.trip_id)),
-  switchMap(tripIds =>
-    interval(10000).pipe(
-      startWith(-1),
-      map(() => tripIds)
+export const vehicles$ = combineLatest([
+  trips$,
+  interval(10000).pipe(startWith(-1))
+]).pipe(
+  map(
+    R.pipe(
+      R.head,
+      R.pluck("trip_id")
     )
   ),
-  switchMap(tripIds => getVehiclePositions(tripIds)),
+  switchMap(getVehiclePositions),
   pluck("entity"),
-  map(entities => uniqBy(entities.map(e => e.vehicle), v => v.vehicle.id)),
+  map(
+    R.pipe(
+      R.pluck("vehicle"),
+      R.uniqBy(
+        R.pipe(
+          R.prop("vehicle"),
+          R.prop("id")
+        )
+      )
+    )
+  ),
   startWith([]),
   shareReplay(1)
 );
@@ -68,7 +78,13 @@ export const tripsWithVehicles$ = combineLatest([trips$, vehicles$]).pipe(
   map(([trips, vehicles]) =>
     trips.map(trip => ({
       ...trip,
-      vehicle: vehicles.find(vehicle => vehicle.trip.trip_id === trip.trip_id)
+      vehicle: vehicles.find(
+        R.pipe(
+          R.prop("trip"),
+          R.prop("trip_id"),
+          R.equals(trip.trip_id)
+        )
+      )
     }))
   ),
   startWith([]),
@@ -83,13 +99,20 @@ export const favouritesWithTrips$ = combineLatest([
     favourites.map(fav => ({
       ...fav,
       trip: tripsWithVehicles.find(
-        trip =>
-          trip.stop_code === fav.stopCode &&
-          trip.route_short_name === fav.routeShortName
+        R.both(
+          R.pipe(
+            R.prop("stop_code"),
+            R.identical(fav.stopCode)
+          ),
+          R.pipe(
+            R.prop("route_short_name"),
+            R.identical(fav.routeShortName)
+          )
+        )
       )
     }))
   ),
   startWith([]),
-  distinctUntilChanged((x, y) => isEqual(x, y)),
+  distinctUntilChanged(R.equals),
   shareReplay(1)
 );
