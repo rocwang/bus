@@ -51,23 +51,13 @@ export const vehicles$ = combineLatest([
   trips$,
   interval(10000).pipe(startWith(-1))
 ]).pipe(
-  map(
-    R.pipe(
-      R.head,
-      R.pluck("trip_id")
-    )
-  ),
+  map(R.pipe(R.head, R.pluck("trip_id"))),
   switchMap(getVehiclePositions),
   pluck("entity"),
   map(
     R.pipe(
       R.pluck("vehicle"),
-      R.uniqBy(
-        R.pipe(
-          R.prop("vehicle"),
-          R.prop("id")
-        )
-      )
+      R.uniqBy(R.pipe(R.prop("vehicle"), R.prop("id")))
     )
   ),
   startWith([]),
@@ -79,11 +69,7 @@ export const tripsWithVehicles$ = combineLatest([trips$, vehicles$]).pipe(
     trips.map(trip => ({
       ...trip,
       vehicle: vehicles.find(
-        R.pipe(
-          R.prop("trip"),
-          R.prop("trip_id"),
-          R.equals(trip.trip_id)
-        )
+        R.pipe(R.prop("trip"), R.prop("trip_id"), R.equals(trip.trip_id))
       )
     }))
   ),
@@ -100,14 +86,8 @@ export const favouritesWithTrips$ = combineLatest([
       ...fav,
       trip: tripsWithVehicles.find(
         R.both(
-          R.pipe(
-            R.prop("stop_code"),
-            R.identical(fav.stopCode)
-          ),
-          R.pipe(
-            R.prop("route_short_name"),
-            R.identical(fav.routeShortName)
-          )
+          R.pipe(R.prop("stop_code"), R.identical(fav.stopCode)),
+          R.pipe(R.prop("route_short_name"), R.identical(fav.routeShortName))
         )
       )
     }))

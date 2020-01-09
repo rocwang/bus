@@ -26,9 +26,7 @@
         </button>
       </Buttonizer>
     </template>
-    <template v-slot:subtitle>
-      Stop Code: {{ stopCode }}
-    </template>
+    <template v-slot:subtitle> Stop Code: {{ stopCode }} </template>
     <template v-slot:body>
       <ul>
         <li
