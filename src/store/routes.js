@@ -53,9 +53,10 @@ export const routePatterns$ = routes$.pipe(
 
 export const routeShortNamesByStop$ = routes$.pipe(
   map(routes =>
-    Array.from(new Set(routes.map(route => route.route_short_name))).sort(
-      (a, b) =>
-        a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
+    Array.from(
+      new Set(routes.map(route => route.route_short_name))
+    ).sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
     )
   ),
   startWith([]),

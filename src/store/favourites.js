@@ -66,8 +66,4 @@ export const favourites$ = merge(
     )
   ),
   actionViewFavourites$.pipe(mapTo(defer(list)))
-).pipe(
-  concatAll(),
-  startWith([]),
-  shareReplay(1)
-);
+).pipe(concatAll(), startWith([]), shareReplay(1));

@@ -14,11 +14,7 @@ export const stopCode$ = merge(
   actionViewStop$,
   actionViewRoute$.pipe(pluck("stopCode")),
   actionViewTrip$.pipe(pluck("stopCode"))
-).pipe(
-  startWith(""),
-  distinctUntilChanged(),
-  shareReplay(1)
-);
+).pipe(startWith(""), distinctUntilChanged(), shareReplay(1));
 
 export const stopName$ = stopCode$.pipe(
   switchMap(stopCode => getStopNameById(stopCode)),
