@@ -35,3 +35,8 @@ netlify-deploy.log*
 
 *.pdf
 *.sketch
+
+/data/*.zip
+/data/*.txt
+/data/*.br
+/data/*.sqlite3
