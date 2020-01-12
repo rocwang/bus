@@ -8,10 +8,21 @@ stages:
   - staging
   - deploy
 
-before_script:
-  - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
-  - npm config set cache ${CI_PROJECT_DIR}/.npm
-  - npm ci --prefer-offline
+build-db:
+  image: registry.gitlab.com/rocwang/bus-bus/build
+  stage: build
+  cache:
+    key: build-db-${CI_COMMIT_REF_SLUG}
+    paths:
+      - ${CI_PROJECT_DIR}/cache/
+  tags:
+    - docker
+  script:
+    - ${CI_PROJECT_DIR}/build-db.sh ${CI_PROJECT_DIR}/dist
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - dist
 
 build:
   image: node:12
@@ -23,6 +34,10 @@ build:
       - ${CI_PROJECT_DIR}/.cypress/
   tags:
     - docker
+  before_script:
+    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
+    - npm config set cache ${CI_PROJECT_DIR}/.npm
+    - npm ci --prefer-offline
   script:
     - npm run build
   artifacts:
@@ -41,6 +56,10 @@ unit test:
     policy: pull
   tags:
     - docker
+  before_script:
+    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
+    - npm config set cache ${CI_PROJECT_DIR}/.npm
+    - npm ci --prefer-offline
   script:
     - npm run test:unit -- --coverage
   artifacts:
@@ -57,6 +76,10 @@ e2e test:
       - ${CI_PROJECT_DIR}/.npm/
       - ${CI_PROJECT_DIR}/.cypress/
     policy: pull
+  before_script:
+    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
+    - npm config set cache ${CI_PROJECT_DIR}/.npm
+    - npm ci --prefer-offline
   tags:
     - docker
   script:
@@ -73,6 +96,10 @@ lighthouse:
     policy: pull
   tags:
     - docker
+  before_script:
+    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
+    - npm config set cache ${CI_PROJECT_DIR}/.npm
+    - npm ci --prefer-offline
   script:
     - 'npx netlify deploy
       --dir=dist
@@ -104,6 +131,10 @@ deploy:
     policy: pull
   tags:
     - docker
+  before_script:
+    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
+    - npm config set cache ${CI_PROJECT_DIR}/.npm
+    - npm ci --prefer-offline
   script:
     - 'npx netlify deploy
       --dir=dist
