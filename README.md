@@ -12,7 +12,7 @@
 * Lints and fixes files: `npm run lint`
 * Run your end-to-end tests: `npm run test:e2e`
 * Run your unit tests: `npm run test:unit`
-  
+
 For customize configuration, see [Configuration Reference](https://cli.vuejs.org/config/).
 
 Remember to [set up EditorConfig for your preferred editor](https://editorconfig.org/#download).
@@ -23,7 +23,7 @@ Remember to [set up EditorConfig for your preferred editor](https://editorconfig
 
 * VUE_APP_MAPBOX_ACCESS_TOKEN
 * VUE_APP_AUCKLAND_TRANSPORT_API_KEY
-* VUE_APP_GTFS_API
+* VUE_APP_DB_URL
 
 #### During Deployment
 

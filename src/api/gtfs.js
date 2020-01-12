@@ -1,14 +1,24 @@
 import format from "date-fns/format";
 import startOfMinute from "date-fns/startOfMinute";
+import initSqlJs from "sql.js";
 
-function queryGtfs(sql, bind) {
-  const url = new URL(process.env.VUE_APP_GTFS_API);
-  url.searchParams.set("sql", sql.trim());
-  if (bind) {
-    url.searchParams.set("bind", JSON.stringify(bind));
-  }
+async function loadDb(dbUrl) {
+  const SQL = await initSqlJs({ locateFile: filename => `/${filename}` });
+  const response = await fetch(dbUrl);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
 
-  return fetch(url).then(response => response.json());
+  return new SQL.Database(uint8Array);
+}
+
+const dbPromise = loadDb(process.env.VUE_APP_DB_URL);
+
+async function queryGtfs(sql, bind) {
+  const db = await dbPromise;
+  const result = [];
+  db.each(sql, bind, row => result.push(row));
+
+  return result;
 }
 
 function getDayOfWeek(date) {
@@ -33,8 +43,8 @@ export async function getStopNameById(stopCode) {
     LIMIT 1
 `,
     {
-      stopCode,
-      today
+      ":stopCode": stopCode,
+      ":today": today
     }
   );
 }
@@ -70,7 +80,12 @@ export async function getTripsByStop(stopCode) {
       AND :departureFrom <= departure_time
       AND departure_time <= :departureTo;
     `,
-    { stopCode, today, departureFrom, departureTo }
+    {
+      ":stopCode": stopCode,
+      ":today": today,
+      ":departureFrom": departureFrom,
+      ":departureTo": departureTo
+    }
   );
 }
 
@@ -93,8 +108,8 @@ export async function getNexTripsByStopRouteItems(stopRouteItems) {
   const bindValues = stopRouteItems.reduce(
     (values, item, index) =>
       Object.assign(values, {
-        [`stopCode${index}`]: item.stopCode,
-        [`routeShortName${index}`]: item.routeShortName
+        [`:stopCode${index}`]: item.stopCode,
+        [`:routeShortName${index}`]: item.routeShortName
       }),
     {}
   );
@@ -117,7 +132,7 @@ export async function getNexTripsByStopRouteItems(stopRouteItems) {
         AND (${bindPlaceholders})
       GROUP BY stop_code, route_short_name;
     `,
-    { departureFrom, today, ...bindValues }
+    { ":departureFrom": departureFrom, ":today": today, ...bindValues }
   );
 }
 
@@ -149,7 +164,12 @@ export async function getTripsByStopAndRoute(stopCode, routeShortName) {
       AND departure_time >= :departureFrom
     ORDER BY departure_time;
     `,
-    { stopCode, routeShortName, departureFrom, today }
+    {
+      ":stopCode": stopCode,
+      ":routeShortName": routeShortName,
+      ":departureFrom": departureFrom,
+      ":today": today
+    }
   );
 }
 
@@ -178,7 +198,7 @@ export async function getTripsByStopAndTrip(stopCode, tripId) {
       AND (${dayOfWeek} = TRUE OR exception_type = 1)
     ORDER BY departure_time;
     `,
-    { tripId, stopCode, today }
+    { ":tripId": tripId, ":stopCode": stopCode, ":today": today }
   );
 }
 
@@ -201,8 +221,8 @@ export async function getRoutesByStopRouteItems(stopRouteItems) {
   const bindValues = stopRouteItems.reduce(
     (values, item, index) =>
       Object.assign(values, {
-        [`stopCode${index}`]: item.stopCode,
-        [`routeShortName${index}`]: item.routeShortName
+        [`:stopCode${index}`]: item.stopCode,
+        [`:routeShortName${index}`]: item.routeShortName
       }),
     {}
   );
@@ -224,7 +244,7 @@ export async function getRoutesByStopRouteItems(stopRouteItems) {
         AND (${bindPlaceholders})
       GROUP BY stop_code, route_short_name;
     `,
-    { departureFrom, today, ...bindValues }
+    { ":departureFrom": departureFrom, ":today": today, ...bindValues }
   );
 }
 
@@ -253,7 +273,7 @@ export async function getRoutesByStop(stopCode) {
       AND (${dayOfWeek} = TRUE OR exception_type = 1)
     ORDER BY route_short_name;
     `,
-    { stopCode, today }
+    { ":stopCode": stopCode, ":today": today }
   );
 }
 
@@ -283,7 +303,11 @@ export async function getRoutesByStopAndShortName(stopCode, routeShortName) {
       AND (${dayOfWeek} = TRUE OR exception_type = 1)
     ORDER BY route_short_name;
     `,
-    { stopCode, routeShortName, today }
+    {
+      ":stopCode": stopCode,
+      ":routeShortName": routeShortName,
+      ":today": today
+    }
   );
 }
 
@@ -313,7 +337,7 @@ export async function getRoutesByStopAndTrip(stopCode, tripId) {
       AND (${dayOfWeek} = TRUE OR exception_type = 1)
     ORDER BY route_short_name;
     `,
-    { stopCode, tripId, today }
+    { ":stopCode": stopCode, ":tripId": tripId, ":today": today }
   );
 }
 
@@ -326,6 +350,6 @@ export async function getShapeByTrip(tripId) {
       WHERE trip_id = :tripId
       ORDER BY shape_pt_sequence;
     `,
-    { tripId }
+    { ":tripId": tripId }
   );
 }
