@@ -73,6 +73,17 @@ module.exports = {
       webpackConfig.plugin("workbox").use(WorkboxPlugin.GenerateSW, [
         {
           cacheId: packageJson.name,
+          include: [
+            /\.html$/,
+            /\.css$/,
+            /\.js$/,
+            /\.json$/,
+            /\.svg$/,
+            /\.png$/,
+            /\.ico$/,
+            /\.wasm$/,
+            /\.sqlite3$/
+          ],
           exclude: [/\.map$/, /manifest\.json$/]
         }
       ]);
