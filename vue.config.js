@@ -88,6 +88,20 @@ module.exports = {
         }
       ]);
     }
+
+    // Load the wasm file required by sql.js without the default webpack
+    // importing behaviors
+    webpackConfig.module
+      .rule("wasm")
+      .test(/\.wasm$/)
+      .type("javascript/auto")
+      .use("file-loader")
+      .loader("file-loader")
+      .tap(options => ({
+        ...options,
+        name: "wasm/[name].[hash:8].[ext]"
+      }))
+      .end();
   },
   productionSourceMap: false,
   devServer: {
