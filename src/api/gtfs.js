@@ -2,6 +2,7 @@ import format from "date-fns/format";
 import startOfMinute from "date-fns/startOfMinute";
 import initSqlJs from "sql.js";
 import sqlWasmUrl from "sql.js/dist/sql-wasm.wasm";
+import dbUrl from "../database/gtfs.sqlite3";
 
 async function loadDb(dbUrl) {
   const SQL = await initSqlJs({ locateFile: () => sqlWasmUrl });
@@ -12,7 +13,7 @@ async function loadDb(dbUrl) {
   return new SQL.Database(uint8Array);
 }
 
-const dbPromise = loadDb(process.env.VUE_APP_DB_URL);
+const dbPromise = loadDb(dbUrl);
 
 async function queryGtfs(sql, bind) {
   const db = await dbPromise;

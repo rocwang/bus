@@ -23,7 +23,6 @@ Remember to [set up EditorConfig for your preferred editor](https://editorconfig
 
 * VUE_APP_MAPBOX_ACCESS_TOKEN
 * VUE_APP_AUCKLAND_TRANSPORT_API_KEY
-* VUE_APP_DB_URL
 
 #### During Deployment
 

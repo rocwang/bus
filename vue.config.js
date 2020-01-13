@@ -4,6 +4,7 @@ const manifest = require("./src/manifest");
 const packageJson = require("./package");
 const WebappWebpackPlugin = require("webapp-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   configureWebpack: {
@@ -65,26 +66,23 @@ module.exports = {
       return args;
     });
 
-    // Disable workbox in legacy build, so we only get 1 precache manifest
     if (
       (process.env.VUE_CLI_MODERN_MODE && process.env.VUE_CLI_MODERN_BUILD) ||
       !process.env.VUE_CLI_MODERN_MODE
     ) {
+      // Disable workbox in legacy build, so we only get 1 precache manifest
       webpackConfig.plugin("workbox").use(WorkboxPlugin.GenerateSW, [
         {
           cacheId: packageJson.name,
-          include: [
-            /\.html$/,
-            /\.css$/,
-            /\.js$/,
-            /\.json$/,
-            /\.svg$/,
-            /\.png$/,
-            /\.ico$/,
-            /\.wasm$/,
-            /\.sqlite3$/
-          ],
-          exclude: [/\.map$/, /manifest\.json$/]
+          cleanupOutdatedCaches: true,
+          exclude: [/\.map$/, /manifest\.json$/, /robots\.txt$/],
+          navigateFallback: "/index.html",
+          runtimeCaching: [
+            {
+              urlPattern: /\.sqlite3$/,
+              handler: "StaleWhileRevalidate"
+            }
+          ]
         }
       ]);
     }
@@ -102,11 +100,34 @@ module.exports = {
         name: "wasm/[name].[hash:8].[ext]"
       }))
       .end();
+
+    // Load the sqlite database file
+    webpackConfig.module
+      .rule("database")
+      .test(/\.sqlite3$/)
+      .use("file-loader")
+      .loader("file-loader")
+      .tap(options => ({
+        ...options,
+        name: "database/[name].[ext]"
+      }))
+      .end();
+
+    // Copy the brotli compressed version of data to dist
+    webpackConfig.plugin("copy-database").use(CopyPlugin, [
+      [
+        {
+          from: "src/database/gtfs.sqlite3.br",
+          to: "database/gtfs.sqlite3.br"
+        }
+      ]
+    ]);
   },
   productionSourceMap: false,
   devServer: {
     host: "localhost",
     port: "4430",
+    compress: true,
     https:
       process.env.NODE_ENV === "development"
         ? {
