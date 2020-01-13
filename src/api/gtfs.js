@@ -1,9 +1,10 @@
 import format from "date-fns/format";
 import startOfMinute from "date-fns/startOfMinute";
 import initSqlJs from "sql.js";
+import sqlWasmUrl from "sql.js/dist/sql-wasm.wasm";
 
 async function loadDb(dbUrl) {
-  const SQL = await initSqlJs({ locateFile: filename => `/${filename}` });
+  const SQL = await initSqlJs({ locateFile: () => sqlWasmUrl });
   const response = await fetch(dbUrl);
   const arrayBuffer = await response.arrayBuffer();
   const uint8Array = new Uint8Array(arrayBuffer);
