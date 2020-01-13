@@ -92,6 +92,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     host: "localhost",
+    port: "4430",
     https:
       process.env.NODE_ENV === "development"
         ? {
