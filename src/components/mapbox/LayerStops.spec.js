@@ -47,7 +47,7 @@ describe("LayerStops.vue", () => {
     wrapper.vm.map.emit("click-stops", {
       features: [
         {
-          properties: { STOPCODE: "1234" },
+          properties: { stopCode: "1234" },
           geometry: { coordinates: { x: 0, y: 0 } }
         }
       ]

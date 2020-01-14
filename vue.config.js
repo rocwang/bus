@@ -122,6 +122,18 @@ module.exports = {
         }
       ]
     ]);
+
+    // Configure comlink-loader to bundle web workers
+    webpackConfig.module
+      .rule("worker")
+      .test(/\.worker\.js$/)
+      .use("comlink-loader")
+      .loader("comlink-loader")
+      .tap(options => ({
+        ...options,
+        singleton: true
+      }))
+      .end();
   },
   productionSourceMap: false,
   devServer: {
