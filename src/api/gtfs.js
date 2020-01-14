@@ -6,24 +6,8 @@ function getDayOfWeek(date) {
   return date.toLocaleString("en-NZ", { weekday: "long" }).toLocaleLowerCase();
 }
 
-export async function getStopGeoJson() {
-  const stops = await query(
-    "SELECT DISTINCT stop_code, stop_lon, stop_lat FROM stops;"
-  );
-
-  return {
-    type: "FeatureCollection",
-    features: stops.map(stop => ({
-      type: "Feature",
-      properties: {
-        stopCode: stop.stop_code
-      },
-      geometry: {
-        type: "Point",
-        coordinates: [stop.stop_lon, stop.stop_lat]
-      }
-    }))
-  };
+export function getStops() {
+  return query("SELECT DISTINCT stop_code, stop_lon, stop_lat FROM stops;");
 }
 
 export async function getStopNameById(stopCode) {
