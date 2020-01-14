@@ -112,8 +112,8 @@ CREATE TABLE trips
   wheelchair_accessible INTEGER NULL,
 
   FOREIGN KEY (route_id) REFERENCES routes (route_id) ON DELETE CASCADE,
-  FOREIGN KEY (service_id) REFERENCES calendar (service_id) ON DELETE CASCADE
---   FOREIGN KEY (shape_id) REFERENCES shapes (shape_id) ON DELETE CASCADE
+  FOREIGN KEY (service_id) REFERENCES calendar (service_id) ON DELETE CASCADE,
+  FOREIGN KEY (shape_id) REFERENCES shapes (shape_id) ON DELETE CASCADE
 );
 CREATE INDEX index__trips_dates__route_id ON trips (route_id);
 CREATE INDEX index__trips_dates__service_id ON trips (service_id);
