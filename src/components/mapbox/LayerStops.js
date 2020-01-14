@@ -1,3 +1,5 @@
+import { getSourceStops } from "./sourceStops";
+
 export default {
   name: "LayerStops",
   inject: ["mapPromise"],
@@ -21,7 +23,7 @@ export default {
     this.map.addLayer({
       id: "stops",
       type: "symbol",
-      source: "stops",
+      source: await getSourceStops(this.map),
       // filter: ["!", ["has", "point_count"]],
       minzoom: 15,
       layout: {
@@ -54,11 +56,7 @@ export default {
       }
 
       if (this.stopCode) {
-        this.map.setFilter("stops", [
-          "==",
-          ["get", "STOPCODE"],
-          Number(this.stopCode)
-        ]);
+        this.map.setFilter("stops", ["==", ["get", "stopCode"], this.stopCode]);
         this.map.setLayerZoomRange("stops", 0, 24);
       } else {
         this.map.setFilter("stops");
@@ -68,7 +66,7 @@ export default {
     handleStopClick(e) {
       // Center the map on the coordinates of the clicked stop
       this.map.easeTo({ center: e.features[0].geometry.coordinates });
-      this.$emit("click", e.features[0].properties.STOPCODE.toString());
+      this.$emit("click", e.features[0].properties.stopCode);
     },
     handleStopMouseEnter() {
       // Change the cursor to a pointer when the it enters a stop

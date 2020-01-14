@@ -1,6 +1,5 @@
 <template>
   <div :class="$style.root">
-    <SourceStops />
     <ImageStop />
 
     <ControlGeolocate />
@@ -16,7 +15,6 @@
 <script>
 import mapboxgl from "mapbox-gl";
 import ControlGeolocate from "./ControlGeolocate";
-import SourceStops from "./SourceStops";
 import LayerStops from "./LayerStops";
 // import LayerStopClusters from "../components/LayerStopClusters";
 // import LayerStopCount from "../components/LayerStopCount";
@@ -30,7 +28,6 @@ export default {
     LayerStops,
     // LayerStopClusters,
     // LayerStopCount,
-    SourceStops,
     MarkerBus,
     ImageStop
   },

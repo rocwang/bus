@@ -1,30 +1,29 @@
 import format from "date-fns/format";
 import startOfMinute from "date-fns/startOfMinute";
-import initSqlJs from "sql.js";
-import sqlWasmUrl from "sql.js/dist/sql-wasm.wasm";
-import dbUrl from "../database/gtfs.sqlite3";
-
-async function loadDb(dbUrl) {
-  const SQL = await initSqlJs({ locateFile: () => sqlWasmUrl });
-  const response = await fetch(dbUrl);
-  const arrayBuffer = await response.arrayBuffer();
-  const uint8Array = new Uint8Array(arrayBuffer);
-
-  return new SQL.Database(uint8Array);
-}
-
-const dbPromise = loadDb(dbUrl);
-
-async function queryGtfs(sql, bind) {
-  const db = await dbPromise;
-  const result = [];
-  db.each(sql, bind, row => result.push(row));
-
-  return result;
-}
+import query from "../database/database.worker";
 
 function getDayOfWeek(date) {
   return date.toLocaleString("en-NZ", { weekday: "long" }).toLocaleLowerCase();
+}
+
+export async function getStopGeoJson() {
+  const stops = await query(
+    "SELECT DISTINCT stop_code, stop_lon, stop_lat FROM stops;"
+  );
+
+  return {
+    type: "FeatureCollection",
+    features: stops.map(stop => ({
+      type: "Feature",
+      properties: {
+        stopCode: stop.stop_code
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [stop.stop_lon, stop.stop_lat]
+      }
+    }))
+  };
 }
 
 export async function getStopNameById(stopCode) {
@@ -35,15 +34,8 @@ export async function getStopNameById(stopCode) {
   const now = new Date();
   const today = format(now, "yyyyMMdd");
 
-  return queryGtfs(
-    `
-    SELECT stop_name FROM stops
-      INNER JOIN stop_times ON stop_times.stop_id = stops.stop_id
-      INNER JOIN trips ON trips.trip_id = stop_times.trip_id
-      INNER JOIN calendar ON trips.service_id = calendar.service_id
-    WHERE stop_code=:stopCode AND start_date <= :today AND :today <= end_date
-    LIMIT 1
-`,
+  return query(
+    "SELECT stop_name FROM stops WHERE stop_code=:stopCode LIMIT 1",
     {
       ":stopCode": stopCode,
       ":today": today
@@ -66,7 +58,7 @@ export async function getTripsByStop(stopCode) {
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
-  return queryGtfs(
+  return query(
     `
     SELECT trips.trip_id, trip_headsign, departure_time
     FROM trips
@@ -117,7 +109,7 @@ export async function getNexTripsByStopRouteItems(stopRouteItems) {
   );
 
   // TODO: add stop_code, route_short_name to other query results for trips as well?
-  return queryGtfs(
+  return query(
     `
       SELECT trips.trip_id, trip_headsign, min(departure_time) AS departure_time, stop_code, route_short_name
       FROM trips
@@ -148,7 +140,7 @@ export async function getTripsByStopAndRoute(stopCode, routeShortName) {
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
-  return queryGtfs(
+  return query(
     `
     SELECT trips.trip_id, trip_headsign, departure_time
     FROM trips
@@ -184,7 +176,7 @@ export async function getTripsByStopAndTrip(stopCode, tripId) {
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
-  return queryGtfs(
+  return query(
     `
     SELECT trips.trip_id, trip_headsign, departure_time
     FROM trips
@@ -229,7 +221,7 @@ export async function getRoutesByStopRouteItems(stopRouteItems) {
     {}
   );
 
-  return queryGtfs(
+  return query(
     `
       SELECT routes.route_id, route_short_name
       FROM routes
@@ -259,7 +251,7 @@ export async function getRoutesByStop(stopCode) {
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
-  return queryGtfs(
+  return query(
     `
     SELECT routes.route_id, route_short_name
     FROM routes
@@ -288,7 +280,7 @@ export async function getRoutesByStopAndShortName(stopCode, routeShortName) {
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
-  return queryGtfs(
+  return query(
     `
     SELECT routes.route_id, route_short_name
     FROM routes
@@ -322,7 +314,7 @@ export async function getRoutesByStopAndTrip(stopCode, tripId) {
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
-  return queryGtfs(
+  return query(
     `
     SELECT routes.route_id, route_short_name
     FROM routes
@@ -344,7 +336,7 @@ export async function getRoutesByStopAndTrip(stopCode, tripId) {
 }
 
 export async function getShapeByTrip(tripId) {
-  return queryGtfs(
+  return query(
     `
       SELECT shape_pt_lat, shape_pt_lon
       FROM shapes
