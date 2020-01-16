@@ -39,10 +39,6 @@ build database builder:
 build database:
   image: $CI_REGISTRY/rocwang/bus-bus/database-builder
   stage: build database
-  cache:
-    <<: *cache
-    policy: pull-push
-  before_script: *before_script
   script:
     - cd src/database
     - make
@@ -55,7 +51,10 @@ build database:
 build:
   image: node:12
   stage: build
-  <<: *npm_install
+  cache:
+    <<: *cache
+    policy: pull-push
+  before_script: *before_script
   script:
     - npm run build
   artifacts:
