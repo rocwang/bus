@@ -2,42 +2,55 @@
 # https://docs.npmjs.com/cli/ci.html
 # https://docs.npmjs.com/cli/cache
 
-stages:
-  - build
-  - test
-  - staging
-  - deploy
-
-build-db:
-  image: registry.gitlab.com/rocwang/bus-bus/build
-  stage: build
-  cache:
-    key: build-db-${CI_COMMIT_REF_SLUG}
-    paths:
-      - ${CI_PROJECT_DIR}/cache/
-  tags:
-    - docker
-  script:
-    - ${CI_PROJECT_DIR}/build-db.sh ${CI_PROJECT_DIR}/dist
-  artifacts:
-    expire_in: 1 week
-    paths:
-      - dist
-
-build:
-  image: node:12
-  stage: build
+.npm_install: &npm_install
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - ${CI_PROJECT_DIR}/.npm/
       - ${CI_PROJECT_DIR}/.cypress/
-  tags:
-    - docker
   before_script:
     - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
     - npm config set cache ${CI_PROJECT_DIR}/.npm
     - npm ci --prefer-offline
+
+stages:
+  - prepare
+  - build
+  - test
+  - deploy
+
+build database builder:
+  image: docker:stable
+  services:
+    - docker:dind
+  stage: prepare
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - cd src/database
+    - docker build -t $CI_REGISTRY/rocwang/bus-bus/database-builder:latest .
+    - docker push $CI_REGISTRY/rocwang/bus-bus/database-builder:latest
+  only:
+    refs:
+      - master
+    changes:
+      - src/database/Dockerfile
+
+build database:
+  image: $CI_REGISTRY/rocwang/bus-bus/database-builder
+  stage: build
+  script:
+    - cd src/database
+    - make
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - src/database/gtfs.sqlite3
+      - src/database/gtfs.sqlite3.br
+
+build:
+  image: node:12
+  stage: build
+  <<: *npm_install
   script:
     - npm run build
   artifacts:
@@ -47,19 +60,10 @@ build:
 
 unit test:
   image: node:12
-  stage: test
+  stage: build
+  <<: *npm_install
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - ${CI_PROJECT_DIR}/.npm/
-      - ${CI_PROJECT_DIR}/.cypress/
     policy: pull
-  tags:
-    - docker
-  before_script:
-    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
-    - npm config set cache ${CI_PROJECT_DIR}/.npm
-    - npm ci --prefer-offline
   script:
     - npm run test:unit -- --coverage
   artifacts:
@@ -68,38 +72,20 @@ unit test:
       - coverage
 
 e2e test:
-  image: cypress/browsers:node12.6.0-chrome77
+  image: cypress/browsers:node12.14.0-chrome79-ff71
   stage: test
+  <<: *npm_install
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - ${CI_PROJECT_DIR}/.npm/
-      - ${CI_PROJECT_DIR}/.cypress/
     policy: pull
-  before_script:
-    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
-    - npm config set cache ${CI_PROJECT_DIR}/.npm
-    - npm ci --prefer-offline
-  tags:
-    - docker
   script:
     - npm run test:e2e -- --headless --browser chrome
 
 lighthouse:
-  image: cypress/browsers:node12.6.0-chrome77
-  stage: staging
+  image: cypress/browsers:node12.14.0-chrome79-ff71
+  stage: test
+  <<: *npm_install
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - ${CI_PROJECT_DIR}/.npm/
-      - ${CI_PROJECT_DIR}/.cypress/
     policy: pull
-  tags:
-    - docker
-  before_script:
-    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
-    - npm config set cache ${CI_PROJECT_DIR}/.npm
-    - npm ci --prefer-offline
   script:
     - 'npx netlify deploy
       --dir=dist
@@ -123,18 +109,9 @@ lighthouse:
 deploy:
   image: node:12
   stage: deploy
+  <<: *npm_install
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - ${CI_PROJECT_DIR}/.npm/
-      - ${CI_PROJECT_DIR}/.cypress/
     policy: pull
-  tags:
-    - docker
-  before_script:
-    - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
-    - npm config set cache ${CI_PROJECT_DIR}/.npm
-    - npm ci --prefer-offline
   script:
     - 'npx netlify deploy
       --dir=dist
