@@ -3,18 +3,19 @@
 # https://docs.npmjs.com/cli/cache
 
 .npm_install: &npm_install
-  cache:
+  cache: &cache
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - ${CI_PROJECT_DIR}/.npm/
       - ${CI_PROJECT_DIR}/.cypress/
-  before_script:
+    policy: pull
+  before_script: &before_script
     - export CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/.cypress
     - npm config set cache ${CI_PROJECT_DIR}/.npm
     - npm ci --prefer-offline
 
 stages:
-  - prepare
+  - build database
   - build
   - test
   - deploy
@@ -23,7 +24,7 @@ build database builder:
   image: docker:stable
   services:
     - docker:dind
-  stage: prepare
+  stage: .pre
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - cd src/database
@@ -37,7 +38,11 @@ build database builder:
 
 build database:
   image: $CI_REGISTRY/rocwang/bus-bus/database-builder
-  stage: build
+  stage: build database
+  cache:
+    <<: *cache
+    policy: pull-push
+  before_script: *before_script
   script:
     - cd src/database
     - make
@@ -62,8 +67,6 @@ unit test:
   image: node:12
   stage: build
   <<: *npm_install
-  cache:
-    policy: pull
   script:
     - npm run test:unit -- --coverage
   artifacts:
@@ -75,8 +78,6 @@ e2e test:
   image: cypress/browsers:node12.14.0-chrome79-ff71
   stage: test
   <<: *npm_install
-  cache:
-    policy: pull
   script:
     - npm run test:e2e -- --headless --browser chrome
 
@@ -84,8 +85,6 @@ lighthouse:
   image: cypress/browsers:node12.14.0-chrome79-ff71
   stage: test
   <<: *npm_install
-  cache:
-    policy: pull
   script:
     - 'npx netlify deploy
       --dir=dist
@@ -110,8 +109,6 @@ deploy:
   image: node:12
   stage: deploy
   <<: *npm_install
-  cache:
-    policy: pull
   script:
     - 'npx netlify deploy
       --dir=dist
