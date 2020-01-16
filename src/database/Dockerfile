@@ -5,8 +5,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
 
-RUN apt-get -y install sqlite3 unzip csvkit curl brotli
+RUN apt-get -y install sqlite3 unzip csvkit curl brotli build-essential
 
+RUN make --version
 RUN unzip -v
 RUN sqlite3 --version
 RUN csvsql --version
