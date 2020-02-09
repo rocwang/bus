@@ -1,6 +1,7 @@
 import initSqlJs from "sql.js";
 import sqlWasmUrl from "sql.js/dist/sql-wasm.wasm";
-import dbUrl from "../database/gtfs.sqlite3";
+// gtfs.sqlite3.br will be decompressed by browser using brotli
+import dbUrl from "../database/gtfs.sqlite3.br";
 
 async function loadDb(dbUrl) {
   const SQL = await initSqlJs({ locateFile: () => sqlWasmUrl });
