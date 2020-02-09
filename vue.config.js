@@ -4,7 +4,6 @@ const manifest = require("./src/manifest");
 const packageJson = require("./package");
 const WebappWebpackPlugin = require("webapp-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   configureWebpack: {
@@ -77,12 +76,7 @@ module.exports = {
           cleanupOutdatedCaches: true,
           exclude: [/\.map$/, /manifest\.json$/, /robots\.txt$/],
           navigateFallback: "/index.html",
-          runtimeCaching: [
-            {
-              urlPattern: /\.sqlite3$/,
-              handler: "StaleWhileRevalidate"
-            }
-          ]
+          maximumFileSizeToCacheInBytes: 62_914_560
         }
       ]);
     }
@@ -104,24 +98,14 @@ module.exports = {
     // Load the sqlite database file
     webpackConfig.module
       .rule("database")
-      .test(/\.sqlite3$/)
+      .test(/\.sqlite3.br$/)
       .use("file-loader")
       .loader("file-loader")
       .tap(options => ({
         ...options,
-        name: "database/[name].[ext]"
+        name: "database/[name].[hash:8].[ext]"
       }))
       .end();
-
-    // Copy the brotli compressed version of data to dist
-    webpackConfig.plugin("copy-database").use(CopyPlugin, [
-      [
-        {
-          from: "src/database/gtfs.sqlite3.br",
-          to: "database/gtfs.sqlite3.br"
-        }
-      ]
-    ]);
 
     // Configure comlink-loader to bundle web workers
     webpackConfig.module
@@ -139,7 +123,13 @@ module.exports = {
   devServer: {
     host: "localhost",
     port: "4430",
-    compress: true,
+    before(app) {
+      app.get("/database/gtfs.sqlite3.*.br", (req, res, next) => {
+        res.set("Content-Encoding", "br");
+        res.set("Content-Type", "application/x-sqlite3");
+        next();
+      });
+    },
     https:
       process.env.NODE_ENV === "development"
         ? {

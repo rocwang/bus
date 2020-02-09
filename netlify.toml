@@ -35,12 +35,6 @@
   status = 301
   force = true
 
-[[redirects]]
-  from = "/gtfs.sqlite3"
-  to = "/gtfs.sqlite3.br"
-  status = 200
-  force = true
-
 # Long-term cache by default.
 [[headers]]
   for = "/*"
@@ -69,10 +63,8 @@
     Cache-Control = "max-age=86400"
 
 [[headers]]
-  for = "/gtfs.sqlite3.br"
+  for = "/database/gtfs.sqlite3.*.br"
   [headers.values]
-    Cache-Control = "max-age=1209600"
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Max-Age = "1209600"
-    Content-Encoding = "br"
     Content-Type = "application/x-sqlite3"
+    Content-Encoding = "br"
+    Cache-Control = "max-age=1209600"
