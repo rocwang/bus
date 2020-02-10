@@ -7,6 +7,9 @@ const WorkboxPlugin = require("workbox-webpack-plugin");
 
 module.exports = {
   configureWebpack: {
+    output: {
+      globalObject: "self"
+    },
     plugins: [
       new WebappWebpackPlugin({
         logo: "./src/assets/icon.png",
