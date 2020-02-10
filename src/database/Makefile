@@ -20,7 +20,7 @@ $(TXT): gtfs.zip
 	unzip -q -o -DD $^ $@
 
 gtfs.zip:
-	curl -o $@ $(DOWNLOAD_URL)
+	aria2c --split 10 -k 2M -x 10 -o $@ $(DOWNLOAD_URL)
 
 clean:
 	rm -vf $(TXT) gtfs.sqlite3 gtfs.sqlite3.br
