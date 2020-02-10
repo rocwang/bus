@@ -36,3 +36,6 @@ netlify-deploy.log*
 *.pdf
 *.sketch
 
+
+# Local Netlify folder
+.netlify
