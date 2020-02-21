@@ -1,10 +1,9 @@
--- gsed -E -i 's/([0-9]+)-[0-9]{14}_v([0-9]+)\.([0-9]+)/\2\3\1/g' *.txt
 -- gsed -E -i 's/([0-9]{2}):([0-9]{2}):([0-9]{2})/\1\2\3/g' stop_times.txt
 
 DROP TABLE IF EXISTS agency;
 CREATE TABLE agency
 (
-    agency_id       TEXT PRIMARY KEY,
+    agency_id       INTEGER PRIMARY KEY,
     agency_name     TEXT NOT NULL,
     agency_url      TEXT NOT NULL,
     agency_timezone TEXT NOT NULL,
@@ -18,19 +17,20 @@ DROP TABLE IF EXISTS stops;
 CREATE TABLE stops
 (
     stop_id             INTEGER PRIMARY KEY,
-    stop_code           TEXT    NULL,
+    -- use INTEGER on stop_code for space saving
+    -- stop_code           TEXT    NULL,
+    stop_code           INTEGER NULL,
     stop_name           TEXT    NOT NULL,
     stop_desc           TEXT    NULL,
     stop_lat            REAL    NOT NULL,
     stop_lon            REAL    NOT NULL,
-    zone_id             TEXT    NULL,
+    zone_id             INTEGER NULL,
     stop_url            TEXT    NULL,
     location_type       INTEGER NULL,
     parent_station      INTEGER NULL,
     stop_timezone       TEXT    NULL,
     wheelchair_boarding INTEGER NULL
 );
--- CREATE INDEX index__stops__stop_code ON stops (stop_code);
 
 DROP TABLE IF EXISTS routes;
 CREATE TABLE routes
@@ -47,8 +47,6 @@ CREATE TABLE routes
 
     -- FOREIGN KEY (agency_id) REFERENCES agency (agency_id) ON DELETE CASCADE
 );
--- CREATE INDEX index__routes__route_short_name ON routes (route_short_name);
--- CREATE INDEX index__routes__agency_id ON routes (agency_id);
 
 DROP TABLE IF EXISTS calendar;
 CREATE TABLE calendar
@@ -64,15 +62,6 @@ CREATE TABLE calendar
     start_date INTEGER NOT NULL,
     end_date   INTEGER NOT NULL
 );
--- CREATE INDEX index__calendar__monday ON calendar (monday);
--- CREATE INDEX index__calendar__tuesday ON calendar (tuesday);
--- CREATE INDEX index__calendar__wednesday ON calendar (wednesday);
--- CREATE INDEX index__calendar__thursday ON calendar (thursday);
--- CREATE INDEX index__calendar__friday ON calendar (friday);
--- CREATE INDEX index__calendar__saturday ON calendar (saturday);
--- CREATE INDEX index__calendar__sunday ON calendar (sunday);
--- CREATE INDEX index__calendar__start_date ON calendar (start_date);
--- CREATE INDEX index__calendar__end_date ON calendar (end_date);
 
 DROP TABLE IF EXISTS calendar_dates;
 CREATE TABLE calendar_dates
@@ -84,9 +73,6 @@ CREATE TABLE calendar_dates
     PRIMARY KEY (service_id, date)
     -- FOREIGN KEY (service_id) REFERENCES calendar (service_id) ON DELETE CASCADE
 ) WITHOUT ROWID;
--- CREATE INDEX index__calendar_dates__service_id ON calendar_dates (service_id);
--- CREATE INDEX index__calendar_dates__date ON calendar_dates (date);
--- CREATE INDEX index__calendar_dates__exception_type ON calendar_dates (exception_type);
 
 DROP TABLE IF EXISTS shapes;
 CREATE TABLE shapes
@@ -117,9 +103,6 @@ CREATE TABLE trips
     -- FOREIGN KEY (service_id) REFERENCES calendar (service_id) ON DELETE CASCADE,
     -- FOREIGN KEY (shape_id) REFERENCES shapes (shape_id) ON DELETE CASCADE
 );
--- CREATE INDEX index__trips_dates__route_id ON trips (route_id);
--- CREATE INDEX index__trips_dates__service_id ON trips (service_id);
--- CREATE INDEX index__trips_dates__shape_id ON trips (shape_id);
 
 DROP TABLE IF EXISTS stop_times;
 CREATE TABLE stop_times
@@ -139,17 +122,13 @@ CREATE TABLE stop_times
     -- FOREIGN KEY (trip_id) REFERENCES trips (trip_id) ON DELETE CASCADE,
     -- FOREIGN KEY (stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE
 ) WITHOUT ROWID;
--- CREATE INDEX index__stop_times__trip_id ON stop_times (trip_id);
--- CREATE INDEX index__stop_times__stop_id ON stop_times (stop_id);
--- CREATE INDEX index__stop_times__arrival_time ON stop_times (arrival_time);
--- CREATE INDEX index__stop_times__departure_time ON stop_times (departure_time);
 
 DROP TABLE IF EXISTS fare_attributes;
 CREATE TABLE fare_attributes
 (
     fare_id           INTEGER PRIMARY KEY,
     price             DECIMAL(3, 2) NOT NULL,
-    currency_type     TEXT          NOT NULL,
+    currency_type     CHAR(3)       NOT NULL,
     payment_method    INTEGER       NOT NULL,
     transfers         INTEGER       NULL,
     transfer_duration INTEGER       NULL
@@ -167,8 +146,6 @@ CREATE TABLE fare_rules
     -- FOREIGN KEY (fare_id) REFERENCES fare_attributes (fare_id) ON DELETE CASCADE,
     -- FOREIGN KEY (route_id) REFERENCES routes (route_id) ON DELETE CASCADE
 );
--- CREATE INDEX index__fare_rules__fare_id ON fare_rules (fare_id);
--- CREATE INDEX index__fare_rules__route_id ON fare_rules (route_id);
 
 DROP TABLE IF EXISTS frequencies;
 CREATE TABLE frequencies
@@ -181,7 +158,6 @@ CREATE TABLE frequencies
 
     -- FOREIGN KEY (trip_id) REFERENCES trips (trip_id) ON DELETE CASCADE
 );
--- CREATE INDEX index__frequencies_trip_id ON trips (trip_id);
 
 DROP TABLE IF EXISTS transfers;
 CREATE TABLE transfers
@@ -194,8 +170,6 @@ CREATE TABLE transfers
     -- FOREIGN KEY (from_stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE,
     -- FOREIGN KEY (to_stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE
 );
--- CREATE INDEX index__transfers_dates__from_stop_id ON transfers (from_stop_id);
--- CREATE INDEX index__transfers_dates__to_stop_id ON transfers (to_stop_id);
 
 DROP TABLE IF EXISTS feed_info;
 CREATE TABLE feed_info
@@ -225,7 +199,6 @@ CREATE TABLE stop_patterns
     PRIMARY KEY (pattern_id, pattern_sequence)
     -- FOREIGN KEY (stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE
 ) WITHOUT ROWID;
--- CREATE INDEX index__stop_patterns_stop_id ON stop_patterns (stop_id);
 
 DROP TABLE IF EXISTS trips_to_patterns;
 CREATE TABLE trips_to_patterns
@@ -236,7 +209,6 @@ CREATE TABLE trips_to_patterns
 
     -- FOREIGN KEY (trip_id) REFERENCES trips (trip_id) ON DELETE CASCADE
 );
--- CREATE INDEX index__trips_to_patterns_trip_id ON trips_to_patterns (trip_id);
 
 DROP TABLE IF EXISTS stop_info;
 CREATE TABLE stop_info
@@ -246,4 +218,3 @@ CREATE TABLE stop_info
 
     -- FOREIGN KEY (stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE
 );
--- CREATE INDEX index__stop_info__stop_id ON stop_info (stop_id);
