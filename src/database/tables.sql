@@ -108,7 +108,7 @@ DROP TABLE IF EXISTS stop_times;
 CREATE TABLE stop_times
 (
     trip_id             INTEGER NOT NULL,
-    arrival_time        TEXT    NOT NULL,
+    arrival_time        TEXT    NULL,
     departure_time      TEXT    NOT NULL,
     stop_id             INTEGER NOT NULL,
     stop_sequence       INTEGER NOT NULL,
