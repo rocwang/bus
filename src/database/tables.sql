@@ -59,8 +59,8 @@ CREATE TABLE calendar
     friday     BOOLEAN NOT NULL,
     saturday   BOOLEAN NOT NULL,
     sunday     BOOLEAN NOT NULL,
-    start_date INTEGER NOT NULL,
-    end_date   INTEGER NOT NULL
+    start_date TEXT    NOT NULL,
+    end_date   TEXT    NOT NULL
 );
 
 DROP TABLE IF EXISTS calendar_dates;
@@ -108,8 +108,8 @@ DROP TABLE IF EXISTS stop_times;
 CREATE TABLE stop_times
 (
     trip_id             INTEGER NOT NULL,
-    arrival_time        INTEGER NOT NULL,
-    departure_time      INTEGER NOT NULL,
+    arrival_time        TEXT    NOT NULL,
+    departure_time      TEXT    NOT NULL,
     stop_id             INTEGER NOT NULL,
     stop_sequence       INTEGER NOT NULL,
     stop_headsign       TEXT    NULL,
@@ -151,8 +151,8 @@ DROP TABLE IF EXISTS frequencies;
 CREATE TABLE frequencies
 (
     trip_id      INTEGER NOT NULL,
-    start_time   INTEGER NOT NULL,
-    end_time     INTEGER NOT NULL,
+    start_time   TEXT    NOT NULL,
+    end_time     TEXT    NOT NULL,
     headway_secs INTEGER NOT NULL,
     exact_times  BOOLEAN NULL
 
@@ -174,12 +174,12 @@ CREATE TABLE transfers
 DROP TABLE IF EXISTS feed_info;
 CREATE TABLE feed_info
 (
-    feed_publisher_name TEXT    NOT NULL,
-    feed_publisher_url  TEXT    NOT NULL,
-    feed_lang           TEXT    NOT NULL,
-    feed_start_date     INTEGER NULL,
-    feed_end_date       INTEGER NULL,
-    feed_version        TEXT    NULL
+    feed_publisher_name TEXT NOT NULL,
+    feed_publisher_url  TEXT NOT NULL,
+    feed_lang           TEXT NOT NULL,
+    feed_start_date     TEXT NULL,
+    feed_end_date       TEXT NULL,
+    feed_version        TEXT NULL
 );
 
 DROP TABLE IF EXISTS stop_patterns;
