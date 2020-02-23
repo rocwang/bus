@@ -20,8 +20,9 @@ $(TXT): gtfs.zip
 	# Minimize the GTFS feed using patrickbr/gtfstidy
 	gtfstidy -SCRmTcisOeD -o . gtfs.zip
 
-	# Truncate the seconds on TIME for smaller database size
-	sed -i.bak -E 's/([0-9]{2}:[0-9]{2}):[0-9]{2}/\1/g' stop_times.txt frequencies.txt
+	# Truncate the seconds on TIME and set arrival_time to be null for smaller database size
+	sed -i.bak -E 's/([0-9]{2}:[0-9]{2}):[0-9]{2}/\1/g' frequencies.txt
+	sed -i.bak -E 's/[0-9]{2}:[0-9]{2}:[0-9]{2},([0-9]{2}:[0-9]{2}):[0-9]{2}/,\1/g' stop_times.txt
 
 gtfs.zip:
 	aria2c --split 10 -k 2M -x 10 -o $@ $(DOWNLOAD_URL)
