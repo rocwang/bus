@@ -77,14 +77,9 @@ CREATE TABLE calendar_dates
 DROP TABLE IF EXISTS shapes;
 CREATE TABLE shapes
 (
-    shape_id            INTEGER NOT NULL,
-    shape_pt_lat        REAL    NOT NULL,
-    shape_pt_lon        REAL    NOT NULL,
-    shape_pt_sequence   INTEGER NOT NULL,
-    shape_dist_traveled REAL    NULL,
-
-    PRIMARY KEY (shape_id, shape_pt_sequence)
-) WITHOUT ROWID;
+    shape_id            INTEGER PRIMARY KEY,
+    shape_polyline      TEXT    NOT NULL
+);
 
 DROP TABLE IF EXISTS trips;
 CREATE TABLE trips
