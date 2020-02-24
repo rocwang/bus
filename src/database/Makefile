@@ -24,8 +24,12 @@ $(TXT): gtfs.zip
 	sed -i.bak -E 's/([0-9]{2}):([0-9]{2}):[0-9]{2}/\1\2/g' frequencies.txt
 	sed -i.bak -E 's/[0-9]{2}:[0-9]{2}:[0-9]{2},([0-9]{2}):([0-9]{2}):[0-9]{2}/,\1\2/g' stop_times.txt
 
+	# Compress shapes.txt using @mapbox/polyline
+	cp shapes.txt shapes.txt.bak
+	node ./transformShapes.js < shapes.txt.bak > shapes.txt
+
 gtfs.zip:
 	aria2c --split 10 -k 2M -x 10 -o $@ $(DOWNLOAD_URL)
 
 clean:
-	rm -vf $(TXT) stop_times.txt.bak frequencies.txt.bak gtfs.sqlite3 gtfs.sqlite3.br
+	rm -vf $(TXT) *.bak gtfs.sqlite3 gtfs.sqlite3.br
