@@ -126,6 +126,7 @@ module.exports = {
       .loader("comlink-loader")
       .tap(options => ({
         ...options,
+        name: "[name].[hash:8].[ext]",
         singleton: true
       }))
       .end();
