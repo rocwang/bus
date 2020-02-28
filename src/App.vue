@@ -4,8 +4,8 @@
     <Mapbox
       v-if="$route.name !== 'Intro'"
       :stopCode="stopCode"
-      :routePatterns="routePatterns"
       :vehicles="vehicles"
+      :shapes="shapes"
       @stopClick="handleStopClick"
     />
     <router-view />
@@ -14,8 +14,7 @@
 
 <script>
 import config from "./config";
-import { vehicles$ } from "./store/trips";
-import { routePatterns$ } from "./store/routes";
+import { vehicles$, shapes$ } from "./store/trips";
 import { stopCode$ } from "./store/stop";
 import UpdateNotification from "./components/UpdateNotification";
 
@@ -43,7 +42,7 @@ export default {
   subscriptions() {
     return {
       stopCode: stopCode$,
-      routePatterns: routePatterns$,
+      shapes: shapes$,
       vehicles: vehicles$
     };
   },

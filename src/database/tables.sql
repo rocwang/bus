@@ -17,9 +17,7 @@ DROP TABLE IF EXISTS stops;
 CREATE TABLE stops
 (
     stop_id             INTEGER PRIMARY KEY,
-    -- use INTEGER on stop_code for space saving
-    -- stop_code           TEXT    NULL,
-    stop_code           INTEGER NULL,
+    stop_code           TEXT    NULL,
     stop_name           TEXT    NOT NULL,
     stop_desc           TEXT    NULL,
     stop_lat            REAL    NOT NULL,

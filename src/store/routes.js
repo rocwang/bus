@@ -43,14 +43,6 @@ export const routes$ = merge(
   shareReplay(1)
 );
 
-export const routePatterns$ = routes$.pipe(
-  map(routes =>
-    Array.from(new Set(routes.map(route => route.route_id.substring(0, 5))))
-  ),
-  startWith([]),
-  shareReplay(1)
-);
-
 export const routeShortNamesByStop$ = routes$.pipe(
   map(routes =>
     Array.from(

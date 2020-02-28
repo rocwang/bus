@@ -26,9 +26,8 @@ describe("Mapbox.vue", () => {
     expect(wrapper.vm.map.remove).toBeCalled();
   });
 
-  it("has props: stopCode, routePatterns and vehicles", () => {
+  it("has props: stopCode and vehicles", () => {
     expect(wrapper.vm.stopCode).toBe("");
-    expect(wrapper.vm.routePatterns).toEqual([]);
     expect(wrapper.vm.vehicles).toEqual([]);
   });
 

@@ -4,6 +4,8 @@
 
     <ControlGeolocate />
 
+    <LayerShapes :shapes="shapes" />
+
     <!--<LayerStopClusters/>-->
     <!--<LayerStopCount/>-->
     <LayerStops @click="$emit('stopClick', $event)" :stopCode="stopCode" />
@@ -15,6 +17,7 @@
 <script>
 import mapboxgl from "mapbox-gl";
 import ControlGeolocate from "./ControlGeolocate";
+import LayerShapes from "./LayerShapes";
 import LayerStops from "./LayerStops";
 // import LayerStopClusters from "../components/LayerStopClusters";
 // import LayerStopCount from "../components/LayerStopCount";
@@ -25,6 +28,7 @@ export default {
   name: "Mapbox",
   components: {
     ControlGeolocate,
+    LayerShapes,
     LayerStops,
     // LayerStopClusters,
     // LayerStopCount,
@@ -45,7 +49,7 @@ export default {
       type: String,
       default: ""
     },
-    routePatterns: {
+    shapes: {
       type: Array,
       default() {
         return [];

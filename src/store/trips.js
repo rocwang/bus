@@ -11,7 +11,8 @@ import { getVehiclePositions } from "../api/gtfsRealtime";
 import {
   getTripsByStopAndTrip,
   getTripsByStop,
-  getTripsByStopAndRoute
+  getTripsByStopAndRoute,
+  getShapesByTrips
 } from "../api/gtfs";
 import { getNexTripsByStopRouteItems } from "../api/gtfs";
 import { favourites$ } from "./favourites";
@@ -43,6 +44,13 @@ export const trips$ = merge(
         return of([]);
     }
   }),
+  startWith([]),
+  shareReplay(1)
+);
+
+export const shapes$ = trips$.pipe(
+  map(R.pluck("trip_id")),
+  switchMap(getShapesByTrips),
   startWith([]),
   shareReplay(1)
 );

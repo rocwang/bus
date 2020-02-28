@@ -78,10 +78,7 @@ export default {
       immediate: true,
       async handler() {
         const shapeCoords = await getShapeByTrip(this.vehicle.trip.trip_id);
-        this.shape = shapeCoords.map(({ shape_pt_lon, shape_pt_lat }) => [
-          shape_pt_lon,
-          shape_pt_lat
-        ]);
+        this.shape = shapeCoords.map(([lat, lon]) => [lon, lat]);
       }
     },
     vehicle: [
@@ -200,13 +197,11 @@ export default {
     this.marker.remove();
     window.cancelAnimationFrame(this.animationId);
 
-    const layer = this.map.getLayer(this.id);
-    if (layer) {
+    if (this.map.getLayer(this.id)) {
       this.map.removeLayer(this.id);
     }
 
-    const source = this.map.getSource(this.id);
-    if (source) {
+    if (this.map.getSource(this.id)) {
       this.map.removeSource(this.id);
     }
   },

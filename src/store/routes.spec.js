@@ -54,22 +54,6 @@ describe("route$", () => {
   });
 });
 
-describe("routePatterns$", () => {
-  it("is empty be default", async () => {
-    const { routePatterns$ } = require("./routes");
-    const result = await routePatterns$.pipe(take(1)).toPromise();
-    expect(result).toEqual([]);
-  });
-
-  it("will be updated when routes$ is updated", async () => {
-    const { routePatterns$ } = require("./routes");
-    const { actionViewRoute$ } = require("./actions");
-    const result = routePatterns$.pipe(take(2)).toPromise();
-    actionViewRoute$.next({ stopCode: "1234", routeShortName: "NX1" });
-    expect(await result).toEqual(["12345"]);
-  });
-});
-
 describe("routeShortNamesByStop$", () => {
   it("is empty be default", async () => {
     const { routeShortNamesByStop$ } = require("./routes");

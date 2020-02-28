@@ -79,7 +79,7 @@ module.exports = {
           cleanupOutdatedCaches: true,
           exclude: [/\.map$/, /manifest\.json$/, /robots\.txt$/],
           navigateFallback: "/index.html",
-          maximumFileSizeToCacheInBytes: 62_914_560
+          maximumFileSizeToCacheInBytes: 10_485_760 // 10 MiB
         }
       ]);
     }
@@ -96,6 +96,14 @@ module.exports = {
         ...options,
         name: "wasm/[name].[hash:8].[ext]"
       }))
+      .end();
+
+    // Load SQL files
+    webpackConfig.module
+      .rule("sql")
+      .test(/\.sql$/)
+      .use("raw-loader")
+      .loader("raw-loader")
       .end();
 
     // Load the sqlite database file

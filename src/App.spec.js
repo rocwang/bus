@@ -53,9 +53,8 @@ describe("App.vue", () => {
     expect(wrapper.vm.$router.currentRoute.params.stopCode).toBe("1234");
   });
 
-  it("subscribes to stopCode$, routePatterns$ and vehicles$", () => {
+  it("subscribes to stopCode$ and vehicles$", () => {
     expect(wrapper.vm.stopCode).toBe("");
-    expect(wrapper.vm.routePatterns).toEqual([]);
     expect(wrapper.vm.vehicles).toEqual([]);
   });
 });
