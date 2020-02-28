@@ -1,6 +1,7 @@
 import format from "date-fns/format";
 import startOfMinute from "date-fns/startOfMinute";
 import query from "../database/database.worker";
+import polyline from "@mapbox/polyline";
 
 function getDayOfWeek(date) {
   return date.toLocaleString("en-NZ", { weekday: "long" }).toLocaleLowerCase();
@@ -33,12 +34,12 @@ export async function getTripsByStop(stopCode) {
   }
 
   const now = startOfMinute(new Date());
-  const departureFrom = format(now, "HH:mm:ss");
+  const departureFrom = format(now, "HHmm");
   // 1 hours later. Times like "25:00:00" is OK, see:
   // https://developers.google.com/transit/gtfs/reference/#stop_timestxt
-  const departureTo = `${("0" + (now.getHours() + 1)).slice(
+  const departureTo = `${("0" + (now.getHours() + 24)).slice(
     -2
-  )}:${now.getMinutes()}:00`;
+  )}${now.getMinutes()}`;
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -73,7 +74,7 @@ export async function getNexTripsByStopRouteItems(stopRouteItems) {
   }
 
   const now = new Date();
-  const departureFrom = format(startOfMinute(now), "HH:mm:ss");
+  const departureFrom = format(startOfMinute(now), "HHmm");
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -120,7 +121,7 @@ export async function getTripsByStopAndRoute(stopCode, routeShortName) {
   }
 
   const now = new Date();
-  const departureFrom = format(startOfMinute(now), "HH:mm:ss");
+  const departureFrom = format(startOfMinute(now), "HHmm");
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -186,7 +187,7 @@ export async function getRoutesByStopRouteItems(stopRouteItems) {
   }
 
   const now = new Date();
-  const departureFrom = format(startOfMinute(now), "HH:mm:ss");
+  const departureFrom = format(startOfMinute(now), "HHmm");
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -320,14 +321,34 @@ export async function getRoutesByStopAndTrip(stopCode, tripId) {
 }
 
 export async function getShapeByTrip(tripId) {
-  return query(
+  const shapePolyline = await query(
     `
-      SELECT shape_pt_lat, shape_pt_lon
+      SELECT shape_polyline
       FROM shapes
              INNER JOIN trips ON trips.shape_id = shapes.shape_id
-      WHERE trip_id = :tripId
-      ORDER BY shape_pt_sequence;
+      WHERE trip_id = :tripId;
     `,
     { ":tripId": tripId }
+  );
+
+  if (shapePolyline[0]) {
+    return polyline.decode(shapePolyline[0].shape_polyline);
+  } else {
+    return [];
+  }
+}
+
+export async function getShapesByTrips(tripIds) {
+  const shapePolylines = await query(
+    `
+      SELECT DISTINCT shape_polyline
+      FROM shapes
+             INNER JOIN trips ON trips.shape_id = shapes.shape_id
+      WHERE trip_id in (${tripIds.join(",")});
+    `
+  );
+
+  return shapePolylines.map(({ shape_polyline }) =>
+    polyline.decode(shape_polyline)
   );
 }
