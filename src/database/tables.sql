@@ -11,7 +11,7 @@ CREATE TABLE agency
     agency_phone    TEXT NULL,
     agency_fare_url TEXT NULL,
     agency_email    TEXT NULL
-) WITHOUT ROWID;
+);
 
 DROP TABLE IF EXISTS stops;
 CREATE TABLE stops
@@ -116,30 +116,6 @@ CREATE TABLE stop_times
     -- FOREIGN KEY (stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE
 ) WITHOUT ROWID;
 
-DROP TABLE IF EXISTS fare_attributes;
-CREATE TABLE fare_attributes
-(
-    fare_id           INTEGER PRIMARY KEY,
-    price             DECIMAL(3, 2) NOT NULL,
-    currency_type     CHAR(3)       NOT NULL,
-    payment_method    INTEGER       NOT NULL,
-    transfers         INTEGER       NULL,
-    transfer_duration INTEGER       NULL
-);
-
-DROP TABLE IF EXISTS fare_rules;
-CREATE TABLE fare_rules
-(
-    fare_id        INTEGER NOT NULL,
-    route_id       INTEGER NULL,
-    origin_id      INTEGER NULL,
-    destination_id INTEGER NULL,
-    contains_id    INTEGER NULL
-
-    -- FOREIGN KEY (fare_id) REFERENCES fare_attributes (fare_id) ON DELETE CASCADE,
-    -- FOREIGN KEY (route_id) REFERENCES routes (route_id) ON DELETE CASCADE
-);
-
 DROP TABLE IF EXISTS frequencies;
 CREATE TABLE frequencies
 (
@@ -150,64 +126,4 @@ CREATE TABLE frequencies
     exact_times  BOOLEAN NULL
 
     -- FOREIGN KEY (trip_id) REFERENCES trips (trip_id) ON DELETE CASCADE
-);
-
-DROP TABLE IF EXISTS transfers;
-CREATE TABLE transfers
-(
-    from_stop_id      INTEGER NOT NULL,
-    to_stop_id        INTEGER NOT NULL,
-    transfer_type     INTEGER NOT NULL,
-    min_transfer_time INTEGER NULL
-
-    -- FOREIGN KEY (from_stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE,
-    -- FOREIGN KEY (to_stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE
-);
-
-DROP TABLE IF EXISTS feed_info;
-CREATE TABLE feed_info
-(
-    feed_publisher_name TEXT NOT NULL,
-    feed_publisher_url  TEXT NOT NULL,
-    feed_lang           TEXT NOT NULL,
-    feed_start_date     TEXT NULL,
-    feed_end_date       TEXT NULL,
-    feed_version        TEXT NULL
-);
-
-DROP TABLE IF EXISTS stop_patterns;
-CREATE TABLE stop_patterns
-(
-    pattern_id             INTEGER NOT NULL,
-    pattern_sequence       INTEGER NOT NULL,
-    stop_id                INTEGER NOT NULL,
-    arrival_time_offset    INTEGER NOT NULL,
-    departure_time_offset  INTEGER NOT NULL,
-    stop_headsign          TEXT    NULL,
-    pickup_type            INTEGER NULL,
-    drop_off_type          INTEGER NULL,
-    shape_dist_traveled    REAL    NULL,
-    original_stop_sequence INTEGER NOT NULL,
-
-    PRIMARY KEY (pattern_id, pattern_sequence)
-    -- FOREIGN KEY (stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE
-) WITHOUT ROWID;
-
-DROP TABLE IF EXISTS trips_to_patterns;
-CREATE TABLE trips_to_patterns
-(
-    trip_id         INTEGER PRIMARY KEY,
-    pattern_id      INTEGER NOT NULL,
-    scheduled_start INTEGER NULL
-
-    -- FOREIGN KEY (trip_id) REFERENCES trips (trip_id) ON DELETE CASCADE
-);
-
-DROP TABLE IF EXISTS stop_info;
-CREATE TABLE stop_info
-(
-    stop_id   INTEGER PRIMARY KEY,
-    main_stop BOOLEAN NOT NULL
-
-    -- FOREIGN KEY (stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE
 );
