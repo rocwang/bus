@@ -1,7 +1,6 @@
 import sqlWasmUrl from "sql.js/dist/sql-wasm.wasm";
 // gtfs.sqlite3.br will be decompressed by browser using brotli
 import dbUrl from "../database/gtfs.sqlite3.br";
-import indicesSql from "./indices.sql";
 
 async function loadDb(dbUrl) {
   // TODO: Remove me when Safari >=13.2 is released
@@ -18,12 +17,7 @@ async function loadDb(dbUrl) {
   const arrayBuffer = await response.arrayBuffer();
   const uint8Array = new Uint8Array(arrayBuffer);
 
-  const db = new SQL.Database(uint8Array);
-
-  // Build indices for the best query performance
-  db.run(indicesSql);
-
-  return db;
+  return new SQL.Database(uint8Array);
 }
 
 const dbPromise = loadDb(dbUrl);

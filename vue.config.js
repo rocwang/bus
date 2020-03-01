@@ -98,14 +98,6 @@ module.exports = {
       }))
       .end();
 
-    // Load SQL files
-    webpackConfig.module
-      .rule("sql")
-      .test(/\.sql$/)
-      .use("raw-loader")
-      .loader("raw-loader")
-      .end();
-
     // Load the sqlite database file
     webpackConfig.module
       .rule("database")

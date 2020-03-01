@@ -43,36 +43,6 @@ export default {
     }
   },
   watch: {
-    async shape() {
-      const map = await this.mapPromise;
-      const geoJson = lineString(this.shape);
-      const source = map.getSource(this.id);
-      if (source) {
-        source.setData(geoJson);
-      } else {
-        map.addSource(this.id, {
-          type: "geojson",
-          data: geoJson
-        });
-
-        map.addLayer(
-          {
-            id: this.id,
-            type: "line",
-            source: this.id,
-            layout: {
-              "line-join": "round",
-              "line-cap": "round"
-            },
-            paint: {
-              "line-color": this.colors.blue,
-              "line-width": 4
-            }
-          },
-          "road-label-small"
-        );
-      }
-    },
     // update shape
     "vehicle.trip.trip_id": {
       immediate: true,
@@ -196,14 +166,6 @@ export default {
   destroyed() {
     this.marker.remove();
     window.cancelAnimationFrame(this.animationId);
-
-    if (this.map.getLayer(this.id)) {
-      this.map.removeLayer(this.id);
-    }
-
-    if (this.map.getSource(this.id)) {
-      this.map.removeSource(this.id);
-    }
   },
   render() {
     return null;

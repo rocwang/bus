@@ -6,12 +6,14 @@ TXT=agency.txt calendar.txt calendar_dates.txt frequencies.txt routes.txt shapes
 gtfs.sqlite3.br: gtfs.sqlite3
 	brotli --quality=11 --force --output=$@ $^
 
-gtfs.sqlite3: tables.sql $(TXT)
+gtfs.sqlite3: tables.sql indices.sql $(TXT)
 	rm -f $@
 	sqlite3 $@ < $<
 
 	# Import in parallel
 	echo $(TXT) | xargs -P 0 -n 1 csvsql --no-create --no-inference --insert --db sqlite:///$@
+
+	sqlite3 $@ < indices.sql
 
 	# Vacuum for smaller database
 	sqlite3 $@ 'VACUUM;'
