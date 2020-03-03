@@ -59,7 +59,7 @@ export const vehicles$ = combineLatest([
   trips$,
   interval(10000).pipe(startWith(-1))
 ]).pipe(
-  map(R.pipe(R.head, R.pluck("trip_id"))),
+  map(R.pipe(R.head, R.pluck("realtime_trip_id"))),
   switchMap(getVehiclePositions),
   pluck("entity"),
   map(

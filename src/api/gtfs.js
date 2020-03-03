@@ -41,7 +41,7 @@ export async function getTripsByStop(stopCode) {
 
   return query(
     `
-    SELECT trips.trip_id, trip_headsign, departure_time
+    SELECT trips.trip_id, trip_headsign, departure_time, realtime_trip_id
     FROM trips
            INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id
            INNER JOIN stops ON stops.stop_id = stop_times.stop_id
@@ -88,7 +88,7 @@ export async function getNexTripsByStopRouteItems(stopRouteItems) {
   // TODO: add stop_code, route_short_name to other query results for trips as well?
   return query(
     `
-      SELECT trips.trip_id, trip_headsign, min(departure_time) AS departure_time, stop_code, route_short_name
+      SELECT trips.trip_id, trip_headsign, min(departure_time) AS departure_time, stop_code, route_short_name, realtime_trip_id
       FROM trips
              INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id
              INNER JOIN stops ON stops.stop_id = stop_times.stop_id
@@ -118,7 +118,7 @@ export async function getTripsByStopAndRoute(stopCode, routeShortName) {
 
   return query(
     `
-    SELECT trips.trip_id, trip_headsign, departure_time
+    SELECT trips.trip_id, trip_headsign, departure_time, realtime_trip_id
     FROM trips
            INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id
            INNER JOIN stops ON stops.stop_id = stop_times.stop_id
@@ -152,7 +152,7 @@ export async function getTripsByStopAndTrip(stopCode, tripId) {
 
   return query(
     `
-    SELECT trips.trip_id, trip_headsign, departure_time
+    SELECT trips.trip_id, trip_headsign, departure_time, realtime_trip_id
     FROM trips
            INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id
            INNER JOIN stops ON stops.stop_id = stop_times.stop_id
