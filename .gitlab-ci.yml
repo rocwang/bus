@@ -30,11 +30,6 @@ build database builder:
     - cd src/database
     - docker build -t $CI_REGISTRY/rocwang/bus-bus/database-builder:latest .
     - docker push $CI_REGISTRY/rocwang/bus-bus/database-builder:latest
-  only:
-    refs:
-      - master
-    changes:
-      - src/database/Dockerfile
 
 build database:
   image: $CI_REGISTRY/rocwang/bus-bus/database-builder
@@ -62,7 +57,7 @@ build:
     paths:
       - dist
 
-unit test:
+.unit test:
   image: node:12
   stage: build
   <<: *npm_install
@@ -73,14 +68,14 @@ unit test:
     paths:
       - coverage
 
-e2e test:
+.e2e test:
   image: cypress/browsers:node12.14.0-chrome79-ff71
   stage: test
   <<: *npm_install
   script:
     - npm run test:e2e -- --headless --browser chrome
 
-lighthouse:
+.lighthouse:
   image: cypress/browsers:node12.14.0-chrome79-ff71
   stage: test
   <<: *npm_install
