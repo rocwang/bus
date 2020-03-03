@@ -37,6 +37,10 @@ function transformId([key, value]) {
   if (/^(?:.*_id|parent_station)$/.test(key)) {
     let lookupKey = key;
 
+    if (key === "direction_id") {
+      return [key, value];
+    }
+
     if (key === "parent_station") {
       lookupKey = "stop_id";
     }
