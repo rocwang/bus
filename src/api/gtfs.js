@@ -335,7 +335,6 @@ export async function getShapesByTrips(tripIds) {
     `
   );
 
-  console.log(tripIds, shapePolylines);
   return shapePolylines.map(({ shape_polyline }) =>
     polyline.decode(shape_polyline)
   );
