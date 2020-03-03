@@ -8,7 +8,9 @@ function getDayOfWeek(date) {
 }
 
 export function getStops() {
-  return query("SELECT DISTINCT stop_code, stop_lon, stop_lat FROM stops;");
+  return query(
+    "SELECT DISTINCT stop_code, stop_lon, stop_lat FROM stops WHERE location_type is null;"
+  );
 }
 
 export async function getStopNameById(stopCode) {
