@@ -34,12 +34,6 @@ export async function getTripsByStop(stopCode) {
   }
 
   const now = startOfMinute(new Date());
-  const departureFrom = format(now, "HHmm");
-  // 1 hours later. Times like "25:00:00" is OK, see:
-  // https://developers.google.com/transit/gtfs/reference/#stop_timestxt
-  const departureTo = `${("0" + (now.getHours() + 24)).slice(
-    -2
-  )}${now.getMinutes()}`;
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -56,14 +50,10 @@ export async function getTripsByStop(stopCode) {
       AND start_date <= :today
       AND :today <= end_date
       AND (${dayOfWeek} = TRUE OR exception_type = 1)
-      AND :departureFrom <= departure_time
-      AND departure_time <= :departureTo;
     `,
     {
       ":stopCode": stopCode,
-      ":today": today,
-      ":departureFrom": departureFrom,
-      ":departureTo": departureTo
+      ":today": today
     }
   );
 }
@@ -121,7 +111,6 @@ export async function getTripsByStopAndRoute(stopCode, routeShortName) {
   }
 
   const now = new Date();
-  const departureFrom = format(startOfMinute(now), "HHmm");
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -140,13 +129,11 @@ export async function getTripsByStopAndRoute(stopCode, routeShortName) {
       AND start_date <= :today
       AND :today <= end_date
       AND (${dayOfWeek} = TRUE OR exception_type = 1)
-      AND departure_time >= :departureFrom
     ORDER BY departure_time;
     `,
     {
       ":stopCode": stopCode,
       ":routeShortName": routeShortName,
-      ":departureFrom": departureFrom,
       ":today": today
     }
   );
@@ -187,7 +174,6 @@ export async function getRoutesByStopRouteItems(stopRouteItems) {
   }
 
   const now = new Date();
-  const departureFrom = format(startOfMinute(now), "HHmm");
   const today = format(now, "yyyyMMdd");
   const dayOfWeek = getDayOfWeek(now);
 
@@ -219,11 +205,10 @@ export async function getRoutesByStopRouteItems(stopRouteItems) {
       WHERE start_date <= :today
         AND :today <= end_date
         AND (${dayOfWeek} = TRUE OR exception_type = 1)
-        AND departure_time >= :departureFrom
         AND (${bindPlaceholders})
       GROUP BY stop_code, route_short_name;
     `,
-    { ":departureFrom": departureFrom, ":today": today, ...bindValues }
+    { ":today": today, ...bindValues }
   );
 }
 
@@ -348,6 +333,7 @@ export async function getShapesByTrips(tripIds) {
     `
   );
 
+  console.log(tripIds, shapePolylines);
   return shapePolylines.map(({ shape_polyline }) =>
     polyline.decode(shape_polyline)
   );
