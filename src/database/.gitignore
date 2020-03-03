@@ -1,5 +1,6 @@
 *.zip
 *.txt
+*.csv
 *.br
 *.sqlite3
 *.bak

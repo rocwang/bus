@@ -75,8 +75,8 @@ CREATE TABLE calendar_dates
 DROP TABLE IF EXISTS shapes;
 CREATE TABLE shapes
 (
-    shape_id            INTEGER PRIMARY KEY,
-    shape_polyline      TEXT    NOT NULL
+    shape_id       INTEGER PRIMARY KEY,
+    shape_polyline TEXT NOT NULL
 );
 
 DROP TABLE IF EXISTS trips;
@@ -90,7 +90,8 @@ CREATE TABLE trips
     direction_id          INTEGER NULL,
     block_id              INTEGER NULL,
     shape_id              INTEGER NULL,
-    wheelchair_accessible INTEGER NULL
+    wheelchair_accessible INTEGER NULL,
+    realtime_trip_id      TEXT    NOT NULL
 
     -- FOREIGN KEY (route_id) REFERENCES routes (route_id) ON DELETE CASCADE,
     -- FOREIGN KEY (service_id) REFERENCES calendar (service_id) ON DELETE CASCADE,
