@@ -25,10 +25,13 @@ build database builder:
   services:
     - docker:dind
   stage: .pre
+  variables:
+    DOCKER_BUILDKIT: 1
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $CI_REGISTRY/rocwang/bus-bus/database-builder:latest
     - cd src/database
-    - docker build -t $CI_REGISTRY/rocwang/bus-bus/database-builder:latest .
+    - docker build --cache-from $CI_REGISTRY/rocwang/bus-bus/database-builder:latest --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/rocwang/bus-bus/database-builder:latest .
     - docker push $CI_REGISTRY/rocwang/bus-bus/database-builder:latest
 
 build database:
