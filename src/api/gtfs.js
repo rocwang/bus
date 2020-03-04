@@ -307,15 +307,15 @@ export async function getRoutesByStopAndTrip(stopCode, tripId) {
   );
 }
 
-export async function getShapeByTrip(tripId) {
+export async function getShapeByRealtimeTripId(realtimeTripId) {
   const shapePolyline = await query(
     `
       SELECT shape_polyline
       FROM shapes
              INNER JOIN trips ON trips.shape_id = shapes.shape_id
-      WHERE trip_id = :tripId;
+      WHERE realtime_trip_id = :realtimeTripId;
     `,
-    { ":tripId": tripId }
+    { ":realtimeTripId": realtimeTripId }
   );
 
   if (shapePolyline[0]) {
