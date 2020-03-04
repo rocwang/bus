@@ -37,22 +37,22 @@ build database builder:
 build database:
   image: $CI_REGISTRY/rocwang/bus-bus/database-builder
   stage: build database
+  cache:
+    <<: *cache
+    policy: pull-push
+  before_script: *before_script
   script:
     - cd src/database
     - make
   artifacts:
     expire_in: 1 week
     paths:
-      - src/database/gtfs.sqlite3
       - src/database/gtfs.sqlite3.br
 
 build:
   image: node:12
   stage: build
-  cache:
-    <<: *cache
-    policy: pull-push
-  before_script: *before_script
+  <<: *npm_install
   script:
     - npm run build
   artifacts:
