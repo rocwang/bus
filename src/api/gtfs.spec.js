@@ -9,7 +9,7 @@ import {
   getRoutesByStop,
   getRoutesByStopAndShortName,
   getRoutesByStopAndTrip,
-  getShapeByTrip
+  getShapeByRealtimeTripId
 } from "./gtfs";
 
 describe("Function getStopNameById()", () => {
@@ -310,7 +310,7 @@ describe("Function getRoutesByStopAndTrip()", () => {
     ];
 
     fetchMock.once("*", expectedShape);
-    const shape = await getShapeByTrip("5678");
+    const shape = await getShapeByRealtimeTripId("5678");
     fetchMock.reset();
 
     expect(shape).toEqual(expectedShape);

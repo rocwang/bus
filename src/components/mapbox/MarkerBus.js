@@ -8,7 +8,7 @@ import {
   lineString,
   point
 } from "@turf/turf";
-import { getShapeByTrip } from "../../api/gtfs";
+import { getShapeByRealtimeTripId } from "../../api/gtfs";
 import { uniqueId } from "lodash-es";
 
 export default {
@@ -47,7 +47,9 @@ export default {
     "vehicle.trip.trip_id": {
       immediate: true,
       async handler() {
-        const shapeCoords = await getShapeByTrip(this.vehicle.trip.trip_id);
+        const shapeCoords = await getShapeByRealtimeTripId(
+          this.vehicle.trip.trip_id
+        );
         this.shape = shapeCoords.map(([lat, lon]) => [lon, lat]);
       }
     },
