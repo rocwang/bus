@@ -1,130 +1,129 @@
--- gsed -E -i 's/([0-9]{2}):([0-9]{2}):([0-9]{2})/\1\2\3/g' stop_times.txt
-
-DROP TABLE IF EXISTS agency;
-CREATE TABLE agency
+drop table if exists agency;
+create table agency
 (
-    agency_id       INTEGER PRIMARY KEY,
-    agency_name     TEXT NOT NULL,
-    agency_url      TEXT NOT NULL,
-    agency_timezone TEXT NOT NULL,
-    agency_lang     TEXT NULL,
-    agency_phone    TEXT NULL,
-    agency_fare_url TEXT NULL,
-    agency_email    TEXT NULL
+    agency_id       INTEGER primary key,
+    agency_name     TEXT not null,
+    agency_url      TEXT not null,
+    agency_timezone TEXT not null,
+    agency_lang     TEXT null,
+    agency_phone    TEXT null,
+    agency_fare_url TEXT null,
+    agency_email    TEXT null
 );
 
-DROP TABLE IF EXISTS stops;
-CREATE TABLE stops
+drop table if exists stops;
+create table stops
 (
-    stop_id             INTEGER PRIMARY KEY,
-    stop_code           TEXT    NULL,
-    stop_name           TEXT    NOT NULL,
-    stop_desc           TEXT    NULL,
-    stop_lat            REAL    NOT NULL,
-    stop_lon            REAL    NOT NULL,
-    zone_id             INTEGER NULL,
-    stop_url            TEXT    NULL,
-    location_type       INTEGER NULL,
-    parent_station      INTEGER NULL,
-    stop_timezone       TEXT    NULL,
-    wheelchair_boarding INTEGER NULL
+    stop_id             INTEGER primary key,
+    stop_code           TEXT    null,
+    stop_name           TEXT    not null,
+    stop_desc           TEXT    null,
+    stop_lat            REAL    not null,
+    stop_lon            REAL    not null,
+    zone_id             INTEGER null,
+    stop_url            TEXT    null,
+    location_type       INTEGER null,
+    parent_station      INTEGER null,
+    stop_timezone       TEXT    null,
+    wheelchair_boarding INTEGER null
 );
 
-DROP TABLE IF EXISTS routes;
-CREATE TABLE routes
+drop table if exists routes;
+create table routes
 (
-    route_id         INTEGER PRIMARY KEY,
-    agency_id        INTEGER NULL,
-    route_short_name TEXT    NULL,
-    route_long_name  TEXT    NULL,
-    route_desc       TEXT    NULL,
-    route_type       INTEGER NOT NULL,
-    route_url        TEXT    NULL,
-    route_color      CHAR(6) NULL,
-    route_text_color CHAR(6) NULL
+    route_id         INTEGER primary key,
+    agency_id        INTEGER null,
+    route_short_name TEXT    null,
+    route_long_name  TEXT    null,
+    route_desc       TEXT    null,
+    route_type       INTEGER not null,
+    route_url        TEXT    null,
+    route_color      CHAR(6) null,
+    route_text_color CHAR(6) null,
 
-    -- FOREIGN KEY (agency_id) REFERENCES agency (agency_id) ON DELETE CASCADE
+    foreign key (agency_id) references agency (agency_id) on delete cascade
 );
 
-DROP TABLE IF EXISTS calendar;
-CREATE TABLE calendar
+drop table if exists calendar;
+create table calendar
 (
-    service_id INTEGER PRIMARY KEY,
-    monday     BOOLEAN NOT NULL,
-    tuesday    BOOLEAN NOT NULL,
-    wednesday  BOOLEAN NOT NULL,
-    thursday   BOOLEAN NOT NULL,
-    friday     BOOLEAN NOT NULL,
-    saturday   BOOLEAN NOT NULL,
-    sunday     BOOLEAN NOT NULL,
-    start_date TEXT    NOT NULL,
-    end_date   TEXT    NOT NULL
+    service_id INTEGER primary key,
+    monday     BOOLEAN not null,
+    tuesday    BOOLEAN not null,
+    wednesday  BOOLEAN not null,
+    thursday   BOOLEAN not null,
+    friday     BOOLEAN not null,
+    saturday   BOOLEAN not null,
+    sunday     BOOLEAN not null,
+    start_date TEXT    not null,
+    end_date   TEXT    not null
 );
 
-DROP TABLE IF EXISTS calendar_dates;
-CREATE TABLE calendar_dates
+drop table if exists calendar_dates;
+create table calendar_dates
 (
-    service_id     INTEGER NOT NULL,
-    `date`         INTEGER NOT NULL,
-    exception_type INTEGER NOT NULL,
+    service_id     INTEGER not null,
+    `date`         INTEGER not null,
+    exception_type INTEGER not null,
 
-    PRIMARY KEY (service_id, date)
-    -- FOREIGN KEY (service_id) REFERENCES calendar (service_id) ON DELETE CASCADE
-) WITHOUT ROWID;
+    primary key (service_id, date),
+    foreign key (service_id) references calendar (service_id) on delete cascade
+) without rowid;
 
-DROP TABLE IF EXISTS shapes;
-CREATE TABLE shapes
+drop table if exists shapes;
+create table shapes
 (
-    shape_id       INTEGER PRIMARY KEY,
-    shape_polyline TEXT NOT NULL
+    shape_id       INTEGER primary key,
+    shape_polyline TEXT not null
 );
 
-DROP TABLE IF EXISTS trips;
-CREATE TABLE trips
+drop table if exists trips;
+create table trips
 (
-    trip_id               INTEGER PRIMARY KEY,
-    route_id              INTEGER NOT NULL,
-    service_id            INTEGER NOT NULL,
-    trip_headsign         TEXT    NULL,
-    trip_short_name       TEXT    NULL,
-    direction_id          INTEGER NULL,
-    block_id              INTEGER NULL,
-    shape_id              INTEGER NULL,
-    wheelchair_accessible INTEGER NULL,
-    realtime_trip_id      TEXT    NOT NULL
+    trip_id               INTEGER primary key,
+    route_id              INTEGER not null,
+    service_id            INTEGER not null,
+    trip_headsign         TEXT    null,
+    trip_short_name       TEXT    null,
+    direction_id          INTEGER null,
+    block_id              INTEGER null,
+    shape_id              INTEGER null,
+    wheelchair_accessible INTEGER null,
+    realtime_trip_id      TEXT    not null,
 
-    -- FOREIGN KEY (route_id) REFERENCES routes (route_id) ON DELETE CASCADE,
-    -- FOREIGN KEY (service_id) REFERENCES calendar (service_id) ON DELETE CASCADE,
-    -- FOREIGN KEY (shape_id) REFERENCES shapes (shape_id) ON DELETE CASCADE
+    foreign key (route_id) references routes (route_id) on delete cascade,
+    foreign key (service_id) references calendar (service_id) on delete cascade,
+    foreign key (shape_id) references shapes (shape_id) on delete cascade
 );
 
-DROP TABLE IF EXISTS stop_times;
-CREATE TABLE stop_times
+drop table if exists stop_times;
+create table stop_times
 (
-    trip_id             INTEGER NOT NULL,
-    arrival_time        TEXT    NULL,
-    departure_time      TEXT    NOT NULL,
-    stop_id             INTEGER NOT NULL,
-    stop_sequence       INTEGER NOT NULL,
-    stop_headsign       TEXT    NULL,
-    pickup_type         INTEGER NULL,
-    drop_off_type       INTEGER NULL,
-    shape_dist_traveled REAL    NULL,
+    trip_id             INTEGER not null,
+    arrival_time        TEXT    null,
+    departure_time      TEXT    not null,
+    stop_id             INTEGER not null,
+    stop_sequence       INTEGER not null,
+    stop_headsign       TEXT    null,
+    pickup_type         INTEGER null,
+    drop_off_type       INTEGER null,
+    shape_dist_traveled REAL    null,
 
-    PRIMARY KEY (trip_id, stop_sequence)
+    primary key (trip_id, stop_sequence),
+    foreign key (trip_id) references trips (trip_id) on delete cascade,
+    foreign key (stop_id) references stops (stop_id) on delete cascade
+) without rowid;
 
-    -- FOREIGN KEY (trip_id) REFERENCES trips (trip_id) ON DELETE CASCADE,
-    -- FOREIGN KEY (stop_id) REFERENCES stops (stop_id) ON DELETE CASCADE
-) WITHOUT ROWID;
-
-DROP TABLE IF EXISTS frequencies;
-CREATE TABLE frequencies
+/*
+drop table if exists frequencies;
+create table frequencies
 (
-    trip_id      INTEGER NOT NULL,
-    start_time   TEXT    NOT NULL,
-    end_time     TEXT    NOT NULL,
-    headway_secs INTEGER NOT NULL,
-    exact_times  BOOLEAN NULL
+    trip_id      INTEGER not null,
+    start_time   TEXT    not null,
+    end_time     TEXT    not null,
+    headway_secs INTEGER not null,
+    exact_times  BOOLEAN null,
 
-    -- FOREIGN KEY (trip_id) REFERENCES trips (trip_id) ON DELETE CASCADE
+    foreign key (trip_id) references trips (trip_id) on delete cascade
 );
+*/
