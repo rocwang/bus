@@ -1,6 +1,4 @@
-const fs = require("fs");
 const csv = require("csv");
-const path = require("path");
 const polyline = require("@mapbox/polyline");
 
 const shapes = {};
