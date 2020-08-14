@@ -12,18 +12,18 @@ it("has the Intro route", () => {
 it("has the Favourites route", () => {
   const { route } = router.resolve({
     name: "Favourites",
-    query: { isCollapsed: "yes" }
+    query: { isCollapsed: "yes" },
   });
   expect(route.name).toBe("Favourites");
   expect(route.matched[0].props.default(route)).toMatchObject({
-    isCollapsedInitially: true
+    isCollapsedInitially: true,
   });
 });
 
 it("has the Stop route", () => {
   const expected = {
     name: "Stop",
-    params: { stopCode: "1234" }
+    params: { stopCode: "1234" },
   };
   const { route } = router.resolve(expected);
   expect(route.name).toBe(expected.name);
@@ -33,7 +33,7 @@ it("has the Stop route", () => {
 it("has the Route route", () => {
   const expected = {
     name: "Route",
-    params: { stopCode: "1234", shortName: "NX1" }
+    params: { stopCode: "1234", shortName: "NX1" },
   };
   const { route } = router.resolve(expected);
   expect(route.name).toBe(expected.name);

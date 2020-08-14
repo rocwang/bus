@@ -54,24 +54,24 @@ export default {
   props: {
     headSign: {
       type: String,
-      required: true
+      required: true,
     },
     departureTime: {
       type: String,
-      required: false
+      required: false,
     },
     occupancyStatus: {
       type: Number,
-      required: false
+      required: false,
     },
     isRealTime: {
       type: Boolean,
-      required: true
+      required: true,
     },
     isDetailEnabled: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   computed: {
     formattedOccupancy() {
@@ -82,14 +82,14 @@ export default {
         "Standing room only",
         "Crushed standing room only",
         "Full",
-        "Not accepting passengers"
+        "Not accepting passengers",
       ];
       return status[this.occupancyStatus] || "N/A";
-    }
+    },
   },
   data() {
     return {
-      isExpanded: false
+      isExpanded: false,
     };
   },
   subscriptions() {
@@ -113,7 +113,7 @@ export default {
             return "N/A";
           }
         })
-      )
+      ),
     };
   },
   methods: {
@@ -121,8 +121,8 @@ export default {
       if (this.isDetailEnabled) {
         this.isExpanded = !this.isExpanded;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

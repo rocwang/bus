@@ -12,8 +12,8 @@ describe("SourceStops.vue", () => {
     wrapper = mount(SourceStops, {
       provide: {
         mapPromise: Promise.resolve(new mapboxgl.Map()),
-        colors
-      }
+        colors,
+      },
     });
   });
 

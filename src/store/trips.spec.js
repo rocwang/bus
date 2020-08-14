@@ -25,8 +25,8 @@ describe("trips$", () => {
         trip_headsign: "Albany",
         departure_time: "18:23:00",
         route_short_name: "NX1",
-        stop_code: "1234"
-      }
+        stop_code: "1234",
+      },
     ]);
   });
 
@@ -39,8 +39,8 @@ describe("trips$", () => {
       {
         trip_id: "1234",
         trip_headsign: "Albany",
-        departure_time: "18:23:00"
-      }
+        departure_time: "18:23:00",
+      },
     ]);
   });
 
@@ -53,8 +53,8 @@ describe("trips$", () => {
       {
         trip_id: "1234",
         trip_headsign: "Albany",
-        departure_time: "18:23:00"
-      }
+        departure_time: "18:23:00",
+      },
     ]);
   });
 
@@ -67,8 +67,8 @@ describe("trips$", () => {
       {
         trip_id: "1234",
         trip_headsign: "Albany",
-        departure_time: "18:23:00"
-      }
+        departure_time: "18:23:00",
+      },
     ]);
   });
 });
@@ -91,13 +91,13 @@ describe("vehicles$", () => {
           trip_id: "1234",
           route_id: "08204-20190522094814_v80.15",
           start_time: "16:25:00",
-          schedule_relationship: 0
+          schedule_relationship: 0,
         },
         vehicle: { id: "2CC7" },
         position: { latitude: -36.852667, longitude: 174.765633 },
         timestamp: 1560054213,
-        occupancy_status: 0
-      }
+        occupancy_status: 0,
+      },
     ]);
   });
 });
@@ -124,14 +124,14 @@ describe("tripsWithVehicles$", () => {
             trip_id: "1234",
             route_id: "08204-20190522094814_v80.15",
             start_time: "16:25:00",
-            schedule_relationship: 0
+            schedule_relationship: 0,
           },
           vehicle: { id: "2CC7" },
           position: { latitude: -36.852667, longitude: 174.765633 },
           timestamp: 1560054213,
-          occupancy_status: 0
-        }
-      }
+          occupancy_status: 0,
+        },
+      },
     ]);
   });
 });
@@ -147,7 +147,7 @@ describe("favouritesWithTrips$", () => {
     const { favouritesWithTrips$ } = require("./trips");
     const {
       actionViewFavourites$,
-      actionAddToFavourites$
+      actionAddToFavourites$,
     } = require("./actions");
 
     const result = favouritesWithTrips$.pipe(take(2)).toPromise();
@@ -171,15 +171,15 @@ describe("favouritesWithTrips$", () => {
               trip_id: "1234",
               route_id: "08204-20190522094814_v80.15",
               start_time: "16:25:00",
-              schedule_relationship: 0
+              schedule_relationship: 0,
             },
             vehicle: { id: "2CC7" },
             position: { latitude: -36.852667, longitude: 174.765633 },
             timestamp: 1560054213,
-            occupancy_status: 0
-          }
-        }
-      }
+            occupancy_status: 0,
+          },
+        },
+      },
     ]);
   });
 });

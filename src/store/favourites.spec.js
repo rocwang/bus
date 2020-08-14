@@ -2,7 +2,7 @@ import {
   actionClearFavourites$,
   actionAddToFavourites$,
   actionRemoveFromFavourites$,
-  actionViewFavourites$
+  actionViewFavourites$,
 } from "./actions";
 import { favourites$ } from "./favourites";
 import { take } from "rxjs/operators";
@@ -53,7 +53,7 @@ describe("favourites.js", () => {
 
     expect(await favouritesPromise).toEqual([
       { ...item1, name: "NX1 at 1234" },
-      { ...item2, name: "NX2 at 5678" }
+      { ...item2, name: "NX2 at 5678" },
     ]);
   });
 

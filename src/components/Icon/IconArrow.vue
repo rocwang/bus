@@ -7,6 +7,6 @@
 
 <script>
 export default {
-  name: "IconArrow"
+  name: "IconArrow",
 };
 </script>

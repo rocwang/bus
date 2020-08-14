@@ -19,7 +19,7 @@ describe("route$", () => {
     const result = routes$.pipe(take(2)).toPromise();
     actionViewFavourites$.next();
     expect(await result).toEqual([
-      { route_id: "12345ABCDE", route_short_name: "NX1" }
+      { route_id: "12345ABCDE", route_short_name: "NX1" },
     ]);
   });
 
@@ -29,7 +29,7 @@ describe("route$", () => {
     const result = routes$.pipe(take(2)).toPromise();
     actionViewTrip$.next({ stopCode: "1234", tripId: "1234" });
     expect(await result).toEqual([
-      { route_id: "12345ABCDE", route_short_name: "NX1" }
+      { route_id: "12345ABCDE", route_short_name: "NX1" },
     ]);
   });
 
@@ -39,7 +39,7 @@ describe("route$", () => {
     const result = routes$.pipe(take(2)).toPromise();
     actionViewRoute$.next({ stopCode: "1234", routeShortName: "NX1" });
     expect(await result).toEqual([
-      { route_id: "12345ABCDE", route_short_name: "NX1" }
+      { route_id: "12345ABCDE", route_short_name: "NX1" },
     ]);
   });
 
@@ -49,7 +49,7 @@ describe("route$", () => {
     const result = routes$.pipe(take(2)).toPromise();
     actionViewStop$.next("1234");
     expect(await result).toEqual([
-      { route_id: "12345ABCDE", route_short_name: "NX1" }
+      { route_id: "12345ABCDE", route_short_name: "NX1" },
     ]);
   });
 });

@@ -9,15 +9,15 @@ describe("PanelFavourites.vue", () => {
     wrapper = mount(PanelFavourites, {
       stubs: ["router-link"],
       provide: {
-        colors
+        colors,
       },
       propsData: {
         isCollapsedInitially: false,
         favouritesWithTrips: [
           { name: "test1", stopCode: "stopCode1", routeShortName: "NX1" },
-          { name: "test2", stopCode: "stopCode2", routeShortName: "NX2" }
-        ]
-      }
+          { name: "test2", stopCode: "stopCode2", routeShortName: "NX2" },
+        ],
+      },
     });
   });
 

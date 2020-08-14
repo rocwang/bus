@@ -9,7 +9,7 @@ import {
   getRoutesByStop,
   getRoutesByStopAndShortName,
   getRoutesByStopAndTrip,
-  getShapeByRealtimeTripId
+  getShapeByRealtimeTripId,
 } from "./gtfs";
 
 describe("Function getStopNameById()", () => {
@@ -50,8 +50,8 @@ describe("Function getTripsByStop()", () => {
       {
         trip_id: "ABCD",
         trip_headsign: "Albany",
-        departure_time: "14:57:00"
-      }
+        departure_time: "14:57:00",
+      },
     ];
 
     fetchMock.once("*", expectedTrips);
@@ -83,16 +83,16 @@ describe("Function getNexTripsByStopRouteItems()", () => {
         trip_headsign: "Albany",
         departure_time: "14:57:00",
         stop_code: "1234",
-        route_short_name: "NX1"
-      }
+        route_short_name: "NX1",
+      },
     ];
 
     fetchMock.once("*", expectedTrips);
     const trips = await getNexTripsByStopRouteItems([
       {
         stopCode: "1234",
-        routeShortName: "NX1"
-      }
+        routeShortName: "NX1",
+      },
     ]);
     fetchMock.reset();
 
@@ -122,8 +122,8 @@ describe("Function getTripsByStopAndRoute()", () => {
       {
         trip_id: "ABCD",
         trip_headsign: "Albany",
-        departure_time: "14:57:00"
-      }
+        departure_time: "14:57:00",
+      },
     ];
 
     fetchMock.once("*", expectedTrips);
@@ -156,8 +156,8 @@ describe("Function getTripsByStopAndTrip()", () => {
       {
         trip_id: "ABCD",
         trip_headsign: "Albany",
-        departure_time: "14:57:00"
-      }
+        departure_time: "14:57:00",
+      },
     ];
 
     fetchMock.once("*", expectedTrips);
@@ -186,16 +186,16 @@ describe("Function getRoutesByStopRouteItems()", () => {
     const expectedRoutes = [
       {
         route_id: "ABCD",
-        route_short_name: "NX1"
-      }
+        route_short_name: "NX1",
+      },
     ];
 
     fetchMock.once("*", expectedRoutes);
     const trips = await getRoutesByStopRouteItems([
       {
         stopCode: "1234",
-        routeShortName: "NX1"
-      }
+        routeShortName: "NX1",
+      },
     ]);
     fetchMock.reset();
 
@@ -218,8 +218,8 @@ describe("Function getRoutesByStop()", () => {
     const expectedRoutes = [
       {
         route_id: "ABCD",
-        route_short_name: "NX1"
-      }
+        route_short_name: "NX1",
+      },
     ];
 
     fetchMock.once("*", expectedRoutes);
@@ -251,8 +251,8 @@ describe("Function getRoutesByStopAndShortName()", () => {
     const expectedRoutes = [
       {
         route_id: "ABCD",
-        route_short_name: "NX1"
-      }
+        route_short_name: "NX1",
+      },
     ];
 
     fetchMock.once("*", expectedRoutes);
@@ -284,8 +284,8 @@ describe("Function getRoutesByStopAndTrip()", () => {
     const expectedRoutes = [
       {
         route_id: "ABCD",
-        route_short_name: "NX1"
-      }
+        route_short_name: "NX1",
+      },
     ];
 
     fetchMock.once("*", expectedRoutes);
@@ -306,7 +306,7 @@ describe("Function getRoutesByStopAndTrip()", () => {
       { shape_pt_lat: -36.84304, shape_pt_lon: 174.76575 },
       { shape_pt_lat: -36.84301, shape_pt_lon: 174.76573 },
       { shape_pt_lat: -36.84299, shape_pt_lon: 174.76572 },
-      { shape_pt_lat: -36.84296, shape_pt_lon: 174.76569 }
+      { shape_pt_lat: -36.84296, shape_pt_lon: 174.76569 },
     ];
 
     fetchMock.once("*", expectedShape);

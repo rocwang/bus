@@ -10,8 +10,8 @@ describe("Mapbox.vue", () => {
   beforeEach(() => {
     wrapper = shallowMount(Mapbox, {
       provide: {
-        config
-      }
+        config,
+      },
     });
   });
 

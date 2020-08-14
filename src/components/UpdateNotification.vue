@@ -28,7 +28,7 @@ export default {
   components: { Notification, Buttonizer },
   data() {
     return {
-      isVisible: false
+      isVisible: false,
     };
   },
   created() {
@@ -60,8 +60,8 @@ export default {
       // Note: for this to work, you have to add a message
       // listener in your service worker. See below.
       workBox.messageSW({ type: "SKIP_WAITING" });
-    }
-  }
+    },
+  },
 };
 </script>
 

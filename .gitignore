@@ -36,6 +36,10 @@ netlify-deploy.log*
 *.pdf
 *.sketch
 
-
 # Local Netlify folder
 .netlify
+
+# Extracted map fonts & tiles
+/public/map/fonts/
+/public/map/tiles/
+*.mbtiles

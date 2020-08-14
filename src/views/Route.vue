@@ -21,33 +21,33 @@ export default {
     return {
       stopCode: stopCode$,
       tripsWithVehicles: tripsWithVehicles$,
-      favourites: favourites$
+      favourites: favourites$,
     };
   },
   computed: {
     routeShortName() {
       return this.$route.params.shortName;
-    }
+    },
   },
   created() {
     actionViewRoute$.next({
       stopCode: this.$route.params.stopCode,
-      routeShortName: this.$route.params.shortName
+      routeShortName: this.$route.params.shortName,
     });
   },
   beforeRouteUpdate(to, from, next) {
     actionViewRoute$.next({
       stopCode: to.params.stopCode,
-      routeShortName: to.params.shortName
+      routeShortName: to.params.shortName,
     });
     next();
   },
   beforeRouteLeave(to, from, next) {
     actionViewRoute$.next({
       stopCode: "",
-      routeShortName: ""
+      routeShortName: "",
     });
     next();
-  }
+  },
 };
 </script>

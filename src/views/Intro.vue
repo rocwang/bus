@@ -56,23 +56,23 @@ export default {
     Icon,
     Buttonizer,
     RoundIcon,
-    ButtonWithIcon
+    ButtonWithIcon,
   },
   methods: {
     handleButtonClick(isFavouritesCollapsed) {
       const route = {
-        name: "Favourites"
+        name: "Favourites",
       };
 
       if (isFavouritesCollapsed) {
         route.query = {
-          isCollapsed: "yes"
+          isCollapsed: "yes",
         };
       }
 
       this.$router.push(route);
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -29,13 +29,13 @@ export default {
     IconEmptyStar,
     IconFullStar,
     IconShip,
-    IconTrain
+    IconTrain,
   },
   props: {
     name: {
       type: String,
       required: true,
-      validator: function(name) {
+      validator: function (name) {
         return [
           "Arrow",
           "Bus",
@@ -44,27 +44,27 @@ export default {
           "EmptyStar",
           "FullStar",
           "Ship",
-          "Train"
+          "Train",
         ].includes(name);
-      }
+      },
     },
     direction: {
       type: String,
       default: "up",
       validator(value) {
         return ["up", "down", "left", "right"].includes(value);
-      }
+      },
     },
     color: {
       type: String,
-      default: "#000"
-    }
+      default: "#000",
+    },
   },
   computed: {
     pathComponent() {
       return `Icon${this.name}`;
-    }
-  }
+    },
+  },
 };
 </script>
 

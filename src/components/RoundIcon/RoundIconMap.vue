@@ -7,6 +7,6 @@
 
 <script>
 export default {
-  name: "RoundIconMap"
+  name: "RoundIconMap",
 };
 </script>

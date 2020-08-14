@@ -10,15 +10,15 @@ export default {
       type: Array,
       default() {
         return [];
-      }
-    }
+      },
+    },
   },
   watch: {
     shapes: {
       async handler() {
         const map = await this.mapPromise;
         const geoJson = featureCollection(
-          this.shapes.map(shapeCoords =>
+          this.shapes.map((shapeCoords) =>
             lineString(shapeCoords.map(([lat, lon]) => [lon, lat]))
           )
         );
@@ -29,7 +29,7 @@ export default {
         } else {
           map.addSource("shapes", {
             type: "geojson",
-            data: geoJson
+            data: geoJson,
           });
         }
 
@@ -44,18 +44,18 @@ export default {
             source: "shapes",
             layout: {
               "line-join": "round",
-              "line-cap": "round"
+              "line-cap": "round",
             },
             paint: {
               "line-color": this.colors.blue,
-              "line-width": 4
-            }
+              "line-width": 4,
+            },
           },
-          "road-label-small"
+          "boundary-land-level-4"
         );
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   async created() {
     this.map = await this.mapPromise;
@@ -71,5 +71,5 @@ export default {
   },
   render() {
     return null;
-  }
+  },
 };

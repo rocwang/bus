@@ -12,8 +12,8 @@ export default {
       minzoom: 15,
       paint: {
         "circle-color": this.colors.yellow,
-        "circle-radius": 20
-      }
+        "circle-radius": 20,
+      },
     });
 
     // Event handling
@@ -28,7 +28,7 @@ export default {
   methods: {
     handleStopClusterClick(e) {
       const features = this.map.queryRenderedFeatures(e.point, {
-        layers: ["stop-clusters"]
+        layers: ["stop-clusters"],
       });
       const clusterId = features[0].properties.cluster_id;
       this.map
@@ -40,9 +40,9 @@ export default {
 
           this.map.easeTo({
             center: features[0].geometry.coordinates,
-            zoom
+            zoom,
           });
         });
-    }
-  }
+    },
+  },
 };

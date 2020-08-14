@@ -3,7 +3,7 @@ import { switchMap, map, startWith, shareReplay } from "rxjs/operators";
 import {
   getRoutesByStopAndTrip,
   getRoutesByStopAndShortName,
-  getRoutesByStop
+  getRoutesByStop,
 } from "../api/gtfs";
 import { getRoutesByStopRouteItems } from "../api/gtfs";
 import { favourites$ } from "./favourites";
@@ -11,20 +11,20 @@ import {
   actionViewTrip$,
   actionViewStop$,
   actionViewRoute$,
-  actionViewFavourites$
+  actionViewFavourites$,
 } from "./actions";
 
 export const routes$ = merge(
   actionViewFavourites$.pipe(map(() => ({ type: "viewFavourites" }))),
-  actionViewTrip$.pipe(map(payload => ({ type: "viewTrip", ...payload }))),
-  actionViewRoute$.pipe(map(payload => ({ type: "viewRoute", ...payload }))),
-  actionViewStop$.pipe(map(stopCode => ({ type: "viewStop", stopCode })))
+  actionViewTrip$.pipe(map((payload) => ({ type: "viewTrip", ...payload }))),
+  actionViewRoute$.pipe(map((payload) => ({ type: "viewRoute", ...payload }))),
+  actionViewStop$.pipe(map((stopCode) => ({ type: "viewStop", stopCode })))
 ).pipe(
-  switchMap(action => {
+  switchMap((action) => {
     switch (action.type) {
       case "viewFavourites":
         return favourites$.pipe(
-          switchMap(favourites => getRoutesByStopRouteItems(favourites))
+          switchMap((favourites) => getRoutesByStopRouteItems(favourites))
         );
       case "viewTrip":
         return getRoutesByStopAndTrip(action.stopCode, action.tripId);
@@ -44,9 +44,9 @@ export const routes$ = merge(
 );
 
 export const routeShortNamesByStop$ = routes$.pipe(
-  map(routes =>
+  map((routes) =>
     Array.from(
-      new Set(routes.map(route => route.route_short_name))
+      new Set(routes.map((route) => route.route_short_name))
     ).sort((a, b) =>
       a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
     )

@@ -21,10 +21,10 @@ describe("Route.vue", () => {
         $route: {
           params: {
             stopCode: "1234",
-            shortName: "NX1"
-          }
-        }
-      }
+            shortName: "NX1",
+          },
+        },
+      },
     });
   });
 
@@ -44,14 +44,14 @@ describe("Route.vue", () => {
             trip_id: "1234",
             route_id: "08204-20190522094814_v80.15",
             start_time: "16:25:00",
-            schedule_relationship: 0
+            schedule_relationship: 0,
           },
           vehicle: { id: "2CC7" },
           position: { latitude: -36.852667, longitude: 174.765633 },
           timestamp: 1560054213,
-          occupancy_status: 0
-        }
-      }
+          occupancy_status: 0,
+        },
+      },
     ]);
     expect(wrapper.vm.favourites).toEqual([]);
   });
@@ -62,7 +62,7 @@ describe("Route.vue", () => {
     const next = jest.fn();
     wrapper.vm.$options.beforeRouteUpdate(
       {
-        params: { stopCode: "1234", shortName: "NX1" }
+        params: { stopCode: "1234", shortName: "NX1" },
       },
       undefined,
       next

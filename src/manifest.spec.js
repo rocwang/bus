@@ -12,6 +12,6 @@ it("has the necessary properties", () => {
     display: expect.any(String),
     dir: expect.any(String),
     background_color: expect.any(String),
-    theme_color: expect.any(String)
+    theme_color: expect.any(String),
   });
 });

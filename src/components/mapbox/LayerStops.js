@@ -6,16 +6,16 @@ export default {
   props: {
     stopCode: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   watch: {
     stopCode: {
       handler() {
         this.toggleCurrentStop();
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   async created() {
     this.map = await this.mapPromise;
@@ -29,8 +29,8 @@ export default {
       layout: {
         "icon-image": "stop",
         "icon-allow-overlap": true,
-        "icon-size": 0.5
-      }
+        "icon-size": 0.5,
+      },
     });
 
     this.toggleCurrentStop();
@@ -75,6 +75,6 @@ export default {
     handleStopMouseLeave() {
       // Change it back to a pointer when it leaves.
       this.map.getCanvas().style.cursor = "";
-    }
-  }
+    },
+  },
 };

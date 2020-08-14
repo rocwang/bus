@@ -15,10 +15,10 @@ Vue.use(VueRx);
 new Vue({
   router,
   store,
-  render: createElement => createElement(App)
+  render: (createElement) => createElement(App),
 }).$mount("#app");
 
-if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
+if ("serviceWorker" in navigator) {
   // Register the service worker after event listeners have been added.
   // By default this method delays registration until after the window has loaded.
   workBox.register();

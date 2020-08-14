@@ -1,13 +1,13 @@
 const routes = [
-  { route_id: "12345ABCDE", route_short_name: "NX1" }
+  { route_id: "12345ABCDE", route_short_name: "NX1" },
   // { route_id: "567890XYZ", route_short_name: "NX2" }
 ];
 const trips = [
   {
     trip_id: "1234",
     trip_headsign: "Albany",
-    departure_time: "18:23:00"
-  }
+    departure_time: "18:23:00",
+  },
 ];
 
 export async function getRoutesByStopRouteItems() {
@@ -41,8 +41,8 @@ export async function getNexTripsByStopRouteItems() {
       trip_headsign: "Albany",
       departure_time: "18:23:00",
       stop_code: "1234",
-      route_short_name: "NX1"
-    }
+      route_short_name: "NX1",
+    },
   ];
 }
 
@@ -69,6 +69,6 @@ export async function getShapeByTrip() {
     { shape_pt_lat: -36.84304, shape_pt_lon: 174.76575 },
     { shape_pt_lat: -36.84301, shape_pt_lon: 174.76573 },
     { shape_pt_lat: -36.84299, shape_pt_lon: 174.76572 },
-    { shape_pt_lat: -36.84296, shape_pt_lon: 174.76569 }
+    { shape_pt_lat: -36.84296, shape_pt_lon: 174.76569 },
   ];
 }

@@ -4,16 +4,14 @@ const path = require("path");
 
 const idMaps = {};
 
-process.argv.slice(2).forEach(srcFile => {
+process.argv.slice(2).forEach((srcFile) => {
   const targetFile = `${path.basename(srcFile, ".txt")}.csv`;
 
   fs.createReadStream(srcFile)
     .pipe(csv.parse({ columns: true }))
     .pipe(
-      csv.transform(row => {
-        const entries = Object.entries(row)
-          .map(transformId)
-          .map(transformTime);
+      csv.transform((row) => {
+        const entries = Object.entries(row).map(transformId).map(transformTime);
 
         // Keep the original trip_id to query the GTFS realtime API
         if (srcFile === "trips.txt") {
@@ -25,12 +23,12 @@ process.argv.slice(2).forEach(srcFile => {
     )
     .pipe(
       csv.stringify({
-        header: true
+        header: true,
       })
     )
     .pipe(fs.createWriteStream(targetFile))
     .on("close", () => console.log(targetFile))
-    .on("error", e => console.error(e.message));
+    .on("error", (e) => console.error(e.message));
 });
 
 function transformId([key, value]) {
@@ -67,7 +65,7 @@ function transformTime([key, value]) {
       return [key, null];
     }
 
-    const components = value.split(":").map(c => Number(c));
+    const components = value.split(":").map((c) => Number(c));
     const integerTime =
       components[0] * 3600 + components[1] * 60 + components[2];
 

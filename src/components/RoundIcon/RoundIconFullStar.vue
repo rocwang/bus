@@ -7,6 +7,6 @@
 
 <script>
 export default {
-  name: "RoundIconFullStar"
+  name: "RoundIconFullStar",
 };
 </script>

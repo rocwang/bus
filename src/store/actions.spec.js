@@ -5,7 +5,7 @@ import {
   actionViewFavourites$,
   actionViewRoute$,
   actionViewStop$,
-  actionViewTrip$
+  actionViewTrip$,
 } from "./actions";
 
 describe("action.js", () => {
@@ -17,12 +17,12 @@ describe("action.js", () => {
       actionViewFavourites$,
       actionViewRoute$,
       actionViewStop$,
-      actionViewTrip$
+      actionViewTrip$,
     })
   )("%s is a subject", (name, action$) => {
     const done = action$.toPromise();
 
-    action$.subscribe(value => {
+    action$.subscribe((value) => {
       expect(value).toBe("test");
       done();
     });

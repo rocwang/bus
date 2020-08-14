@@ -12,8 +12,8 @@ describe("LayerStops.vue", () => {
     wrapper = mount(LayerStops, {
       provide: {
         mapPromise: Promise.resolve(new mapboxgl.Map()),
-        colors
-      }
+        colors,
+      },
     });
   });
 
@@ -48,9 +48,9 @@ describe("LayerStops.vue", () => {
       features: [
         {
           properties: { stopCode: "1234" },
-          geometry: { coordinates: { x: 0, y: 0 } }
-        }
-      ]
+          geometry: { coordinates: { x: 0, y: 0 } },
+        },
+      ],
     });
     expect(wrapper.vm.map.easeTo).toBeCalled();
     expect(wrapper.emitted("click")).toEqual([["1234"]]);

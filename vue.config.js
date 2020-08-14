@@ -7,8 +7,11 @@ const WorkboxPlugin = require("workbox-webpack-plugin");
 
 module.exports = {
   configureWebpack: {
+    entry: {
+      "pbf-handler": "./src/tiles/pbf-handler.js",
+    },
     output: {
-      globalObject: "self"
+      globalObject: "self",
     },
     plugins: [
       new WebappWebpackPlugin({
@@ -28,12 +31,12 @@ module.exports = {
               favicons: true,
               firefox: false,
               windows: false,
-              yandex: false
-            }
+              yandex: false,
+            },
           },
           manifest
-        )
-      })
+        ),
+      }),
     ],
     // Turn off various NodeJS environment polyfills Webpack adds to bundles.
     // They're supposed to be added only when used, but the heuristic is loose
@@ -50,19 +53,20 @@ module.exports = {
       // Never embed a portable implementation of Node's Buffer module:
       Buffer: false,
       // Never embed a setImmediate implementation:
-      setImmediate: false
-    }
+      setImmediate: false,
+    },
   },
-  chainWebpack: webpackConfig => {
+  chainWebpack: (webpackConfig) => {
     // Set the HTML meta tags
-    webpackConfig.plugin("html").tap(args => {
+    webpackConfig.plugin("html").tap((args) => {
       const [options] = args;
       Object.assign(options, {
         title: manifest.name,
         meta: {
-          description: packageJson.description
+          description: packageJson.description,
         },
-        author: packageJson.author
+        author: packageJson.author,
+        excludeChunks: ["pbf-handler"],
       });
 
       return args;
@@ -77,11 +81,44 @@ module.exports = {
         {
           cacheId: packageJson.name,
           cleanupOutdatedCaches: true,
-          exclude: [/\.map$/, /manifest\.json$/, /robots\.txt$/],
+          exclude: [/\.map$/, /robots\.txt$/, /\.pbf$/],
           navigateFallback: "/index.html",
-          maximumFileSizeToCacheInBytes: 10_485_760 // 10 MiB
-        }
+          maximumFileSizeToCacheInBytes: 52_428_800, // 10 MiB
+          importScriptsViaChunks: ["chunk-vendors", "pbf-handler"],
+          runtimeCaching: [
+            {
+              urlPattern: new RegExp("/map/tiles/(\\d+)/(\\d+)/(\\d+)\\.pbf"),
+              handler: (context) => tileHandler(context),
+            },
+            {
+              urlPattern: new RegExp("/map/fonts/([^/]+)/(\\d+-\\d+)\\.pbf"),
+              handler: (context) => fontHandler(context),
+            },
+          ],
+          // Add the shared "chunk-vendors" chunk back to the pre-cache list
+          manifestTransforms: [
+            (manifest, compilation) => {
+              const chunkVendors = compilation.chunks.find(
+                (chunk) => chunk.id === "chunk-vendors"
+              );
+
+              manifest.push({
+                url: `${compilation.outputOptions.publicPath}${chunkVendors.files[0]}`,
+                revision: chunkVendors.hash,
+              });
+              return { manifest, warnings: [] };
+            },
+          ],
+        },
       ]);
+
+      webpackConfig.plugin("preload").tap((args) => {
+        const [option] = args;
+        option.fileBlacklist = option.fileBlacklist || [];
+        option.fileBlacklist.push(/pbf-handler/);
+
+        return args;
+      });
     }
 
     // Load the wasm file required by sql.js without the default webpack
@@ -92,21 +129,21 @@ module.exports = {
       .type("javascript/auto")
       .use("file-loader")
       .loader("file-loader")
-      .tap(options => ({
+      .tap((options) => ({
         ...options,
-        name: "wasm/[name].[hash:8].[ext]"
+        name: "wasm/[name].[hash:8].[ext]",
       }))
       .end();
 
     // Load the sqlite database file
     webpackConfig.module
       .rule("database")
-      .test(/\.sqlite3.br$/)
+      .test(/\.(sqlite3\.br|mbtiles)$/)
       .use("file-loader")
       .loader("file-loader")
-      .tap(options => ({
+      .tap((options) => ({
         ...options,
-        name: "database/[name].[hash:8].[ext]"
+        name: "database/[name].[hash:8].[ext]",
       }))
       .end();
 
@@ -116,10 +153,10 @@ module.exports = {
       .test(/\.worker\.js$/)
       .use("comlink-loader")
       .loader("comlink-loader")
-      .tap(options => ({
+      .tap((options) => ({
         ...options,
         name: "[name].[hash:8].[ext]",
-        singleton: true
+        singleton: true,
       }))
       .end();
   },
@@ -133,13 +170,19 @@ module.exports = {
         res.set("Content-Type", "application/x-sqlite3");
         next();
       });
+
+      app.get("/map/tiles/*.pbf", (req, res, next) => {
+        res.set("Content-Encoding", "gzip");
+        res.set("Content-type", "application/x-protobuf");
+        next();
+      });
     },
     https:
       process.env.NODE_ENV === "development"
         ? {
             key: fs.readFileSync(os.homedir() + "/.localhost_ssl/server.key"),
-            cert: fs.readFileSync(os.homedir() + "/.localhost_ssl/server.crt")
+            cert: fs.readFileSync(os.homedir() + "/.localhost_ssl/server.crt"),
           }
-        : false
-  }
+        : false,
+  },
 };

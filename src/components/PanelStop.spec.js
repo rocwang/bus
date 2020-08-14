@@ -10,14 +10,14 @@ describe("PanelStop.vue", () => {
   beforeEach(() => {
     wrapper = mount(PanelStop, {
       provide: {
-        colors
+        colors,
       },
       propsData: {
         stopCode,
         stopName,
-        routeShortNames: ["NX1", "NX2"]
+        routeShortNames: ["NX1", "NX2"],
       },
-      stubs: ["router-link"]
+      stubs: ["router-link"],
     });
   });
 
@@ -40,7 +40,7 @@ describe("PanelStop.vue", () => {
   it("has the border left color set for each route", () => {
     wrapper
       .findAll("li")
-      .wrappers.forEach(li =>
+      .wrappers.forEach((li) =>
         expect(li.attributes("style")).toMatch("border-left-color")
       );
   });

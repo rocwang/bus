@@ -21,10 +21,10 @@ describe("Stop.vue", () => {
       mocks: {
         $route: {
           params: {
-            stopCode: "1234"
-          }
-        }
-      }
+            stopCode: "1234",
+          },
+        },
+      },
     });
   });
 
@@ -44,7 +44,7 @@ describe("Stop.vue", () => {
     const next = jest.fn();
     wrapper.vm.$options.beforeRouteUpdate(
       {
-        params: { stopCode: "1234" }
+        params: { stopCode: "1234" },
       },
       undefined,
       next

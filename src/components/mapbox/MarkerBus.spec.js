@@ -13,7 +13,7 @@ describe("MarkerBus.vue", () => {
     wrapper = mount(MarkerBus, {
       provide: {
         mapPromise: Promise.resolve(new mapboxgl.Map()),
-        colors
+        colors,
       },
       propsData: {
         vehicle: {
@@ -21,18 +21,18 @@ describe("MarkerBus.vue", () => {
             trip_id: "1234",
             route_id: "08204-20190522094814_v80.15",
             start_time: "16:25:00",
-            schedule_relationship: 0
+            schedule_relationship: 0,
           },
           vehicle: { id: "2CC7" },
           position: {
             latitude: -36.852667,
             longitude: 174.765633,
-            bearing: 240
+            bearing: 240,
           },
           timestamp: 1560054213,
-          occupancy_status: 0
-        }
-      }
+          occupancy_status: 0,
+        },
+      },
     });
   });
 

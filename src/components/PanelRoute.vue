@@ -57,7 +57,7 @@ import Icon from "./Icon";
 import Buttonizer from "./Buttonizer";
 import {
   actionRemoveFromFavourites$,
-  actionAddToFavourites$
+  actionAddToFavourites$,
 } from "../store/actions";
 
 export default {
@@ -68,39 +68,39 @@ export default {
     Icon,
     Panel,
     RoundIcon,
-    Trip
+    Trip,
   },
   props: {
     stopCode: {
       type: String,
-      default: ""
+      default: "",
     },
     routeShortName: {
       type: String,
-      default: ""
+      default: "",
     },
     tripsWithVehicles: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     favourites: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   methods: {
     add() {
       actionAddToFavourites$.next({
         stopCode: this.stopCode,
-        routeShortName: this.routeShortName
+        routeShortName: this.routeShortName,
       });
     },
     del() {
       actionRemoveFromFavourites$.next({
         stopCode: this.stopCode,
-        routeShortName: this.routeShortName
+        routeShortName: this.routeShortName,
       });
-    }
+    },
   },
   computed: {
     isFavoured() {
@@ -108,7 +108,7 @@ export default {
         ({ stopCode, routeShortName }) =>
           stopCode === this.stopCode && routeShortName === this.routeShortName
       );
-    }
-  }
+    },
+  },
 };
 </script>

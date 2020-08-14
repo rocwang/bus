@@ -4,7 +4,7 @@ import {
   get,
   keys as idbKeys,
   del as idbDel,
-  clear as idbClear
+  clear as idbClear,
 } from "idb-keyval";
 import { defer, merge } from "rxjs";
 import { shareReplay, startWith, concatAll, mapTo, map } from "rxjs/operators";
@@ -12,7 +12,7 @@ import {
   actionAddToFavourites$,
   actionRemoveFromFavourites$,
   actionClearFavourites$,
-  actionViewFavourites$
+  actionViewFavourites$,
 } from "./actions";
 
 const store = new Store("favourites", "favourites");
@@ -32,7 +32,7 @@ function del(stopCode, routeShortName) {
 
 async function list() {
   const keys = await idbKeys(store);
-  const values = keys.map(key => get(key, store));
+  const values = keys.map((key) => get(key, store));
   return Promise.all(values);
 }
 

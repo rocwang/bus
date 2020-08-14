@@ -7,8 +7,8 @@ describe("Notification.vue", () => {
   beforeEach(() => {
     wrapper = mount(Notification, {
       slots: {
-        default: "<button/>"
-      }
+        default: "<button/>",
+      },
     });
   });
 

@@ -13,15 +13,15 @@ describe("Trip.vue", () => {
     wrapper = mount(Trip, {
       localVue,
       provide: {
-        colors
+        colors,
       },
       propsData: {
         headSign,
         departureTime: "11:44:00",
         occupancyStatus: 3,
         isRealTime: true,
-        isDetailEnabled: true
-      }
+        isDetailEnabled: true,
+      },
     });
   });
 
