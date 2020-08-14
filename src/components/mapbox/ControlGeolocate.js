@@ -7,9 +7,9 @@ export default {
     this.map = await this.mapPromise;
     this.control = new mapboxgl.GeolocateControl({
       positionOptions: {
-        enableHighAccuracy: true
+        enableHighAccuracy: true,
       },
-      trackUserLocation: true
+      trackUserLocation: true,
     });
 
     this.map.addControl(this.control);
@@ -19,5 +19,5 @@ export default {
   },
   render() {
     return null;
-  }
+  },
 };

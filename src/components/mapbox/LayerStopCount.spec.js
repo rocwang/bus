@@ -12,8 +12,8 @@ describe("LayerStopCount.vue", () => {
     wrapper = mount(LayerStopCount, {
       provide: {
         mapPromise: Promise.resolve(new mapboxgl.Map()),
-        colors
-      }
+        colors,
+      },
     });
   });
 

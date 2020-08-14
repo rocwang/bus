@@ -5,12 +5,12 @@ describe("Buttonizer.vue", () => {
   const wrapper = mount({
     template: `<Buttonizer v-bind='$attrs'><button>test</button></Buttonizer>`,
     components: { Buttonizer },
-    inheritAttrs: false
+    inheritAttrs: false,
   });
 
   it.each(["primary", "secondary", "icon"])(
     'supports the modifier "%s"',
-    modifier => {
+    (modifier) => {
       wrapper.setProps({ modifier });
       expect(wrapper.classes(modifier)).toBe(true);
     }

@@ -11,5 +11,5 @@ module.exports = {
   display: "standalone",
   dir: "ltr",
   background_color: "#FFDB1B",
-  theme_color: "#001120"
+  theme_color: "#001120",
 };

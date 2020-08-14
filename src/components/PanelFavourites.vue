@@ -29,11 +29,9 @@
       <ul>
         <li
           v-for="item in favouritesWithTrips"
-          :key="
-            `${item.stopCode}-${item.routeShortName}-${
-              item.trip ? item.trip.trip_id : ''
-            }`
-          "
+          :key="`${item.stopCode}-${item.routeShortName}-${
+            item.trip ? item.trip.trip_id : ''
+          }`"
         >
           <router-link
             :class="$style.itemLink"
@@ -41,8 +39,8 @@
               name: 'Route',
               params: {
                 stopCode: item.stopCode,
-                shortName: item.routeShortName
-              }
+                shortName: item.routeShortName,
+              },
             }"
           >
             <Trip
@@ -80,28 +78,28 @@ export default {
     RoundIcon,
     Icon,
     Buttonizer,
-    Trip
+    Trip,
   },
   props: {
     isCollapsedInitially: {
       type: Boolean,
-      default: true
+      default: true,
     },
     favouritesWithTrips: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
-      isCollapsed: this.isCollapsedInitially
+      isCollapsed: this.isCollapsedInitially,
     };
   },
   methods: {
     handleArrowClick() {
       this.isCollapsed = !this.isCollapsed;
-    }
-  }
+    },
+  },
 };
 </script>
 

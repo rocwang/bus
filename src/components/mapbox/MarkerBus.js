@@ -6,7 +6,7 @@ import {
   getCoord,
   lineSlice,
   lineString,
-  point
+  point,
 } from "@turf/turf";
 import { getShapeByRealtimeTripId } from "../../api/gtfs";
 import { uniqueId } from "lodash-es";
@@ -17,14 +17,14 @@ export default {
   props: {
     vehicle: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       speed: 13.89, // unit: m/s. defaults to 50 km/s
       shape: [],
-      id: uniqueId()
+      id: uniqueId(),
     };
   },
   computed: {
@@ -35,12 +35,12 @@ export default {
 
       const startPoint = point([
         this.vehicle.position.longitude,
-        this.vehicle.position.latitude
+        this.vehicle.position.latitude,
       ]);
       const endPoint = point(this.shape[this.shape.length - 1]);
       const line = lineString(this.shape);
       return lineSlice(startPoint, endPoint, line);
-    }
+    },
   },
   watch: {
     // update shape
@@ -51,7 +51,7 @@ export default {
           this.vehicle.trip.trip_id
         );
         this.shape = shapeCoords.map(([lat, lon]) => [lon, lat]);
-      }
+      },
     },
     vehicle: [
       // // mark the history positions
@@ -80,11 +80,11 @@ export default {
 
           const from = point([
             newVehicle.position.longitude,
-            newVehicle.position.latitude
+            newVehicle.position.latitude,
           ]);
           const to = point([
             oldVehicle.position.longitude,
-            oldVehicle.position.latitude
+            oldVehicle.position.latitude,
           ]);
 
           // unit: meter
@@ -92,9 +92,9 @@ export default {
 
           // unit: meter / second. max speed: 100 km/h
           this.speed = Math.min(deltaDistance / deltaTime, 100 / 3.6);
-        }
-      }
-    ]
+        },
+      },
+    ],
   },
   methods: {
     animate() {
@@ -146,7 +146,7 @@ export default {
       this.marker.setLngLat(newMarkerPosition);
       this.justNow = now;
       this.animationId = window.requestAnimationFrame(this.animate);
-    }
+    },
   },
   async created() {
     const el = document.createElement("div");
@@ -157,7 +157,7 @@ export default {
     this.marker = new mapboxgl.Marker(el);
     this.marker.setLngLat([
       this.vehicle.position.longitude,
-      this.vehicle.position.latitude
+      this.vehicle.position.latitude,
     ]);
     this.map = await this.mapPromise;
     this.marker.addTo(this.map);
@@ -171,5 +171,5 @@ export default {
   },
   render() {
     return null;
-  }
+  },
 };

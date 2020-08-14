@@ -19,7 +19,7 @@ export default {
     return {
       stopName: stopName$,
       routeShortNames: routeShortNamesByStop$,
-      stopCode: stopCode$
+      stopCode: stopCode$,
     };
   },
   created() {
@@ -32,6 +32,6 @@ export default {
   beforeRouteLeave(to, from, next) {
     actionViewStop$.next("");
     next();
-  }
+  },
 };
 </script>

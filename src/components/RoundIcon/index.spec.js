@@ -15,8 +15,8 @@ describe("Icon.vue", () => {
         bg: "green",
         color: "red",
         direction: "down",
-        name: "Map"
-      }
+        name: "Map",
+      },
     });
   });
 
@@ -29,12 +29,9 @@ describe("Icon.vue", () => {
   });
 
   it("has a color", () => {
-    expect(
-      wrapper
-        .findAll("path")
-        .at(1)
-        .attributes("style")
-    ).toMatch(/color:.*/);
+    expect(wrapper.findAll("path").at(1).attributes("style")).toMatch(
+      /color:.*/
+    );
   });
 
   it("has a direction", () => {
@@ -47,8 +44,8 @@ describe("Icon.vue", () => {
       RoundIconMap,
       RoundIconRoute,
       RoundIconStop,
-      RoundIconStreetView
-    ].forEach(pathComponents => {
+      RoundIconStreetView,
+    ].forEach((pathComponents) => {
       expect(mount(pathComponents).element).toMatchSnapshot(
         pathComponents.name
       );

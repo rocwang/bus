@@ -16,16 +16,16 @@ export default {
   props: {
     isCollapsedInitially: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   subscriptions() {
     return {
-      favouritesWithTrips: favouritesWithTrips$
+      favouritesWithTrips: favouritesWithTrips$,
     };
   },
   created() {
     actionViewFavourites$.next();
-  }
+  },
 };
 </script>

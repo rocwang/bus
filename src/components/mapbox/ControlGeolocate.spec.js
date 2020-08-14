@@ -10,8 +10,8 @@ describe("ControlGeolocate.vue", () => {
   beforeEach(() => {
     wrapper = mount(ControlGeolocate, {
       provide: {
-        mapPromise: Promise.resolve(new mapboxgl.Map())
-      }
+        mapPromise: Promise.resolve(new mapboxgl.Map()),
+      },
     });
   });
 

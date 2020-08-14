@@ -14,29 +14,29 @@ export default new Router({
     {
       path: "/",
       name: "Intro",
-      component: Intro
+      component: Intro,
     },
     {
       path: "/favourites",
       name: "Favourites",
       component: Favourites,
-      props: route => ({
-        isCollapsedInitially: route.query.isCollapsed === "yes"
-      })
+      props: (route) => ({
+        isCollapsedInitially: route.query.isCollapsed === "yes",
+      }),
     },
     {
       path: "/stop/:stopCode",
       name: "Stop",
-      component: Stop
+      component: Stop,
     },
     {
       path: "/stop/:stopCode/route_group/:shortName",
       name: "Route",
-      component: Route
+      component: Route,
     },
     {
       path: "*",
-      redirect: { name: "Intro" }
-    }
-  ]
+      redirect: { name: "Intro" },
+    },
+  ],
 });

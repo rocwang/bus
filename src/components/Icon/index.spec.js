@@ -17,8 +17,8 @@ describe("Icon.vue", () => {
       propsData: {
         color: "red",
         direction: "down",
-        name: "Arrow"
-      }
+        name: "Arrow",
+      },
     });
   });
 
@@ -43,8 +43,8 @@ describe("Icon.vue", () => {
       IconEmptyStar,
       IconFullStar,
       IconShip,
-      IconTrain
-    ].forEach(pathComponents => {
+      IconTrain,
+    ].forEach((pathComponents) => {
       expect(mount(pathComponents).element).toMatchSnapshot(
         pathComponents.name
       );

@@ -25,7 +25,7 @@ console.log(JSON.stringify(performanceBudgetItems, null, 2));
 
 // Check the performance budget is met
 const isUnderBudget = performanceBudgetItems.every(
-  item => !("sizeOverBudget" in item) && !("countOverBudget" in item)
+  (item) => !("sizeOverBudget" in item) && !("countOverBudget" in item)
 );
 
 process.exitCode = isScorePassed && isUnderBudget ? 0 : 1;

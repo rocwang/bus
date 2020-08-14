@@ -16,10 +16,10 @@ describe("App.vue", () => {
       routes: [
         {
           path: "/stop/:stopCode",
-          name: "Stop"
-        }
-      ]
-    })
+          name: "Stop",
+        },
+      ],
+    }),
   });
 
   it("renders a div as the app container", () => {
@@ -41,8 +41,8 @@ describe("App.vue", () => {
       App.provide.call({
         $style: {
           notAColor: "foo",
-          colorRed: "red"
-        }
+          colorRed: "red",
+        },
       }).colors
     ).toStrictEqual({ red: "red" });
   });

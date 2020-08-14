@@ -48,25 +48,25 @@ export default {
   props: {
     stopCode: {
       type: String,
-      default: ""
+      default: "",
     },
     stopName: {
       type: String,
-      default: ""
+      default: "",
     },
     routeShortNames: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   methods: {
     getRouteLeftBorderStyle(index) {
       const colors = Object.values(this.colors).filter(
-        color => color !== this.colors.oceanBlue
+        (color) => color !== this.colors.oceanBlue
       );
       return { "border-left-color": colors[index % colors.length] };
-    }
-  }
+    },
+  },
 };
 </script>
 

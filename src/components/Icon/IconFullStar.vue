@@ -7,6 +7,6 @@
 
 <script>
 export default {
-  name: "IconFullStar"
+  name: "IconFullStar",
 };
 </script>

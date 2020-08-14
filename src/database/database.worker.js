@@ -25,7 +25,7 @@ const dbPromise = loadDb(dbUrl);
 export default async function query(sql, bind) {
   const db = await dbPromise;
   const result = [];
-  db.each(sql, bind, row => result.push(row));
+  db.each(sql, bind, (row) => result.push(row));
 
   // console.log("query:", sql, "bind:", bind, "result:", result);
   return result;

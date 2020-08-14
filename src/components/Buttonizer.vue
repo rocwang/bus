@@ -8,12 +8,12 @@ export default {
       required: false,
       validator(modifier) {
         return ["primary", "secondary", "icon"].includes(modifier);
-      }
+      },
     },
     fullWidth: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   render(createElement, { props, children, $style }) {
     // Work around for unit testing on functional components with css module
@@ -22,7 +22,7 @@ export default {
       fullWidth: "fullWidth",
       primary: "primary",
       secondary: "secondary",
-      icon: "icon"
+      icon: "icon",
     };
 
     let classNames = [$style.root, { [$style.fullWidth]: props.fullWidth }];
@@ -31,7 +31,7 @@ export default {
       classNames.push($style[props.modifier]);
     }
 
-    return children.map(child => {
+    return children.map((child) => {
       if (!child.data) {
         child.data = {};
       }
@@ -42,7 +42,7 @@ export default {
 
       return child;
     });
-  }
+  },
 };
 </script>
 

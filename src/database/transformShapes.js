@@ -13,7 +13,7 @@ parser
         shape_id,
         shape_pt_sequence,
         shape_pt_lat,
-        shape_pt_lon
+        shape_pt_lon,
       } = record;
 
       if (!shapes[shape_id]) {
@@ -22,11 +22,11 @@ parser
 
       shapes[shape_id][Number(shape_pt_sequence)] = [
         shape_pt_lat,
-        shape_pt_lon
+        shape_pt_lon,
       ];
     }
   })
-  .on("error", e => console.error(e.message))
+  .on("error", (e) => console.error(e.message))
   .on("end", () => {
     output(shapes);
   });
@@ -34,13 +34,13 @@ parser
 function output(shapes) {
   const outputArray = Object.entries(shapes).map(([shape_id, points]) => ({
     shape_id,
-    shape_polyline: polyline.encode(points.filter(p => Boolean(p)))
+    shape_polyline: polyline.encode(points.filter((p) => Boolean(p))),
   }));
 
   csv
     .stringify(outputArray, {
-      header: true
+      header: true,
     })
     .pipe(process.stdout)
-    .on("error", e => console.error(e.message));
+    .on("error", (e) => console.error(e.message));
 }

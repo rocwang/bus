@@ -8,13 +8,13 @@ describe("Intro.vue", () => {
 
   beforeEach(() => {
     $router = {
-      push: jest.fn()
+      push: jest.fn(),
     };
     wrapper = shallowMount(Intro, {
       mocks: { $router },
       provide: {
-        colors
-      }
+        colors,
+      },
     });
   });
 
@@ -23,25 +23,19 @@ describe("Intro.vue", () => {
   });
 
   it("pushes the Favourites route with query 'isCollapsed=yes' when clicking 'Find stops on map'", () => {
-    wrapper
-      .findAll("buttonwithicon-stub")
-      .at(0)
-      .vm.$emit("click");
+    wrapper.findAll("buttonwithicon-stub").at(0).vm.$emit("click");
 
     expect($router.push).toBeCalledWith({
       name: "Favourites",
-      query: { isCollapsed: "yes" }
+      query: { isCollapsed: "yes" },
     });
   });
 
   it("pushes the Favourites route when clicking 'Show nearby stops'", () => {
-    wrapper
-      .findAll("buttonwithicon-stub")
-      .at(1)
-      .vm.$emit("click");
+    wrapper.findAll("buttonwithicon-stub").at(1).vm.$emit("click");
 
     expect($router.push).toBeCalledWith({
-      name: "Favourites"
+      name: "Favourites",
     });
   });
 });

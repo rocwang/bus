@@ -7,6 +7,6 @@
 
 <script>
 export default {
-  name: "RoundIconStreetView"
+  name: "RoundIconStreetView",
 };
 </script>

@@ -23,11 +23,11 @@ export default {
   components: {
     UpdateNotification,
     Mapbox: () =>
-      import(/* webpackChunkName: "mapbox" */ "./components/mapbox/Mapbox")
+      import(/* webpackChunkName: "mapbox" */ "./components/mapbox/Mapbox"),
   },
   provide() {
     const colors = Object.keys(this.$style)
-      .filter(key => key.substring(0, 5) === "color")
+      .filter((key) => key.substring(0, 5) === "color")
       .reduce((colors, key) => {
         const newKey = key[5].toLowerCase() + key.substring(6);
         colors[newKey] = this.$style[key];
@@ -36,24 +36,24 @@ export default {
 
     return {
       config,
-      colors: Object.freeze(colors)
+      colors: Object.freeze(colors),
     };
   },
   subscriptions() {
     return {
       stopCode: stopCode$,
       shapes: shapes$,
-      vehicles: vehicles$
+      vehicles: vehicles$,
     };
   },
   methods: {
     handleStopClick(stopCode) {
       this.$router.push({
         name: "Stop",
-        params: { stopCode }
+        params: { stopCode },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

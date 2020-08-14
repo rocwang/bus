@@ -26,39 +26,39 @@ export default {
     RoundIconMap,
     RoundIconRoute,
     RoundIconStop,
-    RoundIconStreetView
+    RoundIconStreetView,
   },
   props: {
     name: {
       type: String,
       required: true,
-      validator: function(name) {
+      validator: function (name) {
         return ["FullStar", "Map", "Route", "Stop", "StreetView"].includes(
           name
         );
-      }
+      },
     },
     direction: {
       type: String,
       default: "up",
       validator(value) {
         return ["up", "down", "left", "right"].includes(value);
-      }
+      },
     },
     bg: {
       type: String,
-      default: "#000"
+      default: "#000",
     },
     color: {
       type: String,
-      default: "#fff"
-    }
+      default: "#fff",
+    },
   },
   computed: {
     pathComponent() {
       return `RoundIcon${this.name}`;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -34,7 +34,7 @@ describe("UpdateNotification.vue", () => {
 
     const dismissButton = wrapper
       .findAll("button")
-      .filter(wrapper => wrapper.text() === "Dismiss");
+      .filter((wrapper) => wrapper.text() === "Dismiss");
 
     dismissButton.trigger("click");
 
@@ -46,7 +46,7 @@ describe("UpdateNotification.vue", () => {
 
     const reloadButton = wrapper
       .findAll("button")
-      .filter(wrapper => wrapper.text() === "Reload");
+      .filter((wrapper) => wrapper.text() === "Reload");
     reloadButton.trigger("click");
 
     expect(workBox.addEventListener).toBeCalledWith(

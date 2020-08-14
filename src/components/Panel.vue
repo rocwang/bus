@@ -33,9 +33,9 @@ export default {
   props: {
     isCollapsed: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 };
 </script>
 

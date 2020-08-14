@@ -23,6 +23,8 @@ import LayerStops from "./LayerStops";
 // import LayerStopCount from "../components/LayerStopCount";
 import MarkerBus from "./MarkerBus";
 import ImageStop from "./ImageStop";
+import style from "../../tiles/style.json";
+import tile from "../../tiles/tile.json";
 
 export default {
   name: "Mapbox",
@@ -33,41 +35,53 @@ export default {
     // LayerStopClusters,
     // LayerStopCount,
     MarkerBus,
-    ImageStop
+    ImageStop,
   },
   provide() {
-    this.mapPromise = new Promise(resolve => {
+    this.mapPromise = new Promise((resolve) => {
       this.resovleMap = resolve;
     });
     return {
-      mapPromise: this.mapPromise
+      mapPromise: this.mapPromise,
     };
   },
   inject: ["config"],
   props: {
     stopCode: {
       type: String,
-      default: ""
+      default: "",
     },
     shapes: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     vehicles: {
       type: Array,
       default() {
         return [];
-      }
-    }
+      },
+    },
   },
   mounted() {
     mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
     this.map = new mapboxgl.Map({
       container: this.$el,
-      style: "mapbox://styles/mapbox/streets-v10",
-      bounds: this.config.defaultMapBounds
+      style: {
+        ...style,
+        sources: {
+          openmaptiles: {
+            type: "vector",
+            ...tile,
+            tiles: [`${location.origin}/map/tiles/{z}/{x}/{y}.pbf`],
+          },
+        },
+        sprite: `${location.origin}/map/sprites/sprite`,
+        glyphs: `${location.origin}/map/fonts/{fontstack}/{range}.pbf`,
+      },
+      bounds: this.config.defaultMapBounds,
+      maxBounds: this.config.defaultMapBounds,
     });
 
     this.map.on("load", () => {
@@ -76,7 +90,7 @@ export default {
   },
   destroyed() {
     this.map.remove();
-  }
+  },
 };
 </script>
 

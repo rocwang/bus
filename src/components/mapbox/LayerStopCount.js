@@ -12,11 +12,11 @@ export default {
       minzoom: 15,
       layout: {
         "text-field": "{point_count_abbreviated}",
-        "text-size": 12
+        "text-size": 12,
       },
       paint: {
-        "text-color": this.colors.oceanBlue
-      }
+        "text-color": this.colors.oceanBlue,
+      },
     });
   },
   destroyed() {
@@ -24,5 +24,5 @@ export default {
   },
   render() {
     return null;
-  }
+  },
 };

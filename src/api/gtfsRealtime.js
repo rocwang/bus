@@ -6,11 +6,11 @@ function callApi(request) {
   return fetch(request, {
     headers: {
       "Ocp-Apim-Subscription-Key":
-        process.env.VUE_APP_AUCKLAND_TRANSPORT_API_KEY
-    }
+        process.env.VUE_APP_AUCKLAND_TRANSPORT_API_KEY,
+    },
   })
-    .then(response => response.json())
-    .then(json => json.response);
+    .then((response) => response.json())
+    .then((json) => json.response);
 }
 
 export async function getVehiclePositions(tripIds) {

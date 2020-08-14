@@ -7,6 +7,6 @@
 
 <script>
 export default {
-  name: "IconTrain"
+  name: "IconTrain",
 };
 </script>

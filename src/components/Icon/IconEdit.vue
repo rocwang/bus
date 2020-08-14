@@ -7,6 +7,6 @@
 
 <script>
 export default {
-  name: "IconEdit"
+  name: "IconEdit",
 };
 </script>

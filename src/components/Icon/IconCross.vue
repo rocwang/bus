@@ -11,6 +11,6 @@
 
 <script>
 export default {
-  name: "IconCross"
+  name: "IconCross",
 };
 </script>

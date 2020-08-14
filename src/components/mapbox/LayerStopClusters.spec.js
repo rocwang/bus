@@ -12,8 +12,8 @@ describe("LayerStopClusters.vue", () => {
     wrapper = mount(LayerStopClusters, {
       provide: {
         mapPromise: Promise.resolve(new mapboxgl.Map()),
-        colors
-      }
+        colors,
+      },
     });
   });
 

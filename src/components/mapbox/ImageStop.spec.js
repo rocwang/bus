@@ -10,8 +10,8 @@ describe("ImageStop.vue", () => {
   beforeEach(() => {
     wrapper = mount(ImageStop, {
       provide: {
-        mapPromise: Promise.resolve(new mapboxgl.Map())
-      }
+        mapPromise: Promise.resolve(new mapboxgl.Map()),
+      },
     });
   });
 

@@ -25,7 +25,7 @@ export async function getStopNameById(stopCode) {
     "SELECT stop_name FROM stops WHERE stop_code=:stopCode LIMIT 1",
     {
       ":stopCode": stopCode,
-      ":today": today
+      ":today": today,
     }
   );
 }
@@ -55,7 +55,7 @@ export async function getTripsByStop(stopCode) {
     `,
     {
       ":stopCode": stopCode,
-      ":today": today
+      ":today": today,
     }
   );
 }
@@ -80,7 +80,7 @@ export async function getNexTripsByStopRouteItems(stopRouteItems) {
     (values, item, index) =>
       Object.assign(values, {
         [`:stopCode${index}`]: item.stopCode,
-        [`:routeShortName${index}`]: item.routeShortName
+        [`:routeShortName${index}`]: item.routeShortName,
       }),
     {}
   );
@@ -136,7 +136,7 @@ export async function getTripsByStopAndRoute(stopCode, routeShortName) {
     {
       ":stopCode": stopCode,
       ":routeShortName": routeShortName,
-      ":today": today
+      ":today": today,
     }
   );
 }
@@ -189,7 +189,7 @@ export async function getRoutesByStopRouteItems(stopRouteItems) {
     (values, item, index) =>
       Object.assign(values, {
         [`:stopCode${index}`]: item.stopCode,
-        [`:routeShortName${index}`]: item.routeShortName
+        [`:routeShortName${index}`]: item.routeShortName,
       }),
     {}
   );
@@ -272,7 +272,7 @@ export async function getRoutesByStopAndShortName(stopCode, routeShortName) {
     {
       ":stopCode": stopCode,
       ":routeShortName": routeShortName,
-      ":today": today
+      ":today": today,
     }
   );
 }

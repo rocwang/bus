@@ -7,7 +7,7 @@ describe("Panel.vue", () => {
   beforeEach(() => {
     wrapper = mount(Panel, {
       propsData: {
-        isCollapsed: true
+        isCollapsed: true,
       },
       slots: {
         icon: '<p class="icon">test</p>',
@@ -15,8 +15,8 @@ describe("Panel.vue", () => {
         title: '<p class="title">test</p>',
         buttons: '<p class="buttons">test</p>',
         subtitle: '<p class="subtitle">test</p>',
-        body: '<p class="body">test</p>'
-      }
+        body: '<p class="body">test</p>',
+      },
     });
   });
 
