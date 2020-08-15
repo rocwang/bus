@@ -1,7 +1,7 @@
 import sqlWasmUrl from "sql.js/dist/sql-wasm.wasm";
 import initSqlJs from "sql.js";
-import dbUrl from "./2017-07-03_new-zealand_auckland.mbtiles";
-import pako from "pako/dist/pako_inflate";
+// auckland.sqlite3.br will be decompressed by browser using brotli
+import dbUrl from "./auckland.sqlite3.br";
 
 async function loadDb(dbUrl) {
   const SQL = await initSqlJs({ locateFile: () => sqlWasmUrl });
@@ -30,8 +30,7 @@ self.tileHandler = async ({ params }) => {
   });
 
   if (row.tile_data) {
-    const body = pako.inflate(row.tile_data);
-    return new Response(body, {
+    return new Response(row.tile_data, {
       headers: {
         "Content-type": "application/x-protobuf",
       },
