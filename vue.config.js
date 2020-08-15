@@ -138,7 +138,7 @@ module.exports = {
     // Load the sqlite database file
     webpackConfig.module
       .rule("database")
-      .test(/\.(sqlite3\.br|mbtiles)$/)
+      .test(/\.br$/)
       .use("file-loader")
       .loader("file-loader")
       .tap((options) => ({
@@ -165,7 +165,7 @@ module.exports = {
     host: "localhost",
     port: "4430",
     before(app) {
-      app.get("/database/gtfs.sqlite3.*.br", (req, res, next) => {
+      app.get("/database/*.br", (req, res, next) => {
         res.set("Content-Encoding", "br");
         res.set("Content-Type", "application/x-sqlite3");
         next();

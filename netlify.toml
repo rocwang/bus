@@ -63,15 +63,14 @@
     Cache-Control = "max-age=86400"
 
 [[headers]]
-  for = "/database/gtfs.sqlite3.*.br"
+  for = "/database/*.br"
   [headers.values]
     Content-Type = "application/x-sqlite3"
     Content-Encoding = "br"
-    Cache-Control = "max-age=1209600"
+    Cache-Control = "max-age=31536000"
 
 [[headers]]
   for = "/map/tiles/*.pbf"
   [headers.values]
     Content-Type = "application/x-protobuf"
-    Content-Encoding = "gzip"
     Cache-Control = "max-age=1209600"
