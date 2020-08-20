@@ -51,7 +51,7 @@ export default {
               "line-width": 4,
             },
           },
-          "boundary-land-level-4"
+          "highway-name-path"
         );
       },
       immediate: true,

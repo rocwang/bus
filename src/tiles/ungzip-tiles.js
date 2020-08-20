@@ -2,10 +2,10 @@ const Database = require("better-sqlite3");
 const { gunzip } = require("zlib");
 const { promisify } = require("util");
 
-const db = new Database("./auckland.min.mbtiles");
-const loadGzipData = db.prepare("select * from tiles");
+const db = new Database("./auckland.min.sqlite3");
+const loadGzipData = db.prepare("select * from tiles_full");
 const replace = db.prepare(
-  'replace into "tiles-min" values (:zoom_level, :tile_column, :tile_row, :tile_data)'
+  "replace into tiles values (:zoom_level, :tile_column, :tile_row, :tile_data)"
 );
 const doGunzip = promisify(gunzip);
 
