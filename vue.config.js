@@ -59,6 +59,16 @@ module.exports = {
       fs: "empty",
       crypto: "empty",
     },
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          vendors: {
+            // exclude "pbf-handler"
+            chunks: (chunk) => !["pbf-handler", "mapbox"].includes(chunk.name),
+          },
+        },
+      },
+    },
   },
   chainWebpack: (webpackConfig) => {
     // Set the HTML meta tags
@@ -83,7 +93,7 @@ module.exports = {
         exclude: [/\.map$/, /robots\.txt$/, /\.pbf$/],
         navigateFallback: "/index.html",
         maximumFileSizeToCacheInBytes: 52_428_800, // 10 MiB
-        importScriptsViaChunks: ["chunk-vendors", "pbf-handler"],
+        importScriptsViaChunks: ["pbf-handler"],
         runtimeCaching: [
           {
             urlPattern: new RegExp("/map/tiles/(\\d+)/(\\d+)/(\\d+)\\.pbf"),
@@ -92,20 +102,6 @@ module.exports = {
           {
             urlPattern: new RegExp("/map/fonts/([^/]+)/(\\d+-\\d+)\\.pbf"),
             handler: (context) => fontHandler(context),
-          },
-        ],
-        // Add the shared "chunk-vendors" chunk back to the pre-cache list
-        manifestTransforms: [
-          (manifest, compilation) => {
-            const chunkVendors = compilation.chunks.find(
-              (chunk) => chunk.id === "chunk-vendors"
-            );
-
-            manifest.push({
-              url: `${compilation.outputOptions.publicPath}${chunkVendors.files[0]}`,
-              revision: chunkVendors.hash,
-            });
-            return { manifest, warnings: [] };
           },
         ],
       },
