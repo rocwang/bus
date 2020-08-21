@@ -72,54 +72,48 @@ module.exports = {
       return args;
     });
 
-    if (
-      (process.env.VUE_CLI_MODERN_MODE && process.env.VUE_CLI_MODERN_BUILD) ||
-      !process.env.VUE_CLI_MODERN_MODE
-    ) {
-      // Disable workbox in legacy build, so we only get 1 precache manifest
-      webpackConfig.plugin("workbox").use(WorkboxPlugin.GenerateSW, [
-        {
-          cacheId: packageJson.name,
-          cleanupOutdatedCaches: true,
-          exclude: [/\.map$/, /robots\.txt$/, /\.pbf$/],
-          navigateFallback: "/index.html",
-          maximumFileSizeToCacheInBytes: 52_428_800, // 10 MiB
-          importScriptsViaChunks: ["chunk-vendors", "pbf-handler"],
-          runtimeCaching: [
-            {
-              urlPattern: new RegExp("/map/tiles/(\\d+)/(\\d+)/(\\d+)\\.pbf"),
-              handler: (context) => tileHandler(context),
-            },
-            {
-              urlPattern: new RegExp("/map/fonts/([^/]+)/(\\d+-\\d+)\\.pbf"),
-              handler: (context) => fontHandler(context),
-            },
-          ],
-          // Add the shared "chunk-vendors" chunk back to the pre-cache list
-          manifestTransforms: [
-            (manifest, compilation) => {
-              const chunkVendors = compilation.chunks.find(
-                (chunk) => chunk.id === "chunk-vendors"
-              );
+    webpackConfig.plugin("workbox").use(WorkboxPlugin.GenerateSW, [
+      {
+        cacheId: packageJson.name,
+        cleanupOutdatedCaches: true,
+        exclude: [/\.map$/, /robots\.txt$/, /\.pbf$/],
+        navigateFallback: "/index.html",
+        maximumFileSizeToCacheInBytes: 52_428_800, // 10 MiB
+        importScriptsViaChunks: ["chunk-vendors", "pbf-handler"],
+        runtimeCaching: [
+          {
+            urlPattern: new RegExp("/map/tiles/(\\d+)/(\\d+)/(\\d+)\\.pbf"),
+            handler: (context) => tileHandler(context),
+          },
+          {
+            urlPattern: new RegExp("/map/fonts/([^/]+)/(\\d+-\\d+)\\.pbf"),
+            handler: (context) => fontHandler(context),
+          },
+        ],
+        // Add the shared "chunk-vendors" chunk back to the pre-cache list
+        manifestTransforms: [
+          (manifest, compilation) => {
+            const chunkVendors = compilation.chunks.find(
+              (chunk) => chunk.id === "chunk-vendors"
+            );
 
-              manifest.push({
-                url: `${compilation.outputOptions.publicPath}${chunkVendors.files[0]}`,
-                revision: chunkVendors.hash,
-              });
-              return { manifest, warnings: [] };
-            },
-          ],
-        },
-      ]);
+            manifest.push({
+              url: `${compilation.outputOptions.publicPath}${chunkVendors.files[0]}`,
+              revision: chunkVendors.hash,
+            });
+            return { manifest, warnings: [] };
+          },
+        ],
+      },
+    ]);
 
-      webpackConfig.plugin("preload").tap((args) => {
-        const [option] = args;
-        option.fileBlacklist = option.fileBlacklist || [];
-        option.fileBlacklist.push(/pbf-handler/);
+    webpackConfig.plugin("preload").tap((args) => {
+      const [option] = args;
+      option.fileBlacklist = option.fileBlacklist || [];
+      option.fileBlacklist.push(/pbf-handler/);
 
-        return args;
-      });
-    }
+      return args;
+    });
 
     // Load the wasm file required by sql.js without the default webpack
     // importing behaviors
