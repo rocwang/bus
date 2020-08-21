@@ -54,6 +54,10 @@ module.exports = {
       Buffer: false,
       // Never embed a setImmediate implementation:
       setImmediate: false,
+      // Provide an empty object to stuff the node modules used in sql-wasm.js
+      path: "empty",
+      fs: "empty",
+      crypto: "empty",
     },
   },
   chainWebpack: (webpackConfig) => {
