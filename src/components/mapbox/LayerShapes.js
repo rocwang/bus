@@ -1,4 +1,4 @@
-import { featureCollection, lineString } from "@turf/turf";
+import { featureCollection, lineString } from "@turf/helpers";
 import bus from "../../assets/bus.svg";
 import mapboxgl from "mapbox-gl";
 

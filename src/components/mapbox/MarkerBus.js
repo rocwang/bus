@@ -1,13 +1,10 @@
 import mapboxgl from "mapbox-gl";
 import bus from "../../assets/bus.svg";
-import {
-  along,
-  distance,
-  getCoord,
-  lineSlice,
-  lineString,
-  point,
-} from "@turf/turf";
+import along from "@turf/along";
+import distance from "@turf/distance";
+import { getCoord } from "@turf/invariant";
+import lineSlice from "@turf/line-slice";
+import { lineString } from "@turf/helpers";
 import { getShapeByRealtimeTripId } from "../../api/gtfs";
 import { uniqueId } from "lodash-es";
 

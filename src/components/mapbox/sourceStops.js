@@ -1,5 +1,5 @@
 import { getStops } from "../../api/gtfs";
-import { featureCollection, point } from "@turf/turf";
+import { featureCollection, point } from "@turf/helpers";
 
 export async function getSourceStops(map) {
   const stops = await getStops();
