@@ -166,7 +166,6 @@ module.exports = {
       });
 
       app.get("/map/tiles/*.pbf", (req, res, next) => {
-        res.set("Content-Encoding", "gzip");
         res.set("Content-type", "application/x-protobuf");
         next();
       });
