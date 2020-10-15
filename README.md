@@ -1,4 +1,6 @@
-# Mila
+# Bus
+
+A progressive web app for tracking buses & ferries in Auckland.
 
 [![Pipeline Status](https://gitlab.com/rocwang/mila/badges/master/pipeline.svg)](https://gitlab.com/rocwang/mila/commits/master)
 [![Coverage Report](https://gitlab.com/rocwang/mila/badges/master/coverage.svg)](https://gitlab.com/rocwang/mila/commits/master)
